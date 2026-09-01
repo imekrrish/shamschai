@@ -1,0 +1,13 @@
+export type Variant={weight:'200 g';price:number;sku:string;stock:boolean};
+export type Product={id:string;slug:string;name:string;subtitle:string;description:string;category:string;images:string[];variants:Variant[];flavourNotes:string[];ingredients:string[];brewInstructions:string[];stock:boolean;featured:boolean;marketplaces:string[]};
+
+export const products:Product[]=[{
+  id:'masala',slug:'masala-chai',name:'Sham’s Masala Chai',subtitle:'Bold · Aromatic · Comforting',
+  description:'A warm, layered loose-leaf chai made for slow mornings, long conversations and one more cup.',
+  category:'Loose Leaf Chai',images:['/assets/shams/products/masala-pack.webp','/assets/shams/products/product-lifestyle.webp'],
+  variants:[{weight:'200 g',price:0,sku:'SH-MASALA-200',stock:false}],flavourNotes:['WARM SPICE','RICH','AROMATIC'],
+  ingredients:['Premium tea leaves','Handpicked spices'],
+  brewInstructions:['Bring water to a rolling boil.','Add Sham’s Chai and sweetener to taste.','Add milk, then simmer until rich and aromatic.','Strain into your favourite cup and serve hot.'],
+  stock:false,featured:true,marketplaces:[]
+}];
+export const getProduct=(slug?:string)=>products.find(p=>p.slug===slug);

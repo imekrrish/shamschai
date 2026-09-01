@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Shams Chai",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev -- --host 127.0.0.1",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug Shams Chai in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5173",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run and Debug Shams Chai",
+      "configurations": [
+        "Launch Shams Chai",
+        "Debug Shams Chai in Chrome"
+      ],
+      "stopAll": true
+    }
+  ]
+}
