@@ -3,6 +3,7 @@ import {ArrowLeft,ArrowRight,Clock} from 'lucide-react';
 import {Link,useParams} from 'react-router-dom';
 import {articles} from './data/content';
 import {Eyebrow,ImageSlot,Reveal} from './components/ui';
+import {openLaunchEmail} from './utils/launchMail';
 
 const ease=[.22,1,.36,1] as const;
 
@@ -19,7 +20,7 @@ export function JournalLaunch(){const [featured,...rest]=articles;return <>
   <section className="journal-new-hero"><motion.div initial={{opacity:0,y:25}} animate={{opacity:1,y:0}} transition={{duration:.8,ease}}><Eyebrow>THE SHAM’S JOURNAL</Eyebrow><h1>STORIES TO<br/><em>POUR OVER.</em></h1><p>On chai, home, habit and the small moments that make a day feel familiar.</p></motion.div><div className="journal-issue"><span>ISSUE</span><b>01</b><small>NOTES ON<br/>A SHARED RITUAL</small></div></section>
   <section className="journal-feature"><JournalCard article={featured} index={0} large/><aside><span>EDITOR’S NOTE</span><p>Chai rarely asks for attention. It simply appears—before work, after rain, between people who have more to say. This journal is a place to notice it.</p></aside></section>
   <section className="journal-new-grid"><div className="journal-grid-label"><span>THE LATEST</span><span>{String(rest.length).padStart(2,'0')} STORIES</span></div>{rest.map((a,i)=><JournalCard key={a.slug} article={a} index={i+1}/>)}</section>
-  <section className="journal-letter"><Reveal><Eyebrow>NOTES FROM SHAM’S</Eyebrow><h2>A letter worth<br/><em>making chai for.</em></h2><p>Occasional stories, brewing thoughts and the first word on what comes next.</p><form onSubmit={e=>e.preventDefault()}><input type="email" placeholder="YOUR EMAIL ADDRESS"/><button>JOIN THE LIST <ArrowRight/></button></form></Reveal></section>
+  <section className="journal-letter"><Reveal><Eyebrow>NOTES FROM SHAM’S</Eyebrow><h2>A letter worth<br/><em>making chai for.</em></h2><p>Occasional stories, brewing thoughts and the first word on what comes next.</p><form onSubmit={e=>{e.preventDefault();const email=(e.currentTarget.elements.namedItem('email') as HTMLInputElement).value;openLaunchEmail(email)}}><input name="email" type="email" placeholder="YOUR EMAIL ADDRESS" autoComplete="email" required/><button type="submit">JOIN THE LIST <ArrowRight/></button></form><small>Opens a ready-to-send email to support@shamschai.com.</small></Reveal></section>
   </>}
 
 export function JournalArticleLaunch(){const {slug}=useParams();const article=articles.find(a=>a.slug===slug);if(!article)return <JournalLaunch/>;const related=articles.filter(a=>a.slug!==article.slug).slice(0,2);return <>

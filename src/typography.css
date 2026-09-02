@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
 
 :root{
-  --serif:'Newsreader',Georgia,serif;
-  font-family:'DM Sans',Arial,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
 }
 
 body{
-  font-family:'DM Sans',Arial,sans-serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:400;
   letter-spacing:-.008em;
 }
@@ -20,7 +20,7 @@ p{
 }
 
 .logo{
-  font-family:'Newsreader',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
 }
 
 .logo span{
@@ -30,7 +30,7 @@ p{
 }
 
 .logo small{
-  font-family:'DM Sans',Arial,sans-serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:600;
   letter-spacing:.22em;
 }
@@ -40,14 +40,14 @@ p{
 .text-link,
 .availability-pill,
 header nav a{
-  font-family:'DM Sans',Arial,sans-serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:600;
 }
 
 .launch-hero-copy h1,
 .launch-page-head h1,
 .availability-hero h1{
-  font-family:'Newsreader',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:400;
   letter-spacing:-.025em;
   line-height:.94;
@@ -67,7 +67,7 @@ header nav a{
 .section-title h2,
 .founder-section blockquote,
 .footer-lead h2{
-  font-family:'Newsreader',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:400;
   letter-spacing:-.018em;
   line-height:1;
@@ -75,7 +75,7 @@ header nav a{
 
 .memory-statement span,
 .memory-statement strong{
-  font-family:'Newsreader',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:400;
   letter-spacing:-.012em;
   line-height:1.12;
@@ -86,7 +86,7 @@ header nav a{
 .platform-ribbon>span,
 .soon-panel h3,
 .availability-grid h2{
-  font-family:'Newsreader',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-weight:400;
 }
 
@@ -145,14 +145,14 @@ header nav a{
 .logo,.logo small,.eyebrow,.btn,.text-link,.availability-pill,
 header nav a,.launch-intro-notes b,.brew-orbit b,.platform-ribbon small,
 .founder-photo>span{
-  font-family:'Newsreader',Georgia,serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
 }
 
 body{font-weight:400;letter-spacing:0}
 b,strong{font-weight:500}
 p{font-weight:400;letter-spacing:.002em}
 
-.logo span{font-weight:400;letter-spacing:.045em}
+.logo span{font-family:'Cormorant Garamond',Georgia,serif;font-size:33px;font-style:italic;font-weight:500;letter-spacing:.015em}
 .logo small{font-weight:500;letter-spacing:.14em;font-size:7px}
 
 .eyebrow,.btn,.text-link,.availability-pill,header nav a{
@@ -179,7 +179,7 @@ header nav a{font-size:11px}
 
 .memory-statement>div{max-width:1100px}
 .memory-statement span,.memory-statement strong{
-  font-family:'Manrope','DM Sans',Arial,sans-serif;
+  font-family:'Cormorant Garamond',Georgia,serif;
   font-size:clamp(27px,3.8vw,57px);
   font-style:normal;
   font-weight:400;
