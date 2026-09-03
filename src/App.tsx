@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import {LaunchHome,LaunchProducts,LaunchProduct,Availability,FounderLaunch} from './LaunchPages';
 import {JournalLaunch,JournalArticleLaunch} from './JournalPages';
 import {OurStory,BrewGuide,Gifting,Contact,Faq,SearchPage,NotFound} from './pages';
+import {Checkout,RefundPolicy} from './OrderPages';
 function ScrollTop(){const {pathname}=useLocation();useEffect(()=>{window.scrollTo({top:0,left:0,behavior:'auto'});},[pathname]);return null}
 export default function App(){return <Layout><ScrollTop/><Routes>
   <Route path="/" element={<LaunchHome/>}/>
@@ -21,5 +22,7 @@ export default function App(){return <Layout><ScrollTop/><Routes>
   <Route path="/contact" element={<Contact/>}/>
   <Route path="/faq" element={<Faq/>}/>
   <Route path="/search" element={<SearchPage/>}/>
+  <Route path="/checkout" element={<Checkout/>}/>
+  <Route path="/refund-policy" element={<RefundPolicy/>}/>
   <Route path="*" element={<NotFound/>}/>
 </Routes></Layout>}
