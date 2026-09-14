@@ -2,17 +2,17 @@ import {FormEvent,useMemo,useState} from 'react';
 import {ArrowRight,Check,ChevronLeft,Minus,Plus,ShieldCheck} from 'lucide-react';
 import {Link,useSearchParams} from 'react-router-dom';
 import {Eyebrow} from './components/ui';
+import {WHATSAPP_NUMBER,packSizes,whatsappUrl,orderLines} from './utils/whatsapp';
 
-const WHATSAPP_NUMBER='919000303897';
-const sizes=['200g','500g','1000g'] as const;
+const sizes=packSizes;
 type Size=typeof sizes[number];
 
 export function Checkout(){
   const [params]=useSearchParams();
   const initial=sizes.includes(params.get('size') as Size)?params.get('size') as Size:'200g';
-  const [quantities,setQuantities]=useState<Record<Size,number>>(()=>({
-    '200g':initial==='200g'?1:0,'500g':initial==='500g'?1:0,'1000g':initial==='1000g'?1:0
-  }));
+  const requested=Number(params.get('quantity')||1);
+  const initialQuantity=Number.isFinite(requested)?Math.max(1,Math.min(20,Math.floor(requested))):1;
+  const [quantities,setQuantities]=useState<Record<Size,number>>(()=>Object.fromEntries(sizes.map(size=>[size,size===initial?initialQuantity:0])));
   const [agreed,setAgreed]=useState(false);
   const [error,setError]=useState('');
   const total=useMemo(()=>Object.values(quantities).reduce((sum,qty)=>sum+qty,0),[quantities]);
@@ -23,7 +23,7 @@ export function Checkout(){
     if(total<1){setError('Please choose at least one pack.');return}
     if(!agreed){setError('Please accept the refund policy before continuing.');return}
     const data=new FormData(e.currentTarget);
-    const packs=sizes.filter(size=>quantities[size]>0).map(size=>`• ${size} × ${quantities[size]}`).join('\n');
+    const packs=orderLines(quantities);
     const message=[
       `Hello Sham's Chai! I would like to place an order.`,'','*ORDER*',packs,`Total packs: ${total}`,'','*CUSTOMER DETAILS*',
       `Name: ${data.get('name')}`,`Phone: ${data.get('phone')}`,`Address: ${data.get('address')}`,
@@ -31,7 +31,7 @@ export function Checkout(){
       `Notes: ${data.get('notes')||'None'}`,'','I have read and accepted the refund policy. Please confirm availability, price, delivery charge and payment details.'
     ].join('\n');
     setError('');
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer');
+    window.open(whatsappUrl(message),'_blank','noopener,noreferrer');
   }
 
   return <section className="checkout-page">

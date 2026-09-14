@@ -1,16 +1,22 @@
-# Shams Chai — Image Assets
+# Sham’s Chai image assets
 
-The current launch site is built around one product: **Sham’s Masala Chai, 200 g**. Seven final WebP assets were generated from the supplied sachet reference and are already installed.
+## Original packaging
 
-| Asset | Location | Usage | Status |
-|---|---|---|---|
-| Hero product scene | `public/assets/shams/hero/hero-main.webp` | Homepage hero | Generated and installed |
-| Masala pack | `public/assets/shams/products/masala-pack.webp` | Product listing and product page | Generated and installed |
-| Product lifestyle | `public/assets/shams/products/product-lifestyle.webp` | Product detail and journal | Generated and installed |
-| Home chai moment | `public/assets/shams/lifestyle/lifestyle-home.webp` | Homepage, Our Story and Journal | Generated and installed |
-| Rain chai moment | `public/assets/shams/lifestyle/lifestyle-rain.webp` | Homepage and Journal | Generated and installed |
-| Together chai moment | `public/assets/shams/lifestyle/lifestyle-together.webp` | Homepage, Our Story and Journal | Generated and installed |
-| Gifting composition | `public/assets/shams/gifting/gift-main.webp` | Homepage and Gifting page | Generated and installed |
-| Founder portrait | `public/assets/shams/founder/sharmila-home.webp` | Homepage and Founder page | **Real founder photograph still required** |
+The user’s supplied front/back image is preserved at `public/assets/shams/products/original-sachets.png`.
 
-The founder portrait remains an intentional filename-specific placeholder. It must use a real, founder-approved image and must not be replaced with generated or stock photography.
+- `sachet-front.png`: left panel, x=0, y=230, width=505, height=1080.
+- `sachet-back.png`: right panel, x=514, y=230, width=509, height=1080.
+
+These are lossless rectangular crops of the original. The central divider and excess background are removed; lettering, artwork, colours and sachet pixels are unchanged. Both decoded crops were verified against the corresponding original pixels.
+
+The front is used in the hero, shop, product page and gifting enquiry. The homepage also shows the back; the product gallery provides front/back controls and full-size links. The photograph shows a 500 g sachet. Existing ordering variants remain 200 g, 500 g and 1000 g; no alternate size artwork has been fabricated.
+
+Run `npm run images:prepare` to reproduce the crops and optimized photographs.
+
+## Lifestyle images
+
+Existing photographs without invented packaging are reused. WebP derivatives live in `public/assets/shams/optimized/`; original assets remain intact. The live application no longer references the previous generated packaging compositions.
+
+## Founder
+
+The repository confirms the name **Sharmila Krishna**, but contains no real founder photograph. The design uses a brand wordmark panel and the existing short brand story. Replace the panel with a real, approved portrait when supplied. Do not create a synthetic founder portrait or attributed quotations.
