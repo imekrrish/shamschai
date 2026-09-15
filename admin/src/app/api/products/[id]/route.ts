@@ -1,63 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/store';
-
-const BACKEND_URL = process.env.BACKEND_INTERNAL_URL || 'http://localhost:5000';
+import { queryPostgres } from '@/lib/db';
+import { requireAdmin } from '@/lib/admin-api';
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = requireAdmin(); if (denied) return denied;
   try {
-    const backendRes = await fetch(`${BACKEND_URL}/api/products/${params.id}`, {
-      cache: 'no-store',
-      signal: AbortSignal.timeout(3000),
-    });
-    if (backendRes.ok) {
-      const json = await backendRes.json();
-      if (json.success) {
-        return NextResponse.json(json);
-      }
-    }
-  } catch {
-    // fallback
-  }
-
-  const product = db.getProductById(params.id);
+    const product = (await queryPostgres('SELECT * FROM products WHERE id=$1 OR slug=$1 LIMIT 1', [params.id]))[0];
   if (!product) {
     return NextResponse.json(
       { success: false, message: 'Product not found' },
       { status: 404 }
     );
   }
-  return NextResponse.json({ success: true, data: product });
+    return NextResponse.json({ success: true, data: product });
+  } catch { return NextResponse.json({ success: false, message: 'Failed to load product' }, { status: 500 }); }
 }
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = requireAdmin(); if (denied) return denied;
   try {
     const body = await req.json();
-
-    try {
-      const backendRes = await fetch(`${BACKEND_URL}/api/products/${params.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(5000),
-      });
-      if (backendRes.ok) {
-        const json = await backendRes.json();
-        if (json.success) {
-          db.updateProduct(params.id, json.data);
-          return NextResponse.json(json);
-        }
-      }
-    } catch (e) {
-      console.warn('Backend proxy update failed, updating local store', e);
-    }
-
-    const updated = db.updateProduct(params.id, body);
+    const updated = (await queryPostgres(`UPDATE products SET name=$2, subtitle=$3, description=$4, category=$5, images=$6::jsonb, variants=$7::jsonb, "flavourNotes"=$8::jsonb, ingredients=$9::jsonb, stock=$10, featured=$11, "updatedAt"=NOW() WHERE id=$1 OR slug=$1 RETURNING *`, [params.id, body.name, body.subtitle || '', body.description || '', body.category || 'Signature Blends', JSON.stringify(body.images || []), JSON.stringify(body.variants || []), JSON.stringify(body.flavourNotes || []), JSON.stringify(body.ingredients || []), Boolean(body.stock), Boolean(body.featured)]))[0];
     if (!updated) {
       return NextResponse.json(
         { success: false, message: 'Product not found' },
@@ -83,24 +52,18 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const denied = requireAdmin(); if (denied) return denied;
   try {
-    await fetch(`${BACKEND_URL}/api/products/${params.id}`, {
-      method: 'DELETE',
-      signal: AbortSignal.timeout(5000),
-    });
-  } catch {
-    // ignore
-  }
-
-  const success = db.deleteProduct(params.id);
-  if (!success) {
+    const deleted = await queryPostgres('DELETE FROM products WHERE id=$1 OR slug=$1 RETURNING id', [params.id]);
+  if (!deleted.length) {
     return NextResponse.json(
       { success: false, message: 'Product not found' },
       { status: 404 }
     );
   }
-  return NextResponse.json({
+    return NextResponse.json({
     success: true,
     message: 'Product deleted successfully'
-  });
+    });
+  } catch { return NextResponse.json({ success: false, message: 'Failed to remove product' }, { status: 500 }); }
 }

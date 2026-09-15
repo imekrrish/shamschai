@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check, QrCode } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import ProductSelector from './components/ProductSelector';
 import RecipeWaitlist from './components/RecipeWaitlist';
 import HeroSachet from './components/HeroSachet';
 import { NotFound } from './pages';
+import { api } from './utils/api';
 
 export function LaunchHome() {
   const reduced = useReducedMotion();
@@ -230,7 +231,12 @@ export function LaunchHome() {
 }
 
 export function LaunchProducts() {
-  const recipe = products[0];
+  const [recipe, setRecipe] = useState<Product>(products[0]);
+  useEffect(() => {
+    void api.getProduct('recipe-01').then((live) => {
+      setRecipe(current => ({ ...current, ...live, variants: live.variants || current.variants, flavourNotes: live.flavourNotes || current.flavourNotes, ingredients: live.ingredients || current.ingredients, images: live.images || current.images }));
+    }).catch(() => { /* The bundled catalog remains available if the API is offline. */ });
+  }, []);
   return <div className="collection-edit">
     <header className="collection-intro section"><Eyebrow>THE SHAMS COLLECTION</Eyebrow><h1>One beautiful beginning.<br /><em>More brewing.</em></h1><p>Meet our signature masala chai, blended with black tea leaves and whole spices for your everyday ritual.</p><div className="collection-nav"><a href="#recipe-01">01 / Shop masala chai <ArrowRight size={14} /></a><a href="#recipe-02">02 / Coming soon <ArrowRight size={14} /></a></div></header>
     <section className="collection-feature section" id="recipe-01" aria-labelledby="original-title">

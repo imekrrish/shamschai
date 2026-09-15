@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/store';
-import { PaymentStatus } from '@/lib/types';
+import { queryPostgres } from '@/lib/db';
+import { requireAdmin, number } from '@/lib/admin-api';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
+  const denied = requireAdmin(); if (denied) return denied;
   try {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status') || undefined;
     const provider = searchParams.get('provider') || undefined;
     const search = searchParams.get('search') || undefined;
 
-    const payments = db.getPayments({ status, provider, search });
+    const terms: string[] = []; const values: string[] = [];
+    if (status) { values.push(status); terms.push(`p.status=$${values.length}`); }
+    if (provider) { values.push(provider); terms.push(`p.provider=$${values.length}`); }
+    if (search) { values.push(`%${search}%`); terms.push(`(p."transactionRef" ILIKE $${values.length} OR o."orderNumber" ILIKE $${values.length} OR u.name ILIKE $${values.length})`); }
+    const payments = (await queryPostgres(`SELECT p.*, o."orderNumber", u.name AS "customerName", u.email AS "customerEmail" FROM payments p JOIN orders o ON o.id=p."orderId" JOIN users u ON u.id=p."userId" ${terms.length ? `WHERE ${terms.join(' AND ')}` : ''} ORDER BY p."createdAt" DESC`, values)).map((payment: any) => ({ ...payment, amount: number(payment.amount), settlementStatus: payment.status === 'PAID' ? 'SETTLED' : payment.status === 'REFUNDED' ? 'REFUNDED' : 'PENDING_SETTLEMENT' }));
 
     // Compute metrics
     const totalCollected = payments
@@ -47,35 +52,5 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { id, status, settlementStatus } = body;
-
-    if (!id || !status) {
-      return NextResponse.json(
-        { success: false, message: 'Payment ID and status are required' },
-        { status: 400 }
-      );
-    }
-
-    const updated = db.updatePaymentStatus(id, status as PaymentStatus, settlementStatus);
-    if (!updated) {
-      return NextResponse.json(
-        { success: false, message: 'Payment record not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Payment updated successfully',
-      data: updated
-    });
-  } catch (error) {
-    console.error('Error updating payment:', error);
-    return NextResponse.json(
-      { success: false, message: 'Failed to update payment' },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({ success: false, message: 'Payment status is managed by Razorpay and cannot be edited here.' }, { status: 409 });
 }
