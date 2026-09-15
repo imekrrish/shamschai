@@ -106,7 +106,7 @@ app.use('/api', apiRoutes);
 app.use(errorHandler);
 
 // Graceful shutdown
-const server = app.listen(PORT, () => {
+const server = app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`☕ Sham's Chai Backend Server running on port ${PORT}`);
   console.log(`🔗 Health check available at: http://localhost:${PORT}/api/health`);
 });
