@@ -13,6 +13,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS configuration
+const defaultOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'https://shamschai.com',
+  'https://www.shamschai.com',
+];
+
 const configuredOrigins = [
   process.env.FRONTEND_URL,
   ...(process.env.FRONTEND_URLS || '').split(','),
@@ -32,28 +40,44 @@ const configuredOrigins = [
     }
   });
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  'http://localhost:3000',
+const allowedOrigins = new Set([
+  ...defaultOrigins,
   ...configuredOrigins,
-];
+]);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // allow requests with no origin (like mobile apps, curl, postman)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
+const isOriginAllowed = (origin?: string): boolean => {
+  if (!origin) return true; // allow non-browser clients (curl, mobile, server-to-server)
+  if (allowedOrigins.has(origin)) return true;
+  try {
+    const { hostname } = new URL(origin);
+    if (hostname === 'shamschai.com' || hostname.endsWith('.shamschai.com')) {
+      return true;
+    }
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+};
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.post('/api/payments/webhook', express.raw({ type: 'application/json', limit: '256kb' }), PaymentController.webhook);
 app.use(express.json({ limit: '64kb' }));

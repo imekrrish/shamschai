@@ -53,36 +53,67 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
     }
   }, [isAuthenticated, navigate, redirect]);
 
+  const callbackRef = useRef({ loginWithGoogle, navigate, redirect });
+  useEffect(() => {
+    callbackRef.current = { loginWithGoogle, navigate, redirect };
+  });
+
   useEffect(() => {
     const clientId = __GOOGLE_CLIENT_ID__;
     if (!clientId || !googleButton.current) return;
 
+    let isCancelled = false;
+
     const render = () => {
+      if (isCancelled) return;
       const google = window.google;
       if (!google || !googleButton.current) return;
-      google.accounts.id.initialize({
-        client_id: clientId,
-        callback: async ({ credential }) => {
-          setError('');
-          setLoading(true);
-          try {
-            await loginWithGoogle(credential);
-            navigate(redirect, { replace: true });
-          } catch (err: any) {
-            setError(err.message || 'Google sign-in could not be completed.');
-          } finally {
-            setLoading(false);
-          }
-        },
-      });
-      google.accounts.id.renderButton(googleButton.current, { type: 'standard', theme: 'outline', size: 'large', text: 'continue_with', shape: 'rectangular', width: 320 });
+      try {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: async ({ credential }) => {
+            setError('');
+            setLoading(true);
+            try {
+              await callbackRef.current.loginWithGoogle(credential);
+              callbackRef.current.navigate(callbackRef.current.redirect, { replace: true });
+            } catch (err: any) {
+              setError(err.message || 'Google sign-in could not be completed.');
+            } finally {
+              setLoading(false);
+            }
+          },
+        });
+        if (googleButton.current) {
+          googleButton.current.innerHTML = '';
+          google.accounts.id.renderButton(googleButton.current, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            shape: 'rectangular',
+            width: 320,
+          });
+        }
+      } catch (err) {
+        console.warn('Google identity render error:', err);
+      }
     };
+
+    if (window.google) {
+      render();
+      return () => {
+        isCancelled = true;
+      };
+    }
 
     const existing = document.querySelector<HTMLScriptElement>('script[data-google-identity]');
     if (existing) {
       existing.addEventListener('load', render);
-      render();
-      return () => existing.removeEventListener('load', render);
+      return () => {
+        isCancelled = true;
+        existing.removeEventListener('load', render);
+      };
     }
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
@@ -90,8 +121,11 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
     script.dataset.googleIdentity = 'true';
     script.addEventListener('load', render);
     document.head.appendChild(script);
-    return () => script.removeEventListener('load', render);
-  }, [loginWithGoogle, navigate, redirect]);
+    return () => {
+      isCancelled = true;
+      script.removeEventListener('load', render);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
