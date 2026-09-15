@@ -54,7 +54,7 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
   }, [isAuthenticated, navigate, redirect]);
 
   useEffect(() => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const clientId = __GOOGLE_CLIENT_ID__;
     if (!clientId || !googleButton.current) return;
 
     const render = () => {
@@ -217,7 +217,7 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
           </button>
         </form>
 
-        {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+        {__GOOGLE_CLIENT_ID__ && (
           <div className="google-signin">
             <span>OR</span>
             <div ref={googleButton} aria-label="Continue with Google" />

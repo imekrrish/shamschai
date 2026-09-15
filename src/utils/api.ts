@@ -1,5 +1,5 @@
 // Authenticated backend requests fail explicitly; checkout never fabricates success.
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
+export const API_BASE_URL = (__API_BASE_URL__ || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
 export interface UserProfile {
   id: string;
   email: string;

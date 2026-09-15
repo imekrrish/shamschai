@@ -11,7 +11,7 @@ export function EmailVerificationPage() {
   useEffect(() => {
     const token = params.get('token');
     if (!token) { setState('error'); setMessage('This verification link is incomplete.'); return; }
-    const base = (import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
+    const base = (__API_BASE_URL__ || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
     fetch(`${base}/auth/verify-email?token=${encodeURIComponent(token)}`)
       .then(async response => {
         const result = await response.json();

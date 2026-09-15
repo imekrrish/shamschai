@@ -12,7 +12,7 @@ export default function RecipeWaitlist() {
     busy.current = true;
     setState('pending');
     try {
-      const base = (import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
+      const base = (__API_BASE_URL__ || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
       const response = await fetch(`${base}/waitlist`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), recipeId: 'recipe-02', source: 'collection_page' }),
