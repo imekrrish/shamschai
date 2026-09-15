@@ -13,12 +13,31 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS configuration
+const configuredOrigins = [
+  process.env.FRONTEND_URL,
+  ...(process.env.FRONTEND_URLS || '').split(','),
+]
+  .map(value => value?.trim())
+  .filter(Boolean)
+  .flatMap(value => {
+    try {
+      const origin = new URL(value!).origin;
+      const url = new URL(origin);
+      const hostVariants = url.hostname.startsWith('www.')
+        ? [url.hostname.slice(4), url.hostname]
+        : [url.hostname, `www.${url.hostname}`];
+      return hostVariants.map(hostname => `${url.protocol}//${hostname}${url.port ? `:${url.port}` : ''}`);
+    } catch {
+      return [];
+    }
+  });
+
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
-  process.env.FRONTEND_URL,
-].filter(Boolean) as string[];
+  ...configuredOrigins,
+];
 
 app.use(
   cors({

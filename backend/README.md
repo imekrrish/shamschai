@@ -74,6 +74,8 @@ DATABASE_URL="postgresql://username:password@localhost:5432/shamschai?schema=pub
 JWT_SECRET="your_secure_secret_key"
 PORT=5000
 FRONTEND_URL="http://localhost:5173"
+# In production, set this to the storefront origin. FRONTEND_URLS may contain
+# comma-separated aliases such as https://www.shamschai.com,https://shamschai.com.
 ```
 
 ### 2. Push Schema to PostgreSQL (Create Tables)

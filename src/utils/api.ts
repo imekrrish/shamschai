@@ -1,5 +1,15 @@
 // Authenticated backend requests fail explicitly; checkout never fabricates success.
-export const API_BASE_URL = (__API_BASE_URL__ || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api')).replace(/\/$/, '');
+function normalizeApiBaseUrl(value: string): string {
+  try {
+    const url = new URL(value);
+    if ((url.pathname === '' || url.pathname === '/') && !url.search && !url.hash) url.pathname = '/api';
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return value.replace(/\/$/, '');
+  }
+}
+
+export const API_BASE_URL = normalizeApiBaseUrl(__API_BASE_URL__ || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api'));
 export interface UserProfile {
   id: string;
   email: string;
