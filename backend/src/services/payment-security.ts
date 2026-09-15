@@ -6,15 +6,20 @@ export function verifySignature(body: string | Buffer, signature: string, secret
   if (!secret || !/^[a-f0-9]{64}$/i.test(signature)) return false;
   return timingSafeEqual(createHmac('sha256', secret).update(body).digest(), Buffer.from(signature, 'hex'));
 }
-export const prices: Readonly<Record<string, number>> = Object.freeze({ '200g': 349, '500g': 799, '1000g': 1499 });
+export const prices: Readonly<Record<string, number>> = Object.freeze({
+  '500g': 450,
+  '1000g': 850,
+  '1kg': 850,
+});
 export function priceItems(items: { size: string; quantity: number }[]) {
-  if (!items.length || items.length > 3) throw paymentError('Choose between one and three pack sizes.');
+  if (!items.length || items.length > 2) throw paymentError('Choose between one and two pack sizes.');
   const seen = new Set<string>();
   return items.map(item => {
-    if (!Object.hasOwn(prices, item.size) || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 20 || seen.has(item.size)) throw paymentError('Invalid pack size or quantity.');
-    seen.add(item.size);
-    const unitPrice = prices[item.size];
-    return { title: "Sham's Masala Chai", size: item.size, quantity: item.quantity, unitPrice, subtotal: unitPrice * item.quantity };
+    const norm = ProductService.normalizeSize(item.size);
+    if (!Object.hasOwn(prices, norm) || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 20 || seen.has(norm)) throw paymentError('Invalid pack size or quantity.');
+    seen.add(norm);
+    const unitPrice = prices[norm];
+    return { title: "Sham's Masala Chai", size: norm, quantity: item.quantity, unitPrice, subtotal: unitPrice * item.quantity };
   });
 }
 

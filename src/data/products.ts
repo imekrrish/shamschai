@@ -1,5 +1,5 @@
 export type Variant = {
-  weight: '200 g' | '500 g' | '1000 g';
+  weight: '500 g' | '1 kg' | '1000 g' | string;
   price: number;
   sku: string;
   stock: boolean;
@@ -80,9 +80,8 @@ export const products: Product[] = [
     category: 'The Collection',
     images: ['/assets/shams/products/product-lifestyle-v2.png'],
     variants: [
-      { weight: '200 g', price: 349, sku: 'SH-RECIPE-01-200', stock: true },
-      { weight: '500 g', price: 799, sku: 'SH-RECIPE-01-500', stock: true },
-      { weight: '1000 g', price: 1499, sku: 'SH-RECIPE-01-1000', stock: true },
+      { weight: '500 g', price: 450, sku: 'SH-RECIPE-01-500', stock: true },
+      { weight: '1 kg', price: 850, sku: 'SH-RECIPE-01-1000', stock: true },
     ],
     flavourNotes: ['BLACK TEA', 'GREEN CARDAMOM', 'BLACK PEPPER'],
     ingredients: ['Black Tea Leaves', 'Green Cardamom', 'Clove', 'Black Pepper', 'Cinnamon'],
@@ -129,9 +128,8 @@ export const products: Product[] = [
     category: 'The Collection',
     images: ['/assets/shams/products/product-lifestyle-v2.png'],
     variants: [
-      { weight: '200 g', price: 349, sku: 'SH-RECIPE-02-200', stock: true },
-      { weight: '500 g', price: 799, sku: 'SH-RECIPE-02-500', stock: true },
-      { weight: '1000 g', price: 1499, sku: 'SH-RECIPE-02-1000', stock: true },
+      { weight: '500 g', price: 450, sku: 'SH-RECIPE-02-500', stock: true },
+      { weight: '1 kg', price: 850, sku: 'SH-RECIPE-02-1000', stock: true },
     ],
     flavourNotes: ['CEYLON CINNAMON', 'SWEET GINGER', 'MELLOW MALT'],
     ingredients: ['Assam & Dooars Black Tea', 'Ceylon Cinnamon', 'Ginger Root', 'Mace', 'Cardamom'],
@@ -178,9 +176,8 @@ export const products: Product[] = [
     category: 'The Collection',
     images: ['/assets/shams/products/product-lifestyle-v2.png'],
     variants: [
-      { weight: '200 g', price: 349, sku: 'SH-RECIPE-03-200', stock: true },
-      { weight: '500 g', price: 799, sku: 'SH-RECIPE-03-500', stock: true },
-      { weight: '1000 g', price: 1499, sku: 'SH-RECIPE-03-1000', stock: true },
+      { weight: '500 g', price: 450, sku: 'SH-RECIPE-03-500', stock: true },
+      { weight: '1 kg', price: 850, sku: 'SH-RECIPE-03-1000', stock: true },
     ],
     flavourNotes: ['SUN-DRIED GINGER', 'BRISK PEKOE', 'ZESTY HEAT'],
     ingredients: ['Broken Pekoe Black Tea', 'Sun-dried Hill Ginger', 'Green Cardamom', 'Black Pepper'],

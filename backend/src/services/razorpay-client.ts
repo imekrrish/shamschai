@@ -1,6 +1,8 @@
-﻿import { paymentError } from './payment-security';
+import { paymentError } from './payment-security';
 export function razorpayConfig() {
-  const keyId = process.env.RAZORPAY_KEY_ID, secret = process.env.RAZORPAY_KEY_SECRET;
+  const isProd = (process.env.APP_ENV || process.env.NODE_ENV) === 'production';
+  const keyId = (isProd && process.env.RAZORPAY_LIVE_KEY_ID) || process.env.RAZORPAY_KEY_ID;
+  const secret = (isProd && process.env.RAZORPAY_LIVE_KEY_SECRET) || process.env.RAZORPAY_KEY_SECRET;
   if (!keyId || !/^rzp_(test|live)_/.test(keyId) || !secret) throw paymentError('Online payments are not configured yet. Please try again later.', 503);
   return { keyId, secret };
 }

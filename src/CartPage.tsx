@@ -34,7 +34,7 @@ export default function CartPage() {
     return () => { cancelled = true; };
   }, [cart.pending?.orderId, user?.id, cart.complete, navigate]);
 
-  const getItemPrice = (size: CartSize) => (cart.prices ? cart.prices[size] : cartPrices[size]) || 349;
+  const getItemPrice = (size: CartSize) => (cart.prices ? cart.prices[size] : cartPrices[size]) || (size === '1000g' ? 850 : 450);
   const isItemInStock = (size: CartSize) => !cart.stockStatus || cart.stockStatus[size];
 
   const subtotal = cartSizes.reduce((sum, size) => sum + cart.quantities[size] * getItemPrice(size), 0);
@@ -66,7 +66,7 @@ export default function CartPage() {
                   <div>
                     <h2>Masala Chai</h2>
                     <p>
-                      {size} · {money(price)} each
+                      {size === '1000g' ? '1kg' : size} · {money(price)} each
                       {!inStock && (
                         <span className="ml-2 text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 inline-block">
                           Out of stock

@@ -9,13 +9,12 @@ import { loadRazorpay, openPayment } from './utils/razorpay';
 import { useCart } from './context/CartContext';
 import { checkoutFingerprint } from './utils/checkoutFingerprint';
 
-const sizes = ['200g', '500g', '1000g'] as const;
+const sizes = ['500g', '1000g'] as const;
 type Size = typeof sizes[number];
 
 const sizePrices: Record<Size, number> = {
-  '200g': 349,
-  '500g': 799,
-  '1000g': 1499,
+  '500g': 450,
+  '1000g': 850,
 };
 
 export function Checkout() {
@@ -24,7 +23,7 @@ export function Checkout() {
   const { user, isAuthenticated } = useAuth();
   const cart = useCart();
 
-  const initial = sizes.includes(params.get('size') as Size) ? (params.get('size') as Size) : '200g';
+  const initial = sizes.includes(params.get('size') as Size) ? (params.get('size') as Size) : '500g';
   const requested = Number(params.get('quantity') || 1);
   const initialQuantity = Number.isFinite(requested) ? Math.max(1, Math.min(20, Math.floor(requested))) : 1;
 
@@ -273,7 +272,7 @@ export function Checkout() {
               >
                 <div>
                   <span>SHAM'S MASALA CHAI</span>
-                  <strong>{size}</strong>
+                  <strong>{size === '1000g' ? '1kg' : size}</strong>
                   <span className="pack-price-tag">{money(currentPrice)}</span>
                   {isOos && (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mt-1 inline-block">

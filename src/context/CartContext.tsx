@@ -2,12 +2,12 @@ import { createContext, useCallback, useContext, useEffect, useState, ReactNode 
 import { useAuth } from './AuthContext';
 import { api } from '../utils/api';
 import { checkoutFingerprint } from '../utils/checkoutFingerprint';
-export const cartSizes = ['200g', '500g', '1000g'] as const;
+export const cartSizes = ['500g', '1000g'] as const;
 export type CartSize = typeof cartSizes[number];
 export type Quantities = Record<CartSize, number>;
-export const emptyCart = (): Quantities => ({ '200g': 0, '500g': 0, '1000g': 0 });
-export const defaultPrices: Record<CartSize, number> = { '200g': 349, '500g': 799, '1000g': 1499 };
-export const defaultStock: Record<CartSize, boolean> = { '200g': true, '500g': true, '1000g': true };
+export const emptyCart = (): Quantities => ({ '500g': 0, '1000g': 0 });
+export const defaultPrices: Record<CartSize, number> = { '500g': 450, '1000g': 850 };
+export const defaultStock: Record<CartSize, boolean> = { '500g': true, '1000g': true };
 export const cartPrices: Record<CartSize, number> = { ...defaultPrices };
 
 type Pending = { orderId: string; userId: string; quantities: Quantities; fingerprint?: string };
