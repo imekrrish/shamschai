@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { User } from './types';
 import { SEED_ADMIN } from './seed-data';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'shams_chai_admin_secret_key_2026_vercel_production_change_me';
+const JWT_SECRET = process.env.JWT_SECRET;
 const COOKIE_NAME = 'shams_admin_token';
 
 export interface JwtPayload {
@@ -14,6 +14,7 @@ export interface JwtPayload {
 }
 
 export function signAdminToken(user: User): string {
+  if (!JWT_SECRET) throw new Error('Admin JWT_SECRET is not configured.');
   return jwt.sign(
     {
       id: user.id,
@@ -28,6 +29,7 @@ export function signAdminToken(user: User): string {
 
 export function verifyAdminToken(token: string): JwtPayload | null {
   try {
+    if (!JWT_SECRET) return null;
     return jwt.verify(token, JWT_SECRET) as JwtPayload;
   } catch {
     return null;
@@ -59,14 +61,16 @@ export function getCurrentAdmin(): JwtPayload | null {
 
 export function authenticateAdmin(email: string, pass: string): User | null {
   const admin = SEED_ADMIN;
-  // Verify email and password
+  const configuredEmail = process.env.ADMIN_EMAIL;
+  const configuredPassword = process.env.ADMIN_PASSWORD;
+  if (!configuredEmail || !configuredPassword) return null;
   if (
-    email.toLowerCase().trim() === admin.email.toLowerCase().trim() &&
-    (pass === admin.passwordPlain || pass === 'admin@123')
+    email.toLowerCase().trim() === configuredEmail.toLowerCase().trim() &&
+    pass === configuredPassword
   ) {
     return {
       id: admin.id,
-      email: admin.email,
+      email: configuredEmail,
       name: admin.name,
       role: admin.role,
       avatar: admin.avatar
