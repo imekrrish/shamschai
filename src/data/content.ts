@@ -1,7 +1,131 @@
-export const collections=[{slug:'everyday-chai',name:'Everyday Chai',copy:'Reliable blends for the first cup and every cup after.'},{slug:'family-packs',name:'Family Packs',copy:'One-kilo packs for homes where chai runs out too quickly.'},{slug:'spiced-chai',name:'Spiced Chai',copy:'Familiar aromatics, thoughtfully balanced.'}];
-export const articles=[
- {slug:'chai-in-the-rain',title:'Why chai tastes better when it rains',category:'RITUALS',image:'/assets/shams/optimized/journal-rain-v2.webp',excerpt:'A small investigation into petrichor, pauses and the cup in your hand.'},
- {slug:'every-home',title:'Why every Indian home makes chai differently',category:'AT HOME',image:'/assets/shams/optimized/journal-every-home-v2.webp',excerpt:'Recipes travel through families in pinches, pours and instinct.'},
- {slug:'unofficial-rules',title:'The unofficial rules of making chai',category:'HOW WE BREW',image:'/assets/shams/optimized/journal-rules-v2.webp',excerpt:'Everyone has a method. Everyone is certain theirs is right.'},
- {slug:'ginger-or-elaichi',title:'Ginger or elaichi?',category:'THE DEBATE',image:'/assets/shams/optimized/journal-ginger-cardamom-v2.webp',excerpt:'Two beloved cups, two very different moods.'}
+export const collections = [
+  {
+    slug: 'the-collection',
+    name: 'The Collection',
+    copy: 'Our permanent architecture: four recipes, four personalities, four distinct explorations of masala chai.',
+  },
+  {
+    slug: 'drops',
+    name: 'Limited Drops',
+    copy: 'Our launch mechanism for small-batch laboratory explorations and future recipe debuts.',
+  },
+  {
+    slug: 'corporate-editions',
+    name: 'Corporate Editions',
+    copy: 'Custom curated gifting and co-branded presentations built around your brand recipe.',
+  },
+];
+
+export const editPillars = [
+  { id: 'chai', name: 'THE CHAI', description: 'Tea. Tasting. Brewing. Ingredients. The details behind the cup.' },
+  { id: 'recipe', name: 'THE RECIPE', description: 'Masala. Balance. Technique. Experiments.' },
+  { id: 'ritual', name: 'THE RITUAL', description: 'The conversations. The pauses. The people. The moments that happen around chai.' },
+  { id: 'woman', name: 'THE WOMAN', description: 'Modern Indian women. Their stories. Their work. Their rituals. Their way of doing things.' },
+  { id: 'lab', name: 'THE LAB', description: 'Experiments. Discoveries. Failures. New recipes.' },
+  { id: 'drop', name: 'THE DROP', description: 'What’s new at Shams. What’s coming. What’s worth watching.' },
+];
+
+export const articles = [
+  {
+    slug: 'tea-grades-bop-bp-pf-pd',
+    title: 'BOP, BP, PF, PD: What actually changes in your cup?',
+    category: 'THE CHAI',
+    pillar: 'chai',
+    image: '/assets/shams/optimized/journal-rules-v2.webp',
+    readTime: '6 MIN READ',
+    excerpt: 'We tested the four primary tea leaf cuts against identical masala blends. Here is how particle size dictates body, astringency, and extraction.',
+  },
+  {
+    slug: 'why-every-indian-home-makes-chai-differently',
+    title: 'Why does every Indian family make chai differently?',
+    category: 'THE RITUAL',
+    pillar: 'ritual',
+    image: '/assets/shams/optimized/journal-every-home-v2.webp',
+    readTime: '5 MIN READ',
+    excerpt: 'Recipes travel through families in pinches, pours and instinct. There was never one recipe—there was always the memory of a kitchen.',
+  },
+  {
+    slug: 'does-more-masala-mean-better-chai',
+    title: 'Does more masala actually mean better chai?',
+    category: 'THE RECIPE',
+    pillar: 'recipe',
+    image: '/assets/shams/optimized/journal-ginger-cardamom-v2.webp',
+    readTime: '4 MIN READ',
+    excerpt: 'The common instinct is to double the spice. But when masala leads too loudly, the tea surrenders. How balance creates true longevity.',
+  },
+  {
+    slug: 'cardamom-cinnamon-clove-pepper-who-leads',
+    title: 'Cardamom, cinnamon, clove, pepper: Who should actually lead the cup?',
+    category: 'THE RECIPE',
+    pillar: 'recipe',
+    image: '/assets/shams/optimized/journal-rain-v2.webp',
+    readTime: '7 MIN READ',
+    excerpt: 'Every spice tells a story of temperature and pace. Here is how we calibrate the hierarchy of aromatics in our laboratory trials.',
+  },
+  {
+    slug: 'what-does-kadak-really-mean',
+    title: 'What does “Kadak” really mean?',
+    category: 'THE CHAI',
+    pillar: 'chai',
+    image: '/assets/shams/optimized/lifestyle-home-v2.webp',
+    readTime: '5 MIN READ',
+    excerpt: 'Kadak is not simply overboiled bitterness. It is density, briskness, and liquor strength holding firm under sweet, creamy whole milk.',
+  },
+  {
+    slug: 'anatomy-of-great-masala-chai',
+    title: 'The anatomy of a great masala chai.',
+    category: 'THE LAB',
+    pillar: 'lab',
+    image: '/assets/shams/optimized/journal-rules-v2.webp',
+    readTime: '8 MIN READ',
+    excerpt: 'A comprehensive dissection of liquor depth, lipid emulsification, volatile spice aromatics, and mouthfeel finish.',
+  },
+  {
+    slug: 'why-chai-tastes-different-every-morning',
+    title: 'Why your chai tastes different every morning.',
+    category: 'THE WOMAN',
+    pillar: 'woman',
+    image: '/assets/shams/optimized/journal-rain-v2.webp',
+    readTime: '5 MIN READ',
+    excerpt: 'The water boiling point is constant, the tea is identical. So why does the fifth sip feel different today? Mood as the unseen ingredient.',
+  },
+];
+
+export const labExperiments = [
+  {
+    id: 'exp-001',
+    code: 'EXPERIMENT 001',
+    title: 'Single-Estate High-Elevation Orthodox Masala',
+    status: 'Retired' as const,
+    intent: 'Can delicate Darjeeling autumnal orthodox leaves sustain aggressive whole spices?',
+    learned: 'The fragrant floral top notes evaporated under 100°C whole milk simmering. Subtle tea needs quiet space, not whole spices.',
+    outcome: 'Retired to the archive. Chai is meant to stay in the lab when delicacy conflicts with milk.',
+  },
+  {
+    id: 'exp-002',
+    code: 'EXPERIMENT 002',
+    title: 'Assam BOP Kadak + Crushed Green Elaichi Dominance',
+    status: 'Launched' as const,
+    intent: 'Anchor the morning jolt with estate CTC and elevate through top-crop Idukki cardamom.',
+    learned: 'Cardamom oils cut through tannin bitterness cleanly when bruised rather than micro-ground.',
+    outcome: 'Locked and launched into THE COLLECTION as Recipe 01.',
+  },
+  {
+    id: 'exp-003',
+    code: 'EXPERIMENT 003',
+    title: 'Ceylon Quills & Mace Infusion with Low Tannin Leaf',
+    status: 'Launched' as const,
+    intent: 'Formulate an afternoon cup that evokes warm bakery comfort without sharp pepper heat.',
+    learned: 'True Ceylon cinnamon provides natural sweetness without requiring extra sugar grams.',
+    outcome: 'Locked and launched into THE COLLECTION as Recipe 02.',
+  },
+  {
+    id: 'exp-004',
+    code: 'EXPERIMENT 004',
+    title: 'Sun-Dried Hill Ginger Extraction Curves',
+    status: 'Refined' as const,
+    intent: 'Prevent ginger curdling during prolonged milk simmering while preserving zesty heat.',
+    learned: 'Drying ginger under direct sun lowers protease enzyme activity while concentrating pungent gingerols.',
+    outcome: 'Refined, locked, and inducted into THE COLLECTION as Recipe 03.',
+  },
 ];
