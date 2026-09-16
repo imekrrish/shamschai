@@ -31,10 +31,9 @@ export class ProductService {
   }
 
   static normalizeSize(size: string): string {
-    // Normalizes "200 g", "200g", "1000 g", "1000g", "1kg", "1 kg"
+    // Match gram and kilogram labels, including the 2 kg pack.
     const cleaned = size.toLowerCase().replace(/\s+/g, '');
-    if (cleaned === '1kg') return '1000g';
-    return cleaned;
+    return cleaned.replace(/^(\d+(?:\.\d+)?)kg$/, (_, kg: string) => `${Number(kg) * 1000}g`);
   }
 
   static async getVariant(slugOrId: string, size: string): Promise<{

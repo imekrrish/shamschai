@@ -57,10 +57,11 @@ const PACK = {
     'Strain & enjoy hot.',
   ],
   flavourNotes: ['BLACK TEA', 'CARDAMOM', 'BLACK PEPPER'],
-  /** Authoritative pricing, matching the MRP printed on the pack. */
+  /** Current selling prices approved for the published pack sizes. */
   variants: [
-    { weight: '500 g', price: 450, sku: 'SH-RECIPE-01-500', stock: true },
-    { weight: '1 kg', price: 850, sku: 'SH-RECIPE-01-1000', stock: true },
+    { weight: '500 g', price: 449, sku: 'SH-RECIPE-01-500', stock: true },
+    { weight: '1 kg', price: 860, sku: 'SH-RECIPE-01-1000', stock: true },
+    { weight: '2 kg', price: 1599, sku: 'SH-RECIPE-01-2000', stock: true },
   ],
 };
 
