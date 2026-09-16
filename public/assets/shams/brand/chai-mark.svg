@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sham's chai glass mark">
-  <rect width="64" height="64" rx="12" fill="#0b0b0b"/>
-  <g fill="none" stroke="#f5f0e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="64" height="64" rx="12" fill="#181818"/>
+  <g fill="none" stroke="#B48A68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M23 16c-3-4 3-6 0-10M32 16c-3-4 3-6 0-10M41 16c-3-4 3-6 0-10"/>
     <path d="M17 23l31 4-5 25-24-3z"/>
     <path d="M18 24l30 4-2 9-28-4z"/>

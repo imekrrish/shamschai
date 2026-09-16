@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { Pause, Play } from 'lucide-react';
 import './HeroSachet.css';
 
 // Always use the original PNG, including while the optional renderer loads.
@@ -8,6 +9,8 @@ export default function HeroSachet() {
   const host = useRef<HTMLDivElement>(null);
   const clip = useId().replace(/:/g, '');
   const [ready, setReady] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
 
   useEffect(() => {
     const element = host.current;
@@ -23,7 +26,7 @@ export default function HeroSachet() {
           if (!cancelled) setReady(true);
         }, () => {
           if (!cancelled) setReady(false);
-        }, () => false);
+        }, () => pausedRef.current);
         if (cancelled) dispose();
       }).catch(() => { /* The original image remains available without WebGL. */ });
     }, { rootMargin: '160px' });
@@ -42,5 +45,12 @@ export default function HeroSachet() {
       <image href={SACHET_FRONT} width="505" height="1080" clipPath={`url(#${clip})`} />
     </svg>
     <div className="sachet-canvas" aria-hidden="true" />
+    {ready && <div className="sachet-controls">
+      <button type="button" className="sachet-motion-toggle" aria-label={paused ? 'Play sachet rotation' : 'Pause sachet rotation'} onClick={() => {
+        pausedRef.current = !pausedRef.current;
+        setPaused(pausedRef.current);
+      }}>{paused ? <Play /> : <Pause />}</button>
+      <span>DRAG TO EXPLORE</span>
+    </div>}
   </div>;
 }

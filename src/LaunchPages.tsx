@@ -16,41 +16,43 @@ export function LaunchHome() {
   return (
     <>
       {/* 1. CINEMATIC HERO */}
-      <section className="home-hero modern-woman-hero centered-sachet-hero">
-        <div className="hero-copy">
+      <section className="home-hero signature-hero">
+        <motion.div className="hero-copy" initial={reduced ? false : {opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.8}}>
+          <div className="hero-kicker"><span /> EVERYDAY, EXTRAORDINARY.</div>
           <motion.h1
-            initial={reduced ? false : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={false}
           >
-            <span className="hero-word-intro">IT’S A </span>
-            <span className="hero-word-modern">MODERN </span>
-            <span className="hero-word-woman">WOMAN’S </span>
-            <em className="hero-word-recipe">RECIPE.</em>
+            <span>It’s a modern</span>
+            <span>woman’s</span>
+            <motion.em initial={reduced ? false : {opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.25}}>recipe.</motion.em>
           </motion.h1>
-
-          <div className="hero-actions">
+          <p className="hero-subtext">Bold tea. Whole spices. A little time for yourself.<br />Meet the masala chai made for your daily ritual.</p>
+          <motion.div className="hero-actions" initial={reduced ? false : {opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:.7,delay:.4}}>
             <Link className="btn btn-light" to="/the-collection">
               Explore The Collection <ArrowUpRight size={14} />
             </Link>
-          </div>
-
-        </div>
+            <Link className="hero-story-link" to="/our-story">Our story <ArrowRight size={14} /></Link>
+          </motion.div>
+          <div className="hero-ingredients"><span>BLACK TEA</span><i />WHOLE SPICES<i /><span>YOUR DAILY RITUAL</span></div>
+        </motion.div>
 
         <motion.div
           className="hero-product"
           initial={reduced ? false : { opacity: 0, scale: 0.94, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
+          transition={{ duration: 1.2, delay: 0.15 }}
         >
+          <div className="hero-orbit" aria-hidden="true" />
+          <div className="hero-edition"><span>THE ORIGINAL BLEND</span><strong>01</strong></div>
           <HeroSachet />
           <Link
             to="/products/recipe-01"
             className="hero-detail-link"
-            aria-label="Discover masala chai"
+            aria-label="Discover Recipe 01"
           >
             <ArrowUpRight />
           </Link>
+          <div className="hero-product-caption"><span>SHAMS MASALA CHAI</span><small>A ritual worth slowing down for.</small></div>
         </motion.div>
       </section>
 

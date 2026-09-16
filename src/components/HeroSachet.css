@@ -1,95 +1,81 @@
-.modern-woman-hero .hero-product {
-  background: radial-gradient(ellipse at 51% 42%, #655a49 0%, #474136 45%, #3d3932 78%);
-}
-.sachet-stage {position:absolute;inset:0;isolation:isolate;pointer-events:none}
-.sachet-canvas {position:absolute;inset:0;opacity:0;transition:opacity .45s ease}
+/* Separate columns keep the headline clear of the moving product. */
+.home-hero.signature-hero {position:relative;isolation:isolate;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:clamp(24px,4vw,72px);min-height:740px;padding:46px var(--pad) 66px;background:var(--surface);overflow:hidden;border-bottom:1px solid var(--line)}
+.signature-hero .hero-copy {position:relative;z-index:2;min-width:0;padding:12px 0}
+.hero-kicker {display:flex;align-items:center;gap:12px;color:var(--coffee);font-size:9px;letter-spacing:.2em;font-weight:600;margin-bottom:30px}
+.hero-kicker>span {width:28px;height:1px;background:var(--coffee-fill)}
+.signature-hero h1 {font-size:clamp(62px,7.2vw,108px);line-height:.97;letter-spacing:-.045em;color:var(--fg);font-weight:450}
+.signature-hero h1>span,.signature-hero h1>em {display:block}
+.signature-hero h1>em {color:var(--coffee);font-size:1.12em;margin-top:2px;font-weight:400}
+.signature-hero .hero-subtext {font-size:13px;line-height:1.9;color:var(--muted);margin:30px 0 28px;max-width:40ch}
+.signature-hero .hero-actions {display:flex;flex-wrap:wrap;align-items:center;gap:28px}
+.signature-hero .hero-actions .btn {font-size:11px;min-height:54px;padding:16px 23px;border-radius:4px;gap:22px}
+.hero-story-link {display:inline-flex;align-items:center;gap:12px;font-size:11px;color:var(--fg);padding:10px 0;border-bottom:1px solid var(--line);transition:color .25s}
+.hero-story-link:hover {color:var(--coffee)}
+.hero-ingredients {display:flex;align-items:center;flex-wrap:wrap;gap:13px;color:var(--muted);font-size:8px;letter-spacing:.13em;margin-top:42px}
+.hero-ingredients i {width:3px;height:3px;background:var(--coffee-fill);border-radius:50%}
+.signature-hero .hero-product {position:relative;isolation:isolate;width:100%;height:600px;min-height:0;overflow:visible;background:transparent;border-radius:0}
+.hero-orbit {position:absolute;inset:10% 0 8%;border:1px solid var(--line);border-radius:50%;transform:rotate(-18deg);pointer-events:none}
+.hero-orbit::after {content:'';position:absolute;inset:7%;border:1px solid rgba(180,138,104,.09);border-radius:50%}
+.hero-edition {position:absolute;right:4%;top:5%;display:flex;align-items:center;gap:16px;color:var(--coffee)}
+.hero-edition>span {font-size:8px;letter-spacing:.16em;max-width:72px;line-height:1.7}
+.hero-edition>strong {font:italic 400 48px/1 var(--serif)}
+.hero-product-caption {position:absolute;bottom:0;left:0;right:0;text-align:center;pointer-events:none}
+.hero-product-caption>span {font-size:9px;letter-spacing:.2em;color:var(--fg)}
+.hero-product-caption>small {display:block;font:italic 20px/1.4 var(--serif);color:var(--coffee);margin-top:6px}
+.signature-hero .hero-detail-link {right:1%;bottom:15%;z-index:3;width:46px;height:46px;border:1px solid var(--line);color:var(--fg);background:var(--surface)}
+.signature-hero .hero-detail-link:hover {background:var(--fg);color:var(--surface);border-color:var(--fg)}
+.sachet-stage {position:absolute;inset:0 0 44px;isolation:isolate;pointer-events:none}
+.sachet-canvas {position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
 .sachet-canvas canvas {display:block;width:100%;height:100%}
-.sachet-fallback {position:absolute;left:50%;top:50%;height:94%;width:auto;max-width:88%;overflow:visible;transform:translate(-50%,-50%) perspective(1100px) scaleX(1.08) rotateX(2deg) rotateY(-10deg) rotateZ(2deg);opacity:1;transition:opacity .45s ease}
+.sachet-fallback {position:absolute;left:50%;top:50%;height:94%;width:auto;max-width:88%;overflow:visible;transform:translate(-50%,-50%) rotate(-5deg);opacity:1;transition:opacity .6s ease;animation:sachet-float 7s ease-in-out infinite}
 .sachet-stage--ready .sachet-canvas {opacity:1}
-.sachet-stage--ready .sachet-fallback {opacity:0}
-.sachet-contact-shadow {position:absolute;left:27%;right:27%;bottom:5%;height:4%;border-radius:50%;background:radial-gradient(ellipse,#100e0ac0,transparent 70%);filter:blur(9px);opacity:.48;transform:scaleX(.95)}
-.modern-woman-hero .hero-subtext,.modern-woman-hero .hero-actions,.modern-woman-hero .hero-footnote-link {animation:sachet-copy-enter .8s both cubic-bezier(.22,1,.36,1)}
-.modern-woman-hero .hero-subtext {animation-delay:.12s}
-.modern-woman-hero .hero-actions {animation-delay:.2s}
-.modern-woman-hero .hero-footnote-link {animation-delay:.28s}
-@keyframes sachet-copy-enter {from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:760px) {
-  .modern-woman-hero .hero-copy {display:contents}
-  .modern-woman-hero>.hero-copy>.eyebrow {order:0;margin:0}
-  .modern-woman-hero>.hero-copy>h1 {order:1}
-  .modern-woman-hero>.hero-copy>.hero-subtext {order:2;margin:0}
-  .modern-woman-hero>.hero-product {order:3;height:clamp(420px,125vw,580px)}
-  .modern-woman-hero>.hero-copy>.hero-actions {order:4;flex-wrap:wrap}
-  .modern-woman-hero>.hero-copy>.hero-footnote-link {order:5;margin-top:0}
-}
-@media(prefers-reduced-motion:reduce) {
-  .modern-woman-hero .hero-subtext,.modern-woman-hero .hero-actions,.modern-woman-hero .hero-footnote-link {animation:none}
-  .sachet-fallback,.sachet-canvas {transition:none}
-}
-
-/* This composition is confined to the homepage hero. The pouch floats directly
-   on the warm page, with the existing headline becoming its typographic backdrop. */
-.home-hero.centered-sachet-hero {
-  position:relative;display:block;isolation:isolate;min-height:760px;padding:40px var(--pad);
-  background:radial-gradient(ellipse at 50% 41%,#fffdf6 0%,#f4eee3 57%);overflow:hidden;
-}
-.centered-sachet-hero .hero-copy {display:contents}
-.centered-sachet-hero .hero-copy>.eyebrow {position:relative;text-align:center;letter-spacing:.23em;margin:0;z-index:2}
-.home-hero.centered-sachet-hero h1 {position:absolute;inset:145px var(--pad) auto;height:320px;margin:0;font-size:clamp(74px,9.6vw,150px);line-height:.9;z-index:0;font-weight:450;letter-spacing:-.055em}
-.centered-sachet-hero h1>span,.centered-sachet-hero h1>em {position:absolute;display:block;white-space:nowrap}
-.centered-sachet-hero .hero-word-intro {left:2%;top:0;font-size:.3em;letter-spacing:.04em}
-.centered-sachet-hero .hero-word-modern {left:0;top:65px}
-.centered-sachet-hero .hero-word-woman {right:0;top:32px;font-size:.85em}
-.centered-sachet-hero .hero-word-recipe {right:2%;top:157px;font-size:1.05em;font-weight:400}
-.centered-sachet-hero .hero-copy .hero-subtext {position:absolute;left:calc(var(--pad) + 2%);top:415px;max-width:290px;margin:0;font-size:14px;z-index:2}
-.centered-sachet-hero .hero-pillars {font-size:9px;letter-spacing:.2em;margin-top:22px}
-.centered-sachet-hero .hero-copy .hero-actions {position:absolute;bottom:60px;left:0;right:0;justify-content:center;z-index:3;gap:16px}
-.centered-sachet-hero .hero-actions .btn-light {background:var(--shams-green);color:var(--cream)}
-.centered-sachet-hero .hero-copy .hero-footnote-link {position:absolute;right:calc(var(--pad) + 2%);top:455px;margin:0;padding-top:18px;max-width:270px;z-index:2}
-.centered-sachet-hero .hero-footnote-link .text-link {font-size:10px}
-.home-hero.centered-sachet-hero .hero-product {position:absolute;left:50%;top:66px;margin-left:-220px;width:440px;height:590px;min-height:0;background:transparent;overflow:visible;border-radius:0;z-index:1}
-.centered-sachet-hero .hero-photo-caption {top:auto;bottom:6px;justify-content:center;color:var(--shams-muted);font-size:7px;letter-spacing:.13em}
-.centered-sachet-hero .hero-photo-caption span:last-child {display:none}
-.centered-sachet-hero .hero-detail-link {right:46px;bottom:70px;width:36px;height:36px;color:var(--shams-green);border-color:var(--line);background:#faf7f199}
-.centered-sachet-hero .hero-detail-link:hover {color:var(--cream)}
-.centered-sachet-hero .sachet-contact-shadow {background:radial-gradient(ellipse,#51412d80,transparent 70%);bottom:6%;filter:blur(10px)}
-@media(min-width:1600px) {.home-hero.centered-sachet-hero h1{inset-inline:max(var(--pad),calc((100vw - 1320px)/2))}}
-@media(min-width:761px) and (max-width:1100px) {
-  .home-hero.centered-sachet-hero{min-height:710px}
-  .home-hero.centered-sachet-hero h1{top:150px;font-size:9.4vw}
-  .centered-sachet-hero .hero-word-recipe{top:132px}
-  .home-hero.centered-sachet-hero .hero-product{width:340px;margin-left:-170px;height:520px;top:75px}
-  .centered-sachet-hero .hero-copy .hero-subtext{top:390px;max-width:220px;font-size:12px}
-  .centered-sachet-hero .hero-copy .hero-footnote-link{top:420px;max-width:190px}
-  .centered-sachet-hero .hero-pillars{max-width:170px;line-height:1.8}
-  .centered-sachet-hero .hero-detail-link{right:25px;bottom:55px}
-}
-@media(max-width:760px) {
-  .home-hero.centered-sachet-hero{display:flex;flex-direction:column;align-items:center;gap:0;min-height:0;padding:28px 20px 36px}
-  .centered-sachet-hero .hero-copy>.eyebrow{position:relative;order:0;font-size:8px}
-  .home-hero.centered-sachet-hero h1{position:relative;inset:auto;order:1;width:100%;height:145px;margin:28px 0 0;font-size:clamp(47px,12vw,85px)}
-  .centered-sachet-hero .hero-word-intro{top:0;left:4%;font-size:.35em}
-  .centered-sachet-hero .hero-word-modern{left:2%;top:27px}
-  .centered-sachet-hero .hero-word-woman{right:1%;top:82px;font-size:.83em}
-  .centered-sachet-hero .hero-word-recipe{right:0;top:144px;font-size:.91em;z-index:0}
-  .home-hero.centered-sachet-hero .hero-product{position:relative;left:auto;top:auto;order:2;width:100%;height:430px;margin:-26px 0 0;max-width:420px}
-  .centered-sachet-hero .hero-photo-caption{bottom:0;font-size:6px}
-  .centered-sachet-hero .hero-detail-link{right:12%;bottom:48px}
-  .centered-sachet-hero .hero-copy .hero-subtext{position:relative;left:auto;top:auto;order:3;text-align:center;max-width:none;font-size:13px;margin-top:24px}
-  .centered-sachet-hero .hero-pillars{margin-top:12px}
-  .centered-sachet-hero .hero-copy .hero-actions{position:relative;inset:auto;order:4;gap:12px;width:100%;margin-top:24px;flex-wrap:wrap}
-  .centered-sachet-hero .hero-actions .btn{font-size:10px;min-height:48px;padding-inline:16px;gap:12px}
-  .centered-sachet-hero .hero-copy .hero-footnote-link{position:relative;inset:auto;order:5;margin-top:24px;padding-top:14px;max-width:none}
-}
-
+.sachet-stage--ready .sachet-fallback {opacity:0;animation:none}
+.sachet-contact-shadow {position:absolute;left:28%;right:28%;bottom:5%;height:4%;border-radius:50%;background:#000;filter:blur(12px);opacity:.4;pointer-events:none}
+.sachet-aura {position:absolute;inset:8% -4% 3%;z-index:-1;background:radial-gradient(ellipse,rgba(180,138,104,.18),rgba(180,138,104,.04) 48%,transparent 70%);pointer-events:none}
 .sachet-stage--ready {pointer-events:auto;touch-action:pan-y;cursor:grab}
 .sachet-stage--ready:active {cursor:grabbing}
-.sachet-stage:focus-visible {outline:2px solid var(--shams-green);outline-offset:2px;border-radius:12px}
-.sachet-hint {position:absolute;bottom:8%;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;letter-spacing:.12em;color:var(--shams-muted);pointer-events:none}
-.sachet-aura {position:absolute;inset:12% -8% 14%;z-index:-1;border-radius:50%;background:radial-gradient(ellipse,#e7cb9155 0%,#ead8b62b 38%,transparent 68%);pointer-events:none}
-.sachet-controls {position:absolute;bottom:4%;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:7px 8px 7px 14px;border:1px solid #71624a22;border-radius:30px;background:#fffdf5b8;backdrop-filter:blur(12px);box-shadow:0 4px 20px #55442308;cursor:default}
-.sachet-controls {padding:7px}
-.sachet-motion-toggle {display:grid;place-items:center;width:28px;height:28px;border:1px solid #71624a22;border-radius:50%;color:var(--shams-green);background:#fffdf5;cursor:pointer;transition:background .2s,transform .2s}
-.sachet-motion-toggle:hover {background:#eee5d4;transform:scale(1.08)}
-.sachet-motion-toggle:focus-visible {outline:2px solid var(--shams-green);outline-offset:3px}
-@media(prefers-reduced-motion:reduce) {.sachet-motion-toggle{display:none}}
+.sachet-stage:focus-visible {outline:2px solid var(--coffee);outline-offset:2px;border-radius:12px}
+.sachet-controls {position:absolute;left:0;bottom:5%;z-index:4;display:flex;align-items:center;gap:9px;cursor:default}
+.sachet-motion-toggle {display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:50%;color:var(--fg);background:var(--surface);cursor:pointer;transition:background .2s,color .2s}
+.sachet-motion-toggle svg {width:12px;height:12px;stroke-width:1.8}
+.sachet-motion-toggle:hover {background:var(--fg);color:var(--surface);border-color:var(--fg)}
+.sachet-controls>span {font-size:7px;letter-spacing:.13em;color:var(--muted);pointer-events:none}
+@keyframes sachet-float {0%,100%{transform:translate(-50%,-50%) rotate(-5deg)}50%{transform:translate(-50%,-52%) rotate(-2deg)}}
+@media(min-width:1600px) {.home-hero.signature-hero{min-height:810px}.signature-hero .hero-product{height:650px}}
+@media(min-width:761px) and (max-width:1050px) {
+  .home-hero.signature-hero {min-height:660px;gap:18px;padding-block:38px 50px}
+  .signature-hero h1 {font-size:clamp(58px,7.4vw,78px)}
+  .signature-hero .hero-product {height:510px}
+  .signature-hero .hero-actions {gap:16px}
+  .signature-hero .hero-actions .btn {padding-inline:16px;font-size:10px;gap:12px}
+  .hero-ingredients {gap:8px;font-size:7px}
+  .hero-edition {right:0}
+  .sachet-controls>span {display:none}
+}
+@media(max-width:760px) {
+  .home-hero.signature-hero {grid-template-columns:1fr;gap:18px;min-height:0;padding:34px 24px}
+  .signature-hero .hero-copy {padding:0;text-align:center}
+  .hero-kicker {justify-content:center;font-size:8px;letter-spacing:.16em;margin-bottom:23px}
+  .signature-hero h1 {font-size:clamp(54px,12.5vw,82px);line-height:1}
+  .signature-hero h1>span:nth-child(2) {display:inline}
+  .signature-hero h1>em {display:inline;margin-left:.15em;font-size:1em}
+  .signature-hero .hero-subtext {font-size:12px;margin:22px auto;max-width:38ch}
+  .signature-hero .hero-actions {justify-content:center;gap:20px}
+  .signature-hero .hero-actions .btn {min-height:48px;padding:13px 18px;font-size:10px;gap:12px}
+  .hero-story-link {font-size:10px;gap:8px}
+  .hero-ingredients {justify-content:center;margin-top:24px;font-size:7px;gap:9px}
+  .signature-hero .hero-product {height:470px;max-width:430px;margin:0 auto}
+  .hero-edition {top:6%;right:0;z-index:2}
+  .hero-edition>strong {font-size:38px}
+  .hero-edition>span {display:none}
+  .hero-orbit {inset:12% 0 12%}
+  .signature-hero .hero-detail-link {width:40px;height:40px;bottom:17%}
+  .sachet-controls {left:0;bottom:7%}
+  .sachet-controls>span {display:none}
+  .hero-product-caption>small {font-size:18px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .sachet-fallback {animation:none}
+  .sachet-fallback,.sachet-canvas {transition:none}
+  .sachet-controls {display:none}
+}

@@ -25,7 +25,7 @@ export async function openPayment(orderId: string, intent: PaymentIntent, user: 
     let processing = false;
     const checkout = new window.Razorpay!({
       key: intent.keyId, order_id: intent.razorpayOrderId, amount: intent.amount, currency: intent.currency,
-      name: "Sham's Chai", description: 'Masala Chai', theme: { color: '#153c34' },
+      name: "Sham's Chai", description: 'Masala Chai', theme: { color: '#B48A68' },
       prefill: { name: user?.name, email: user?.email, contact: user?.phone },
       modal: { ondismiss: () => { if (!processing) reject(new Error('Payment window closed. Your packs are saved in your cart.')); } },
       handler: async (result: Result) => {

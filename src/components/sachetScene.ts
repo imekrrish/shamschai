@@ -98,7 +98,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
   scene.add(packet);
   scene.add(new THREE.HemisphereLight(0xfff8ee, 0x494136, 1.6));
   const key = new THREE.DirectionalLight(0xfff6e7, 1.5); key.position.set(-3, 4, 5); scene.add(key);
-  const fill = new THREE.DirectionalLight(0xeaf0ff, .4); fill.position.set(4, 1, 5); scene.add(fill);
+  const fill = new THREE.DirectionalLight(0xffffff, .55); fill.position.set(4, 1, 5); scene.add(fill);
   const rim = new THREE.DirectionalLight(0xffe0b2, 1.3); rim.position.set(2, 3, -3); scene.add(rim);
   const shine = new THREE.PointLight(0xfff7ea, 14, 20, 2); shine.position.set(-2, 1, 4); scene.add(shine);
   target.appendChild(renderer.domElement);
@@ -122,8 +122,9 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
     if (!reduced.matches && !isPaused() && dragId === null && interactionDelay === 0) {
       turnTime += dt;
       // Hold the artwork, then ease through a complete turn.
-      const progress = THREE.MathUtils.clamp((turnTime % 12 - 4) / 8, 0, 1);
-      autoRotation = (Math.floor(turnTime / 12) + progress * progress * (3 - 2 * progress)) * Math.PI * 2;
+      const progress = THREE.MathUtils.clamp((turnTime % 16 - 6) / 10, 0, 1);
+      const eased = progress * progress * progress * (progress * (progress * 6 - 15) + 10);
+      autoRotation = (Math.floor(turnTime / 16) + eased) * Math.PI * 2;
     }
     const intensity = coarse.matches ? .4 : 1;
     if (!isPaused()) smooth.lerp(reduced.matches ? new THREE.Vector2() : pointer, 1 - Math.exp(-dt * 4));
@@ -132,8 +133,8 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
     packet.rotation.set(
       THREE.MathUtils.degToRad(reduced.matches ? 2 : (2 * Math.cos(idle * .26) + smooth.y * 3) * intensity),
       rotation + (reduced.matches ? 0 : autoRotation) + THREE.MathUtils.degToRad(-10 + smooth.x * 7 * intensity - (1 - enter) * 28),
-      THREE.MathUtils.degToRad(reduced.matches ? 2 : 2 + Math.sin(idle * .52) * 3));
-    packet.position.y = (reduced.matches ? 0 : Math.sin(idle * .9) * .075) - (1 - enter) * .24;
+      THREE.MathUtils.degToRad(reduced.matches ? -4 : -4 + Math.sin(idle * .52) * 2));
+    packet.position.y = (reduced.matches ? 0 : Math.sin(idle * .9) * .09) - (1 - enter) * .24;
     const packetScale = .94 + .06 * enter;
     packet.scale.set(packetScale * 1.08, packetScale, packetScale);
     shine.position.x = -2 + smooth.x * 3;

@@ -97,7 +97,6 @@ export default function ProductSelector({ product: initialProduct }: { product: 
         disabled={isSelectedOutOfStock}
         style={{
           cursor: isSelectedOutOfStock ? 'not-allowed' : 'pointer',
-          backgroundColor: isSelectedOutOfStock ? '#9c9a95' : undefined,
         }}
         onClick={() => {
           if (isSelectedOutOfStock) return;
