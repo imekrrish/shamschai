@@ -7,9 +7,13 @@ const frontendUrl = () => (process.env.FRONTEND_URL || 'http://localhost:5173').
 const logoPath = path.resolve(__dirname, '../../../public/assets/shams/brand/chai-mark.png');
 const escapeHtml = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character] || character));
 
-/** Where the business reads its own mail. Every send is copied here. */
-const teamInbox = () => process.env.EMAIL_NOTIFY_TO || 'shammi.journo@gmail.com';
-const teamBcc = () => (process.env.EMAIL_BCC || 'krishnachaitu1298@gmail.com')
+/**
+ * Where the business reads its own mail. Both come from the environment with
+ * no default: an address baked into the source would follow every deploy and
+ * quietly copy someone who never asked to be on the thread.
+ */
+const teamInbox = () => (process.env.EMAIL_NOTIFY_TO || '').trim();
+const teamBcc = () => (process.env.EMAIL_BCC || '')
   .split(',').map(address => address.trim()).filter(Boolean);
 
 export function createEmailToken() {
@@ -245,9 +249,11 @@ class MailService {
 
   /** The customer gets their copy; the team inbox gets the internal one. */
   async sendCustomerAndTeam(to: string, customerMessage: Message, internalMessage: Message) {
+    const team = teamInbox();
+    if (!team) console.warn('EMAIL_NOTIFY_TO is unset, so no internal notification was sent.');
     const results = await Promise.allSettled([
       this.send(to, customerMessage),
-      this.send(teamInbox(), internalMessage),
+      ...(team ? [this.send(team, internalMessage)] : []),
     ]);
     results.forEach(result => {
       if (result.status === 'rejected') console.error('Mail delivery failed:', result.reason?.message || result.reason);
