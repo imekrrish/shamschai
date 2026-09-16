@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Search as SearchIcon, Sparkles } from 'lucide-react';
-import { products } from './data/products';
+import { useCatalog } from './context/CatalogContext';
 import { articles, collections } from './data/content';
 import ProductCard from './components/ProductCard';
 import { Eyebrow, ImageSlot, Reveal } from './components/ui';
@@ -286,6 +286,7 @@ export function SearchPage() {
   const q = params.get('q') || '';
   const [term, setTerm] = useState(q);
   const query = q.toLowerCase();
+  const { products } = useCatalog();
   const pp = products.filter((p) => (p.name + p.recipeNumber + p.personality + p.flavourNotes.join(' ')).toLowerCase().includes(query));
   const aa = articles.filter((a) => (a.title + a.category + a.excerpt).toLowerCase().includes(query));
   const cc = collections.filter((c) => (c.name + c.copy).toLowerCase().includes(query));

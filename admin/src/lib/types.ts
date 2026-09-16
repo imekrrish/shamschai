@@ -96,11 +96,11 @@ export type Payment = {
 
 export type AnalyticsSummary = {
   totalRevenue: number;
-  revenueGrowthMonth: number;
+  revenueGrowthMonth: number | null;
   totalOrders: number;
-  ordersGrowthMonth: number;
+  ordersGrowthMonth: number | null;
   averageOrderValue: number;
-  aovGrowthMonth: number;
+  aovGrowthMonth: number | null;
   paidRatePercent: number;
   activeProducts: number;
   outOfStockCount: number;

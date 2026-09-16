@@ -4,7 +4,7 @@ import { ArrowRight, Minus, Plus, ShieldCheck } from 'lucide-react';
 import { Product } from '../data/products';
 import { money } from './ui';
 import RecipeWaitlist from './RecipeWaitlist';
-import { CartSize, useCart } from '../context/CartContext';
+import { normalizeSize, useCart } from '../context/CartContext';
 import { api } from '../utils/api';
 
 export default function ProductSelector({ product: initialProduct }: { product: Product }) {
@@ -100,8 +100,7 @@ export default function ProductSelector({ product: initialProduct }: { product: 
         }}
         onClick={() => {
           if (isSelectedOutOfStock) return;
-          const cartSize = variant.weight.replace(/\s+/g, '').toLowerCase() === '1kg' ? '1000g' : variant.weight.replace(/\s+/g, '') as CartSize;
-          cart.add(cartSize, quantity);
+          cart.add(normalizeSize(variant.weight), quantity);
           navigate('/cart');
         }}
       >

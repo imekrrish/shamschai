@@ -66,3 +66,29 @@ test('reduced motion stops the marquee and reveals content',async({page})=>{
   expect(await page.locator('.marquee-track').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
   await expect(page.locator('h1')).toBeVisible();
 });
+
+test('valid routes have meaningful window titles and do not show Page Not Found', async ({ page }) => {
+  const routesToCheck = [
+    { path: '/', expected: 'Sham’s Chai | Indian Masala Chai' },
+    { path: '/the-idea', expected: 'The Idea Behind Shams | Sham’s Chai' },
+    { path: '/the-collection', expected: 'The Shams Collection | Sham’s Chai' },
+    { path: '/the-edit', expected: 'The Shams Edit | Sham’s Chai' },
+    { path: '/corporate', expected: 'Corporate Gifting & Wholesale | Sham’s Chai' },
+    { path: '/cart', expected: 'Your Cart | Sham’s Chai' },
+    { path: '/products', expected: 'Shop Masala Chai | Sham’s Chai' },
+    { path: '/products/recipe-01', expected: 'Recipe 01 Masala Chai — Ingredients & Packs | Sham’s Chai' },
+    { path: '/recipe-feedback', expected: 'Packaging Tasting Feedback | Sham’s Chai' },
+    { path: '/our-story', expected: 'Our Story | Sham’s Chai' },
+  ];
+
+  for (const { path, expected } of routesToCheck) {
+    await page.goto(path);
+    await expect(page).not.toHaveTitle(/Page Not Found/);
+    await expect(page).toHaveTitle(expected);
+  }
+
+  // Verify that genuine 404 routes still show Page Not Found
+  await page.goto('/unknown-random-route');
+  await expect(page).toHaveTitle(/Page Not Found/);
+});
+

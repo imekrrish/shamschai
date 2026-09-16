@@ -174,7 +174,7 @@ export default function ProductsPage() {
       <main className="flex-1 flex flex-col min-w-0">
         <AdminHeader
           title="Products & Pricing Management"
-          subtitle="Configure tea prices for 200g, 500g, 1kg sizes and live availability"
+          subtitle="Pack sizes, pricing and availability — saved straight to Postgres"
           onRefresh={fetchProducts}
           isRefreshing={loading}
         />
@@ -193,7 +193,7 @@ export default function ProductsPage() {
             <div className="flex items-center gap-2">
               <Info className="w-4 h-4 text-[#17382f] shrink-0" />
               <span>
-                <strong>Data Source:</strong> Products & Pricing catalog synchronized with <code className="bg-white px-1.5 py-0.5 rounded border border-[#d8cfc2] font-mono text-[#17382f]">src/data/products.ts</code> and Admin API routes.
+                <strong>Data Source:</strong> The <code className="bg-white px-1.5 py-0.5 rounded border border-[#d8cfc2] font-mono text-[#17382f]">products</code> table in Postgres. The storefront reads the same rows, so a saved price is live immediately — nothing is bundled into the site.
               </span>
             </div>
             <button

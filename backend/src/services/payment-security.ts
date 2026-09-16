@@ -6,23 +6,6 @@ export function verifySignature(body: string | Buffer, signature: string, secret
   if (!secret || !/^[a-f0-9]{64}$/i.test(signature)) return false;
   return timingSafeEqual(createHmac('sha256', secret).update(body).digest(), Buffer.from(signature, 'hex'));
 }
-export const prices: Readonly<Record<string, number>> = Object.freeze({
-  '500g': 450,
-  '1000g': 850,
-  '1kg': 850,
-});
-export function priceItems(items: { size: string; quantity: number }[]) {
-  if (!items.length || items.length > 2) throw paymentError('Choose between one and two pack sizes.');
-  const seen = new Set<string>();
-  return items.map(item => {
-    const norm = ProductService.normalizeSize(item.size);
-    if (!Object.hasOwn(prices, norm) || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 20 || seen.has(norm)) throw paymentError('Invalid pack size or quantity.');
-    seen.add(norm);
-    const unitPrice = prices[norm];
-    return { title: "Sham's Masala Chai", size: norm, quantity: item.quantity, unitPrice, subtotal: unitPrice * item.quantity };
-  });
-}
-
 export async function priceItemsFromDb(items: { size: string; quantity: number; title?: string }[]) {
   if (!items.length || items.length > 5) throw paymentError('Choose between one and five pack sizes.');
   const seen = new Set<string>();
@@ -36,20 +19,7 @@ export async function priceItemsFromDb(items: { size: string; quantity: number; 
     seen.add(normSize);
 
     const variantInfo = await ProductService.getVariant('recipe-01', item.size);
-    if (!variantInfo) {
-      if (Object.hasOwn(prices, normSize)) {
-        const unitPrice = prices[normSize];
-        pricedItems.push({
-          title: item.title || "Sham's Masala Chai",
-          size: normSize,
-          quantity: item.quantity,
-          unitPrice,
-          subtotal: unitPrice * item.quantity,
-        });
-        continue;
-      }
-      throw paymentError(`Pack size ${item.size} is not available.`);
-    }
+    if (!variantInfo) throw paymentError(`Pack size ${item.size} is not available.`);
 
     if (!variantInfo.inStock) {
       throw paymentError(`${variantInfo.productName} (${variantInfo.variant?.weight || item.size}) is currently out of stock.`, 400);
@@ -57,7 +27,7 @@ export async function priceItemsFromDb(items: { size: string; quantity: number; 
 
     const unitPrice = variantInfo.price;
     pricedItems.push({
-      title: item.title || variantInfo.productName || "Sham's Masala Chai",
+      title: variantInfo.productName,
       size: normSize,
       quantity: item.quantity,
       unitPrice,

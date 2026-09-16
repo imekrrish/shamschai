@@ -3,16 +3,17 @@
 @font-face{font-family:'Cormorant Garamond Variable';font-style:italic;font-weight:300 700;font-display:swap;src:url('../node_modules/@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-italic.woff2') format('woff2')}
 @font-face{font-family:'Manrope Variable';font-style:normal;font-weight:200 800;font-display:swap;src:url('../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2') format('woff2')}
 :root {
-  /* White canvas, matte black feature sections, and restrained coffee accents. */
-  --matte-black:#181818; --coffee:#8B6346; --coffee-fill:#B48A68; --white:#FFFFFF;
-  --surface:var(--white); --bg:var(--white);
-  --fg:var(--matte-black); --muted:rgba(24,24,24,.66);
-  --primary:var(--coffee-fill); --primary-hover:var(--matte-black);
-  --accent:var(--coffee); --line:rgba(180,138,104,.25);
-  color-scheme:light;
+  /* Matte black canvas, warm off-white type, restrained coffee accents. */
+  --matte-black:#121110; --ink:#0A0908; --raise:#191715;
+  --coffee:#C7A184; --coffee-fill:#B48A68; --coffee-deep:#8B6346; --white:#F2EEE9;
+  --surface:var(--matte-black); --bg:var(--matte-black);
+  --fg:var(--white); --muted:rgba(242,238,233,.58);
+  --primary:var(--coffee-fill); --primary-hover:var(--white);
+  --accent:var(--coffee); --line:rgba(199,161,132,.17);
+  color-scheme:dark;
   --serif:'Cormorant Garamond Variable',Georgia,serif; --sans:'Manrope Variable',Arial,sans-serif;
   --pad:max(24px,calc((100vw - 1312px)/2)); --section-space:clamp(72px,8.3vw,128px); --radius:10px; --ease:cubic-bezier(.22,1,.36,1);
-  --transition:300ms var(--ease); --shadow:0 20px 50px rgba(24,24,24,.08);
+  --transition:300ms var(--ease); --shadow:0 24px 60px rgba(0,0,0,.55);
 
   /* Semantic Aliases */
   --font-serif: var(--serif);
@@ -73,14 +74,12 @@ main:focus {outline:none}
 .section-title p {margin-bottom:0}
 .center {text-align:center}
 
-/* Dark sections retain their own surface and text tokens. */
+/* Feature sections sit a shade deeper so the page keeps its rhythm. */
 .announcement,.mobile-menu,.site-footer,.story-home,.story-dark,.story-pillars-dark,
 .home-order,.next-recipe,.business-process,.legal-hero,.policy-hero,
-.home-finder-teaser,.final-homepage-moment,.lifestyle-banner {
-  --surface:var(--matte-black); --fg:var(--white);
-  --muted:rgba(255,255,255,.7); --coffee:#C59B78;
-  --line:rgba(180,138,104,.28);
-  background:var(--surface); color:var(--fg); color-scheme:dark;
+.pack-method,.final-homepage-moment,.lifestyle-banner {
+  --surface:var(--ink);
+  background:var(--surface); color:var(--fg);
 }
 
 /* Navigation */
@@ -109,19 +108,7 @@ main:focus {outline:none}
 .mobile-menu>.btn {width:100%}
 
 /* Homepage */
-.home-hero {display:grid;grid-template-columns:1.05fr .95fr;min-height:min(740px,calc(100svh - 124px));padding:28px var(--pad) 48px;gap:50px;align-items:stretch}
-.hero-copy {display:flex;flex-direction:column;justify-content:center;padding:35px 0 5px}
-.hero-copy .eyebrow {margin-bottom:28px}
-.hero-copy h1 {font-size:clamp(68px,7.9vw,114px);color:var(--fg);letter-spacing:-.048em;line-height:.94}
-.hero-copy h1 em {color:var(--coffee)}
-.hero-copy p {font-size:14px;margin:28px 0}
 .hero-actions {display:flex;align-items:center;gap:30px}
-.hero-footnote {display:flex;gap:24px;margin-top:52px;padding-top:19px;border-top:1px solid var(--line);font-size:8px;letter-spacing:.14em;color:var(--muted);max-width:430px}
-.hero-product {position:relative;display:flex;justify-content:center;background:var(--surface);min-height:570px;overflow:hidden;border-radius:var(--radius)}
-.hero-photo {height:100%;width:100%;position:absolute;inset:0}
-.hero-photo .image-slot {height:100%;width:100%;background:var(--surface)}
-.hero-photo img {object-fit:contain}
-.hero-photo-caption {position:absolute;left:22px;right:22px;top:22px;display:flex;justify-content:space-between;font-size:8px;letter-spacing:.11em;color:var(--muted);z-index:2}
 .hero-detail-link {position:absolute;bottom:22px;right:22px;width:46px;height:46px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--fg);background:var(--surface);z-index:2;transition:background var(--transition),transform var(--transition)}
 .hero-detail-link:hover {background:var(--surface);transform:scale(1.05)}
 .brand-marquee {display:flex;align-items:center;border-block:1px solid var(--line);height:60px}
@@ -425,19 +412,16 @@ textarea {resize:vertical}
 .footer-bottom {display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:22px;font-size:8px;letter-spacing:.1em;color:var(--fg)}
 
 /* Responsive layouts */
-@media(min-width:1500px){.home-hero{gap:85px}.hero-copy h1{font-size:120px}}
 @media(max-width:1100px){
-  .site-header nav{gap:22px}.home-hero{gap:35px}.hero-copy h1{font-size:clamp(67px,8.8vw,92px)}.hero-product{min-height:540px}
+  .site-header nav{gap:22px}
   .product-showcase-grid{gap:6%}.product-detail{gap:6%}.sensory-section{gap:7%}
-  .hero-footnote{gap:12px;font-size:7px}.checkout-heading{padding-right:32px}.checkout-form{padding-left:32px}
+  .checkout-heading{padding-right:32px}.checkout-form{padding-left:32px}
   .footer-grid{gap:35px}.journal-new-grid{gap:24px}.journal-card-copy h2{font-size:30px}
 }
 @media(max-width:999px){
   .site-header{grid-template-columns:1fr auto;height:80px}.site-header>nav{display:none}.menu-trigger{display:inline-grid}
-  .home-hero{min-height:0;padding-top:15px;padding-bottom:40px;gap:28px}.hero-product{min-height:540px}
-  .hero-copy h1{font-size:clamp(65px,8.8vw,85px)}.hero-copy .eyebrow{font-size:9px}
-  .hero-actions{gap:20px}.hero-actions .btn{padding-inline:18px;gap:15px}.hero-footnote{flex-direction:column;gap:5px;margin-top:32px}
-  .hero-photo-caption{font-size:7px;left:12px;right:12px}.ritual-intro{gap:7%}
+  .hero-actions{gap:20px}.hero-actions .btn{padding-inline:18px;gap:15px}
+  .ritual-intro{gap:7%}
   .product-showcase-grid{grid-template-columns:1fr 1fr;gap:5%}.pack-pair{gap:8px}.pack-pair figure:nth-child(2){margin-top:45px}
   .product-copy h3{font-size:44px}.story-home{gap:7%}.story-monogram{min-height:330px}
   .pdp-main-photo{height:600px}.pdp-info{position:static}.catalog-showcase{gap:8%}.catalog-pack{padding:20px}
@@ -450,12 +434,8 @@ textarea {resize:vertical}
   body{font-size:14px}h1{font-size:clamp(54px,13vw,80px)}h2{font-size:44px}h3{font-size:31px}
   .eyebrow{font-size:9px;margin-bottom:20px}.announcement{font-size:7px;letter-spacing:.08em;min-height:28px;padding-inline:6px}.announcement span{margin:0 7px}
   .site-header{height:76px;gap:14px}.logo>span{font-size:40px}.logo>small{font-size:6px}.nav-order{font-size:10px;min-height:42px;padding:9px 12px;gap:12px}.nav-order svg{width:16px}.nav-actions{gap:6px}
-  .home-hero{display:flex;flex-direction:column;gap:34px;padding-top:25px;padding-bottom:24px}
-  .hero-copy{padding:15px 0 0}.hero-copy .eyebrow{margin-bottom:23px}
-  .hero-copy h1{font-size:clamp(70px,17vw,104px);line-height:.94}.hero-copy p{margin:24px 0;font-size:14px}
-  .hero-actions{gap:27px}.hero-actions .btn{padding-inline:22px}.hero-footnote{flex-direction:row;justify-content:space-between;font-size:7px;margin-top:32px;padding-top:16px}
-  .hero-product{height:540px;min-height:0;width:100%}.hero-photo-caption{font-size:8px;left:18px;right:18px;top:18px}
-  .hero-detail-link{bottom:18px;right:18px}.brand-marquee{height:52px}.brand-marquee>button{min-width:48px}
+  .hero-actions{gap:27px}.hero-actions .btn{padding-inline:22px}
+  .brand-marquee{height:52px}.brand-marquee>button{min-width:48px}
   .marquee-track>span{font-size:10px;gap:26px;padding-right:26px}
   .ritual-intro,.product-showcase-grid,.sensory-section,.story-home,.catalog-showcase,.product-detail,.story-grid,.story-dark,.brew-note,.split-hero,.contact-form,.journal-feature,.journal-related{grid-template-columns:1fr;gap:45px}
   .ritual-intro h2{font-size:46px}.ritual-aside{max-width:none}.ritual-aside p:last-child{margin-bottom:0}
@@ -474,7 +454,7 @@ textarea {resize:vertical}
   .home-order h2{font-size:48px}.home-order .quiet-link{font-size:10px}
   .page-hero{padding:60px var(--pad)}.page-hero h1{font-size:clamp(54px,13vw,76px)}
   .catalog-pack{padding:24px}.catalog-pack .image-slot{height:540px}.catalog-showcase{padding-top:40px}
-  .product-detail{padding-top:30px}.pdp-main-photo{height:560px}.pdp-info h1{font-size:65px}.pdp-info .breadcrumb{margin-bottom:25px}
+  .product-detail{padding-top:30px}.pdp-gallery,.pdp-info{min-width:0}.pdp-main-photo{height:auto}.pdp-info h1{font-size:65px}.pdp-info .breadcrumb{margin-bottom:25px}
   .product-grid{grid-template-columns:1fr}.product-card .image-slot{max-height:550px}
   .story-block{padding:15px 0}.story-block h2{font-size:36px}.story-dark{gap:25px}
   .brew-guide{grid-template-columns:1fr;gap:30px}.brew-guide>div{display:grid;grid-template-columns:70px 1fr;gap:5px 18px;padding-top:25px}
@@ -1626,355 +1606,203 @@ textarea {resize:vertical}
   border-top: 1px solid var(--line);
 }
 
-/* The Opening (Cinematic & Rhythmic) */
-.cinematic-opening-section {
-  padding: 90px var(--pad);
-  background: var(--surface);
-  border-block: 1px solid var(--line);
+/* ==========================================================================
+   HOMEPAGE — mobile first. Every line is printed on the pack.
+   Hairlines, wide margins and serif numerals instead of boxes and badges.
+   ========================================================================== */
+
+/* 2. Ingredients */
+.pack-blend {
+  border-top: 1px solid var(--line);
 }
-.cinematic-opening-section h2 {
-  font-size: clamp(32px, 4.5vw, 62px);
-  letter-spacing: -0.03em;
-  color: var(--fg);
-  margin-bottom: 40px;
+.pack-blend-head h2 {
+  font-size: clamp(38px, 9vw, 62px);
 }
-.rhythmic-lines-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px 40px;
-  margin-bottom: 50px;
+.pack-blend-head h2 em {
+  color: var(--coffee);
 }
-.rhythm-item {
+.pack-blend-head p {
+  font: 400 clamp(15px, 4vw, 17px)/1.75 var(--serif);
+  max-width: 34ch;
+  margin-bottom: 44px;
+}
+.pack-ingredients {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.pack-ingredients li {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: clamp(16px, 5vw, 30px);
+  padding: clamp(15px, 4vw, 26px) 0;
   border-bottom: 1px solid var(--line);
-  padding-bottom: 12px;
 }
-.rhythm-item span {
-  font-family: var(--serif);
-  font-size: 20px;
+.pack-ingredients span {
+  font: italic 400 16px/1 var(--serif);
   color: var(--coffee);
+  min-width: 2ch;
 }
-.rhythm-item p {
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--coffee);
-  margin: 0;
-}
-.opening-conclusion {
-  max-width: 780px;
-  margin-top: 40px;
-}
-.highlight-sentence {
-  font-size: clamp(18px, 2.2vw, 26px);
-  font-style: italic;
-  font-family: var(--serif);
-  color: var(--fg);
-  margin-bottom: 24px;
-}
-.punchline h3 {
-  font-size: clamp(20px, 2.6vw, 34px);
+.pack-ingredients strong {
+  font: 400 clamp(23px, 6.5vw, 32px)/1.1 var(--serif);
   letter-spacing: -0.02em;
   color: var(--fg);
-  margin-bottom: 8px;
-}
-.punchline em {
-  font-family: var(--serif);
-  font-size: 22px;
-  color: var(--coffee);
 }
 
-/* The Shams Idea Teaser */
-.home-idea-teaser {
-  padding: 90px var(--pad);
+/* 3. The pack */
+.pack-shelf {
+  border-top: 1px solid var(--line);
 }
-.idea-teaser-box {
+.shelf-layout {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 60px;
+  gap: clamp(36px, 8vw, 96px);
   align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  padding: 60px;
-  border-radius: 8px;
 }
-.idea-copy h2 {
-  font-size: clamp(34px, 4vw, 56px);
-  color: var(--fg);
-  line-height: 1.05;
-  margin-bottom: 24px;
-}
-.idea-copy h2 em {
-  color: var(--coffee);
-}
-.idea-copy p {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--muted);
-}
-.idea-copy .sub-p {
-  color: var(--muted);
-  margin: 16px 0 24px;
-}
-.idea-punch {
-  margin: 28px 0 36px;
-  padding-left: 18px;
-  border-left: 2px solid var(--line);
-}
-.idea-punch strong {
-  display: block;
-  font-size: 15px;
-  letter-spacing: 0.1em;
-  color: var(--fg);
-}
-.idea-punch span {
-  font-size: 13px;
-  color: var(--fg);
-  font-style: italic;
-}
-.idea-photo {
-  border-radius: 6px;
+.shelf-photo {
+  border-radius: 2px;
   overflow: hidden;
 }
-
-/* Home Collection Preview */
-.home-collection-preview {
-  padding: 80px var(--pad);
-  background: var(--surface);
+.shelf-copy h2 {
+  font-size: clamp(38px, 9vw, 60px);
+  margin-bottom: 4px;
 }
-.collection-lead-phrase {
-  font-size: 15px;
-  color: var(--fg);
-  max-width: 480px;
+.shelf-copy h2 em {
+  color: var(--coffee);
 }
-.home-recipes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+.shelf-specs {
+  margin: clamp(30px, 7vw, 44px) 0;
+  border-top: 1px solid var(--line);
+}
+.shelf-specs > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 24px;
-  margin-top: 40px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
 }
-.home-recipe-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  padding: 32px 28px;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.3s, box-shadow 0.3s;
+.shelf-specs dt {
+  font: 500 9px/1.6 var(--sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
 }
-.home-recipe-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(24,24,24,.06);
-}
-.recipe-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.recipe-number {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+.shelf-specs dd {
+  margin: 0;
+  font: 400 16px/1.5 var(--serif);
   color: var(--fg);
+  text-align: right;
 }
-.home-recipe-card h3 {
-  font-size: 20px;
-  line-height: 1.25;
-  color: var(--fg);
-  margin-bottom: 14px;
+.shelf-specs dd small {
+  font: 400 10px/1.6 var(--sans);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-left: 6px;
 }
-.recipe-cup {
-  font-size: 13px;
+
+/* 4. Brewing (deeper ink panel) */
+.method-head h2 {
+  font-size: clamp(36px, 8.5vw, 58px);
+  margin-bottom: clamp(36px, 8vw, 56px);
+}
+.method-head h2 em {
+  color: var(--coffee);
+}
+.method-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0 clamp(24px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+}
+.method-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.method-steps span {
+  font: italic 400 16px/1 var(--serif);
+  color: var(--coffee);
+  min-width: 2ch;
+}
+.method-steps p {
+  margin: 0;
+  font-size: 15px;
   line-height: 1.6;
   color: var(--fg);
-  margin-bottom: 22px;
-}
-.recipe-mood-badge {
-  background: var(--surface);
-  padding: 10px 14px;
-  border-radius: 4px;
-  margin-bottom: 24px;
-}
-.recipe-mood-badge small {
-  display: block;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-  font-weight: 700;
-}
-.recipe-mood-badge span {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--fg);
-}
-.recipe-card-action {
-  margin-top: auto;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-}
-.collection-view-all {
-  text-align: center;
-  margin-top: 50px;
 }
 
-/* Finder Teaser on Home */
-.home-finder-teaser {
-  padding: 80px var(--pad);
-}
-.finder-teaser-card {
-  background: var(--surface);
-  color: var(--fg);
-  padding: 60px;
-  border-radius: 8px;
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 50px;
-  align-items: center;
-}
-.teaser-left .eyebrow {
-  color: var(--coffee);
-}
-.teaser-left h2 {
-  font-size: clamp(32px, 3.8vw, 52px);
-  color: var(--fg);
-  margin: 12px 0 20px;
-}
-.teaser-left h2 em {
-  color: var(--coffee);
-}
-.teaser-left p {
-  font-size: 14.5px;
-  line-height: 1.7;
-  color: var(--muted);
-  margin-bottom: 30px;
-}
-.chart-preview-axes {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 36px;
-  border-left: 2px solid var(--line);
-  padding-left: 18px;
-}
-.chart-preview-axes span {
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  font-weight: 700;
-  color: var(--fg);
-  margin-right: 12px;
-}
-.chart-preview-axes small {
-  font-size: 11px;
-  color: var(--muted);
-  font-family: monospace;
-}
-.teaser-right .quote-badge {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  padding: 36px;
-  border-radius: 6px;
-  text-align: center;
-}
-.quote-badge small {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-.quote-badge p {
-  font-family: var(--serif);
-  font-size: 20px;
-  line-height: 1.4;
-  color: var(--muted);
-  margin-bottom: 24px;
-}
-.quote-badge .text-link {
-  color: var(--coffee);
-}
-
-/* Home Social Proof */
-.home-social-proof {
-  padding: 80px var(--pad);
-  border-top: 1px solid var(--line);
-}
-.home-social-proof h2 {
-  font-size: clamp(28px, 3.4vw, 46px);
-  color: var(--fg);
-  margin-bottom: 40px;
-}
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 28px;
-}
-.quote-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  padding: 32px 28px;
-  border-radius: 6px;
-}
-.quote-card .recipe-tag {
-  display: inline-block;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--fg);
-  margin-bottom: 14px;
-}
-.quote-card p {
-  font-family: var(--serif);
-  font-size: 17px;
-  line-height: 1.5;
-  color: var(--muted);
-  font-style: italic;
-  margin-bottom: 16px;
-}
-.quote-card small {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* Final Homepage Moment */
+/* 5. Closing */
 .final-homepage-moment {
-  background: var(--surface);
-  color: var(--fg);
-  padding: 130px var(--pad);
+  padding: clamp(84px, 18vw, 150px) var(--pad) clamp(28px, 5vw, 40px);
   text-align: center;
-  position: relative;
-}
-.final-homepage-moment .eyebrow {
-  color: var(--coffee);
-  margin-bottom: 24px;
 }
 .final-homepage-moment h2 {
-  font-size: clamp(34px, 5.2vw, 72px);
+  font-size: clamp(38px, 9.5vw, 72px);
   line-height: 1.08;
   letter-spacing: -0.03em;
-  color: var(--fg);
-  max-width: 860px;
-  margin: 0 auto 40px;
+  max-width: 16ch;
+  margin: 0 auto clamp(36px, 8vw, 48px);
 }
 .final-homepage-moment h2 em {
   color: var(--coffee);
-  font-style: italic;
 }
 .moment-cta {
-  margin-bottom: 48px;
+  margin-bottom: clamp(64px, 14vw, 104px);
 }
-.closing-whisper {
-  display: block;
-  font-family: var(--sans);
-  font-size: 11px;
-  letter-spacing: 0.3em;
-  color: var(--fg);
+.moment-record {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  font: 500 9px/1.8 var(--sans);
+  letter-spacing: 0.15em;
   text-transform: uppercase;
+  color: var(--muted);
 }
+.moment-record a {
+  border-bottom: 1px solid var(--line);
+  transition: color var(--transition), border-color var(--transition);
+}
+.moment-record a:hover {
+  color: var(--coffee);
+  border-bottom-color: currentColor;
+}
+
+@media (min-width: 761px) {
+  .pack-blend {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(40px, 7vw, 110px);
+    align-items: start;
+  }
+  .pack-blend-head {
+    position: sticky;
+    top: 128px;
+  }
+  .pack-blend-head p { margin-bottom: 0; }
+  .shelf-layout { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); }
+  .pack-method {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(40px, 7vw, 110px);
+    align-items: start;
+  }
+  .method-head h2 { margin-bottom: 0; }
+  .method-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 0;
+  }
+  .method-steps li { border-top: 1px solid var(--line); border-bottom: 0; padding: 20px 0; }
+}
+
 
 /* ==========================================================================
    THE IDEA PAGE
@@ -2330,7 +2158,7 @@ textarea {resize:vertical}
   color: var(--muted);
   margin-bottom: 4px;
 }
-.personality-line h2 {
+.personality-line h1 {
   font-size: clamp(24px, 3vw, 38px);
   color: var(--fg);
   line-height: 1.15;
@@ -3763,9 +3591,7 @@ textarea {resize:vertical}
   .site-header nav { display: none; }
   .menu-trigger { display: grid; }
   .master-footer-grid { grid-template-columns: repeat(2, 1fr); }
-  .idea-teaser-box,
-  .finder-teaser-card,
-  .manifesto-grid,
+    .manifesto-grid,
   .recipe-item-grid,
   .edition-layout,
   .corp-split-bottom,
@@ -3782,7 +3608,6 @@ textarea {resize:vertical}
   .master-footer-grid { grid-template-columns: 1fr; }
   .vote-options-row { grid-template-columns: 1fr; }
   .closing-mantra { flex-direction: column; gap: 4px; }
-  .rhythmic-lines-grid { grid-template-columns: 1fr; }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -4179,3 +4004,33 @@ textarea {resize:vertical}
     gap: 14px;
   }
 }
+
+/* Catalogue states — shown when the database has not answered yet. */
+.catalog-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 34px 0;
+  border-top: 1px solid var(--line);
+}
+.catalog-notice p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 46ch;
+}
+.catalog-notice h1 {
+  font-size: clamp(34px, 5vw, 56px);
+  margin-bottom: 4px;
+}
+.catalog-spinner {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line);
+  border-top-color: var(--coffee);
+  border-radius: 50%;
+  animation: catalog-spin 900ms linear infinite;
+}
+@keyframes catalog-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .catalog-spinner { animation: none; } }

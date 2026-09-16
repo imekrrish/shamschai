@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
-import { products } from '../data/products';
-import { Eyebrow, Reveal } from '../components/ui';
+import { useProduct } from '../context/CatalogContext';
+import { CatalogNotice, Eyebrow, Reveal } from '../components/ui';
 import { openLaunchEmail } from '../utils/launchMail';
 
 export function PackagingFeedback() {
   const [params] = useSearchParams();
   const recipeParam = params.get('recipe') || 'recipe-01';
-  const currentRecipe = products.find((p) => p.slug === recipeParam) || products[0];
+  const { product: currentRecipe, loading, error, reload } = useProduct(recipeParam);
 
   const [vote, setVote] = useState<'keep' | 'refine' | 'retire' | null>(null);
   const [notes, setNotes] = useState('');
@@ -17,6 +17,7 @@ export function PackagingFeedback() {
 
   const handleVoteSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!currentRecipe) return;
     const voteLabel = vote === 'keep' ? 'KEEP IT (🔥)' : vote === 'refine' ? 'REFINE IT (😐)' : 'RETIRE IT (💀)';
     const subject = encodeURIComponent(`Packaging QR Feedback: ${currentRecipe.recipeNumber} - ${voteLabel}`);
     const body = encodeURIComponent(
@@ -28,6 +29,14 @@ export function PackagingFeedback() {
     window.location.href = `mailto:support@shamschai.com?subject=${subject}&body=${body}`;
     setVoted(true);
   };
+
+  if (!currentRecipe) {
+    return (
+      <section className="section packaging-feedback-page">
+        <CatalogNotice loading={loading} error={error} reload={reload} heading />
+      </section>
+    );
+  }
 
   return (
     <div className="packaging-feedback-page">

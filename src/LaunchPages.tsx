@@ -1,231 +1,182 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check, QrCode } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { getProduct, products, Product } from './data/products';
-import { Eyebrow, ImageSlot, Reveal, SectionTitle } from './components/ui';
+import { useCatalog, useProduct } from './context/CatalogContext';
+import { pack } from './data/pack';
+import { CatalogNotice, Eyebrow, ImageSlot, money, numberWord, Reveal } from './components/ui';
 import ProductSelector from './components/ProductSelector';
 import RecipeWaitlist from './components/RecipeWaitlist';
 import HeroSachet from './components/HeroSachet';
 import { NotFound } from './pages';
-import { api } from './utils/api';
 
 export function LaunchHome() {
   const reduced = useReducedMotion();
+  const { chai, loading, error, reload } = useCatalog();
+  const packSizes = chai?.variants ?? [];
+  const from = packSizes.length ? Math.min(...packSizes.map(v => v.price)) : null;
+
+  // Each headline line rises out of its own mask, one after the next.
+  const line = (i: number) => reduced
+    ? {}
+    : { initial: { y: '110%' }, animate: { y: '0%' }, transition: { duration: 1, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] as const } };
 
   return (
     <>
-      {/* 1. CINEMATIC HERO */}
+      {/* 1. HERO */}
       <section className="home-hero signature-hero">
-        <motion.div className="hero-copy" initial={reduced ? false : {opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.8}}>
-          <div className="hero-kicker"><span /> EVERYDAY, EXTRAORDINARY.</div>
-          <motion.h1
-            initial={false}
+        <div className="hero-copy">
+          <motion.div
+            className="hero-kicker"
+            initial={reduced ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
           >
-            <span>It’s a modern</span>
-            <span>woman’s</span>
-            <motion.em initial={reduced ? false : {opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.25}}>recipe.</motion.em>
-          </motion.h1>
-          <p className="hero-subtext">Bold tea. Whole spices. A little time for yourself.<br />Meet the masala chai made for your daily ritual.</p>
-          <motion.div className="hero-actions" initial={reduced ? false : {opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:.7,delay:.4}}>
+            <span /> {chai?.variantNameSlot || 'Masala Chai'}
+          </motion.div>
+
+          <h1>
+            <span className="line"><motion.span {...line(0)}>It’s a modern</motion.span></span>
+            <span className="line"><motion.span {...line(1)}>woman’s</motion.span></span>
+            <span className="line"><motion.em {...line(2)}>recipe.</motion.em></span>
+          </h1>
+
+          <motion.div
+            className="hero-actions"
+            initial={reduced ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.62 }}
+          >
             <Link className="btn btn-light" to="/the-collection">
-              Explore The Collection <ArrowUpRight size={14} />
+              Shop the pack <ArrowUpRight size={14} />
             </Link>
             <Link className="hero-story-link" to="/our-story">Our story <ArrowRight size={14} /></Link>
           </motion.div>
-          <div className="hero-ingredients"><span>BLACK TEA</span><i />WHOLE SPICES<i /><span>YOUR DAILY RITUAL</span></div>
-        </motion.div>
+
+          <motion.ul
+            className="hero-assurance"
+            initial={reduced ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.85 }}
+          >
+            {pack.assurances.map(claim => <li key={claim}>{claim}</li>)}
+          </motion.ul>
+        </div>
 
         <motion.div
           className="hero-product"
-          initial={reduced ? false : { opacity: 0, scale: 0.94, y: 12 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.15 }}
+          initial={reduced ? false : { opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="hero-orbit" aria-hidden="true" />
-          <div className="hero-edition"><span>THE ORIGINAL BLEND</span><strong>01</strong></div>
+          <div className="hero-glow" aria-hidden="true" />
+          {packSizes[0] && (
+            <div className="hero-edition"><span>Net weight</span><strong>{packSizes[0].weight}</strong></div>
+          )}
           <HeroSachet />
-          <Link
-            to="/products/recipe-01"
-            className="hero-detail-link"
-            aria-label="Discover Recipe 01"
-          >
+          <Link to="/products/recipe-01" className="hero-detail-link" aria-label="Read the pack">
             <ArrowUpRight />
           </Link>
-          <div className="hero-product-caption"><span>SHAMS MASALA CHAI</span><small>A ritual worth slowing down for.</small></div>
         </motion.div>
+
+        <div className="hero-scroll" aria-hidden="true"><span /></div>
       </section>
 
-      {/* 2. THE OPENING (Cinematic & Rhythmic) */}
-      <section className="section cinematic-opening-section">
-        <Reveal>
-          <Eyebrow>A LITTLE DAILY RITUAL</Eyebrow>
-          <h2>BEFORE THE DAY BEGINS,<br />TAKE A MOMENT.</h2>
+      {/* 2. WHAT IS IN IT */}
+      <section className="section pack-blend">
+        <Reveal className="pack-blend-head">
+          <Eyebrow>INGREDIENTS</Eyebrow>
+          <h2>{chai ? `${numberWord(chai.ingredients.length)} things.` : 'What’s inside.'}<br /><em>Nothing else.</em></h2>
+          {chai?.description && <p>{chai.description}</p>}
         </Reveal>
-
-        <div className="rhythmic-lines-grid">
-          <div className="rhythm-item"><span>/</span><p>The kitchen is still quiet.</p></div>
-          <div className="rhythm-item"><span>/</span><p>Water comes to a boil.</p></div>
-          <div className="rhythm-item"><span>/</span><p>A spoonful goes into the pan.</p></div>
-          <div className="rhythm-item"><span>/</span><p>The scent of spice fills the room.</p></div>
-          <div className="rhythm-item"><span>/</span><p>Your favourite cup is waiting.</p></div>
-          <div className="rhythm-item"><span>/</span><p>The first sip belongs to you.</p></div>
-        </div>
-
-        <Reveal className="opening-conclusion">
-          <p className="highlight-sentence">
-            A familiar ritual. A few minutes to call your own.
-          </p>
-          <div className="punchline">
-            <h3>THE REST OF THE DAY CAN WAIT A MINUTE.</h3>
-            <em>Stay for a sip.</em>
-          </div>
-        </Reveal>
+        {chai ? (
+          <ol className="pack-ingredients">
+            {chai.ingredients.map((item, i) => (
+              <li key={item}>
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                <strong>{item}</strong>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <CatalogNotice loading={loading} error={error} reload={reload} />
+        )}
       </section>
 
-      {/* 3. THE SHAMS IDEA TEASER */}
-      <section className="section home-idea-teaser">
-        <div className="idea-teaser-box">
-          <div className="idea-copy">
-            <Eyebrow>WHAT GOES INTO YOUR CUP</Eyebrow>
-            <h2>BLACK TEA.<br />WHOLE SPICES.<br /><em>THAT’S SHAMS.</em></h2>
-            <p>
-              Black tea leaves meet green cardamom, clove, black pepper and cinnamon
-              in a full, fragrant blend made for the pan.
-            </p>
-            <p className="sub-p">
-              We build around the tea, then work on the balance of spices.
-              The result is a full-bodied cup that holds its own with milk.
-            </p>
-            <div className="idea-punch">
-              <strong>GOOD CHAI STARTS WITH WHAT’S INSIDE.</strong>
-              <span>Get to know the thinking behind the blend.</span>
-            </div>
-            <Link to="/the-idea" className="btn btn-light">
-              The Shams Approach <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="idea-photo">
+      {/* 3. THE PACK ITSELF */}
+      <section className="section pack-shelf" id="the-collection">
+        <div className="shelf-layout">
+          <Reveal className="shelf-photo">
             <ImageSlot
-              src="/assets/shams/optimized/lifestyle-home-v2.webp"
-              alt="Shams morning ritual"
+              src={chai?.images[0] || '/assets/shams/optimized/lifestyle-home-v2.webp'}
+              alt="Sham’s masala chai poured at home"
               ratio="4 / 5"
             />
-          </div>
-        </div>
-      </section>
-
-      {/* 4. THE COLLECTION PREVIEW */}
-      <section className="section home-collection-preview" id="the-collection">
-        <div className="section-heading-row">
-          <div>
-            <Eyebrow>THE COLLECTION</Eyebrow>
-            <h2>THE FIRST CHAPTER.</h2>
-          </div>
-          <p className="collection-lead-phrase">
-            Meet our signature masala chai. Get to know the blend,
-            choose your pack, and make room for it on the kitchen shelf.
-          </p>
-        </div>
-
-        <div className="home-recipes-grid">
-          {products.slice(0, 1).map((p) => (
-            <div key={p.id} className="home-recipe-card">
-              <div className="recipe-card-top">
-                <span className="recipe-number">{p.recipeNumber}</span>
-                <span className="slot-badge">MASALA CHAI</span>
-              </div>
-              <h3>Your everyday kadak.</h3>
-              <p className="recipe-cup">{p.cup}</p>
-              <div className="recipe-mood-badge">
-                <small>CHOOSE YOUR PACK</small>
-                <span>{p.variants.map(variant => variant.weight).join(' · ')}</span>
-              </div>
-              <div className="recipe-card-action">
-                <Link to={`/products/${p.slug}`} className="text-link">
-                  Shop Masala Chai <ArrowRight size={14} />
+          </Reveal>
+          <div className="shelf-copy">
+            <Eyebrow>THE PACK</Eyebrow>
+            <h2>100% pure.<br /><em>Handcrafted.</em></h2>
+            {chai ? (
+              <>
+                <dl className="shelf-specs">
+                  <div>
+                    <dt>Net weight</dt>
+                    <dd>{packSizes.map(v => v.weight).join(' · ')}</dd>
+                  </div>
+                  {from !== null && (
+                    <div>
+                      <dt>From</dt>
+                      <dd>{money(from)} <small>{pack.details.mrpNote}</small></dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>Best before</dt>
+                    <dd>{pack.details.bestBefore}</dd>
+                  </div>
+                </dl>
+                <Link to="/the-collection" className="btn btn-light">
+                  See pack sizes &amp; prices <ArrowUpRight size={14} />
                 </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="collection-view-all">
-          <Link to="/the-collection" className="btn btn-light">
-            See Pack Sizes &amp; Prices <ArrowUpRight size={14} />
-          </Link>
-        </div>
-      </section>
-
-      {/* 5. BREW GUIDE */}
-      <section className="section home-finder-teaser">
-        <div className="finder-teaser-card">
-          <div className="teaser-left">
-            <Eyebrow>FROM PACK TO CUP</Eyebrow>
-            <h2>A PAN. A SPOON.<br /><em>A PROPER BREW.</em></h2>
-            <p>
-              No special equipment needed. A small saucepan, your favourite cup,
-              and a few minutes at the stove are all it takes.
-            </p>
-            <div className="chart-preview-axes">
-              <div><span>01 / START</span><small>Boil 150 ml water. Add 1 tsp chai.</small></div>
-              <div><span>02 / SIMMER</span><small>Add milk and sugar to taste. Simmer 4–5 minutes.</small></div>
-              <div><span>03 / POUR</span><small>Strain into your cup and enjoy.</small></div>
-            </div>
-          </div>
-          <div className="teaser-right">
-            <div className="quote-badge">
-              <small>MAKE IT YOURS</small>
-              <p>A little more milk? A little less sugar? The finishing touch is yours.</p>
-              <Link to="/brew-guide" className="text-link">Read the brew guide <ArrowRight size={14} /></Link>
-            </div>
+              </>
+            ) : (
+              <CatalogNotice loading={loading} error={error} reload={reload} />
+            )}
           </div>
         </div>
       </section>
 
-      {/* 6. EVERYDAY CHAI MOMENTS */}
-      <section className="section home-social-proof">
-        <Eyebrow>BETTER WITH COMPANY</Eyebrow>
-        <h2>There’s always time for one more cup.</h2>
-        <div className="testimonials-grid">
-          <div className="quote-card">
-            <span className="recipe-tag">THE KITCHEN COUNTER</span>
-            <p>
-              Someone puts the chai on. Someone reaches for the biscuits. The best catch-ups rarely need a plan.
-            </p>
-            <small>Leave the washing-up for later.</small>
-          </div>
-          <div className="quote-card">
-            <span className="recipe-tag">THE OFFICE BREAK</span>
-            <p>
-              Step away from the screen. Find the colleague you’ve only waved at all week. Let the conversation wander.
-            </p>
-            <small>A break worth taking together.</small>
-          </div>
-          <div className="quote-card">
-            <span className="recipe-tag">THE UNEXPECTED GUEST</span>
-            <p>
-              The doorbell rings. Pull up another chair, reach for a second cup, and put a little more water in the pan.
-            </p>
-            <small>Make yourself at home.</small>
-          </div>
-        </div>
-      </section>
+      {/* 4. HOW TO BREW IT */}
+      {(chai?.brewInstructions.length ?? 0) > 0 && (
+        <section className="section pack-method">
+          <Reveal className="method-head">
+            <Eyebrow>BREWING INSTRUCTIONS</Eyebrow>
+            <h2>{numberWord(chai!.brewInstructions.length)} steps,<br /><em>straight off the pack.</em></h2>
+          </Reveal>
+          <ol className="method-steps">
+            {chai!.brewInstructions.map((step, i) => (
+              <li key={step}>
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                <p>{step}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
-      {/* 7. FINAL HOMEPAGE MOMENT */}
+      {/* 5. CLOSING */}
       <section className="final-homepage-moment">
         <div className="moment-content">
-          <Eyebrow>SHAMS MASALA CHAI</Eyebrow>
-          <h2>
-            YOUR NEXT CUP<br />
-            <em>STARTS HERE.</em>
-          </h2>
+          <h2>Aromatic black tea.<br /><em>Handpicked spices.</em></h2>
           <div className="moment-cta">
             <Link to="/the-collection" className="btn btn-light">
-              Bring Shams Home <ArrowRight size={14} />
+              Bring {pack.brand} home <ArrowRight size={14} />
             </Link>
           </div>
-          <span className="closing-whisper">SEE YOU AT CHAI TIME.</span>
+        </div>
+        <div className="moment-record">
+          <span>FSSAI {pack.record.fssai}</span>
+          <span>{pack.record.packedBy}</span>
+          <a href={`mailto:${pack.record.email}`}>{pack.record.email}</a>
         </div>
       </section>
     </>
@@ -233,28 +184,31 @@ export function LaunchHome() {
 }
 
 export function LaunchProducts() {
-  const [recipe, setRecipe] = useState<Product>(products[0]);
-  useEffect(() => {
-    void api.getProduct('recipe-01').then((live) => {
-      setRecipe(current => ({ ...current, ...live, variants: live.variants || current.variants, flavourNotes: live.flavourNotes || current.flavourNotes, ingredients: live.ingredients || current.ingredients, images: live.images || current.images }));
-    }).catch(() => { /* The bundled catalog remains available if the API is offline. */ });
-  }, []);
+  const { chai, loading, error, reload } = useCatalog();
+
   return <div className="collection-edit">
     <header className="collection-intro section"><Eyebrow>THE SHAMS COLLECTION</Eyebrow><h1>One beautiful beginning.<br /><em>More brewing.</em></h1><p>Meet our signature masala chai, blended with black tea leaves and whole spices for your everyday ritual.</p><div className="collection-nav"><a href="#recipe-01">01 / Shop masala chai <ArrowRight size={14} /></a><a href="#recipe-02">02 / Coming soon <ArrowRight size={14} /></a></div></header>
     <section className="collection-feature section" id="recipe-01" aria-labelledby="original-title">
-      <div className="collection-pack"><span className="release-label">MASALA CHAI · AVAILABLE NOW</span><ImageSlot src={recipe.images[0]} alt="Shams masala chai pouch beside a glass of chai" ratio="4 / 5" priority /><span className="pack-footnote">BLACK TEA · CARDAMOM · CLOVE · CINNAMON · BLACK PEPPER</span></div>
-      <div className="collection-copy"><Eyebrow>THE ORIGINAL BLEND</Eyebrow><h2 id="original-title">The original.<br /><em>Anything but ordinary.</em></h2><p>{recipe.cup}</p><div className="flavour-chips">{recipe.flavourNotes.map(note => <span key={note}>{note}</span>)}</div><dl className="collection-notes"><div><dt>THE FEELING</dt><dd>Bold. Grounded. Unapologetic.</dd></div><div><dt>THE MOMENT</dt><dd>Your first cup. Your fresh start.</dd></div></dl><ProductSelector product={recipe} /><Link className="text-link" to="/products/recipe-01">Get to know the blend <ArrowRight size={14} /></Link></div>
+      {chai ? <>
+        <div className="collection-pack"><span className="release-label">{chai.variantNameSlot || chai.name} · {chai.stock ? 'AVAILABLE NOW' : 'OUT OF STOCK'}</span><ImageSlot src={chai.images[0]} alt="Shams masala chai pouch beside a glass of chai" ratio="4 / 5" priority /><span className="pack-footnote">{chai.ingredients.join(' · ').toUpperCase()}</span></div>
+        <div className="collection-copy"><Eyebrow>{chai.name}</Eyebrow><h2 id="original-title">The original.<br /><em>Anything but ordinary.</em></h2><p>{chai.description}</p><div className="flavour-chips">{chai.flavourNotes.map(note => <span key={note}>{note}</span>)}</div><dl className="collection-notes"><div><dt>THE FEELING</dt><dd>Bold. Grounded. Unapologetic.</dd></div><div><dt>THE MOMENT</dt><dd>Your first cup. Your fresh start.</dd></div></dl><ProductSelector product={chai} /><Link className="text-link" to="/products/recipe-01">Get to know the blend <ArrowRight size={14} /></Link></div>
+      </> : <CatalogNotice loading={loading} error={error} reload={reload} />}
     </section>
-    <section className="next-recipe section" id="recipe-02" aria-labelledby="next-title"><div className="next-recipe-art" aria-hidden="true"><span>THE NEXT CHAPTER</span><strong>02</strong><em>Good things take a little brewing.</em></div><div className="next-recipe-copy"><Eyebrow>RECIPE 02 ? COMING SOON</Eyebrow><h2 id="next-title">A new mood.<br /><em>A new recipe.</em></h2><p>Our second recipe is on its way. Leave your email and be first to hear when it drops.</p><RecipeWaitlist /></div></section>
+    <section className="next-recipe section" id="recipe-02" aria-labelledby="next-title"><div className="next-recipe-art" aria-hidden="true"><span>THE NEXT CHAPTER</span><strong>02</strong><em>Good things take a little brewing.</em></div><div className="next-recipe-copy"><Eyebrow>RECIPE 02 · COMING SOON</Eyebrow><h2 id="next-title">A new mood.<br /><em>A new recipe.</em></h2><p>Our second recipe is on its way. Leave your email and be first to hear when it drops.</p><RecipeWaitlist /></div></section>
     <footer className="collection-end section"><span>ONE BRAND. MANY POSSIBILITIES.</span><Link className="text-link" to="/our-story">The story behind every cup <ArrowRight size={14} /></Link></footer>
   </div>;
 }
 
 export function LaunchProduct() {
   const { slug } = useParams();
-  const p = getProduct(slug);
+  const { product: p, loading, error, reload } = useProduct(slug);
   const [view, setView] = useState(0);
 
+  if (loading || error) {
+    return <section className="section pdp-page">
+      <CatalogNotice loading={loading} error={error} reload={reload} heading />
+    </section>;
+  }
   if (!p) return <NotFound />;
 
   return (
@@ -310,7 +264,7 @@ export function LaunchProduct() {
 
           <div className="personality-line">
             <small>THE PERSONALITY</small>
-            <h2>{p.personality}</h2>
+            <h1>{p.personality}</h1>
           </div>
 
           <div className="cup-line">

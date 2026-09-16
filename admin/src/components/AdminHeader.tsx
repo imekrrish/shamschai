@@ -44,7 +44,7 @@ export default function AdminHeader({
           <Database className="w-3.5 h-3.5 text-[#17382f]" />
           <span className="text-[#65675f]">Data Source:</span>
           <span className="font-semibold text-[#17382f] font-mono">
-            {dbInfo.database ? `PostgreSQL (${dbInfo.database})` : 'PostgreSQL / Store'}
+            {dbInfo.database ? `PostgreSQL (${dbInfo.database})` : 'PostgreSQL Database'}
           </span>
         </div>
 

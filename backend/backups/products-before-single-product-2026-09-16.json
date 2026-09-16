@@ -1,0 +1,610 @@
+{
+  "local": [
+    {
+      "id": "recipe-01",
+      "slug": "recipe-01",
+      "name": "Sham's Signature Masala Chai",
+      "recipeNumber": "RECIPE 01",
+      "code": "001",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Uncompromising, bold, and grounded in morning grit.",
+      "cup": "Full-bodied black tea with green cardamom lift and a warm black pepper finish.",
+      "mood": "Bold. Restless. Unapologetic.",
+      "moment": "For morning clarity and days that require quiet defiance.",
+      "whyThisRecipe": "Can masala chai be deeply kadak without the spices drowning out the brisk estate tea? We explored the exact balance where tea stays firmly in charge.",
+      "subtitle": "Bold · Restless · Unapologetic",
+      "description": "A robust, kadak formulation where dark estate tea leads with quiet authority, met by sharp green cardamom and peppery warmth.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-01-200",
+          "price": 349,
+          "stock": true,
+          "weight": "200 g"
+        },
+        {
+          "sku": "SH-RECIPE-01-500",
+          "price": 799,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-01-1000",
+          "price": 1499,
+          "stock": true,
+          "weight": "1000 g"
+        }
+      ],
+      "flavourNotes": [
+        "BLACK TEA",
+        "GREEN CARDAMOM",
+        "BLACK PEPPER"
+      ],
+      "ingredients": [
+        "Black Tea Leaves",
+        "Green Cardamom",
+        "Clove",
+        "Black Pepper",
+        "Cinnamon"
+      ],
+      "brewInstructions": [
+        "Boil 150 ml water.",
+        "Add 1 tsp Recipe 01 Masala Chai.",
+        "Add sugar to taste.",
+        "Add whole milk as desired.",
+        "Simmer 4–5 minutes for full body.",
+        "Strain and serve scalding hot."
+      ],
+      "profile": {
+        "tea": "Strong black tea leaves",
+        "body": "Kadak, dense, and full-bodied",
+        "aroma": "Lively crushed green cardamom and toasted spice",
+        "finish": "Clean, lingering peppery warmth",
+        "masala": "Cardamom-forward with spicy clove and black pepper bite"
+      },
+      "chartScores": {
+        "body": 94,
+        "aroma": 86,
+        "finish": 88,
+        "masala": 82,
+        "teaStrength": 92
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T13:46:49.427Z",
+      "updatedAt": "2026-09-15T14:05:48.943Z"
+    },
+    {
+      "id": "recipe-02",
+      "slug": "recipe-02",
+      "name": "Cardamom & Cinnamon Velvet",
+      "recipeNumber": "RECIPE 02",
+      "code": "002",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Unrushed, layered, and deeply comforting.",
+      "cup": "Velvety sweetness balanced by warm Ceylon cinnamon, sweet ginger and fragrant mace.",
+      "mood": "Grounded. Reflective. Golden hour.",
+      "moment": "For four-in-the-afternoon pauses and unhurried talks that wander.",
+      "whyThisRecipe": "What happens when chai feels like warmth rather than a jolt? We crafted a softer leaf balance where sweet spices wrap gently around the cup.",
+      "subtitle": "Grounded · Reflective · Golden Hour",
+      "description": "A comforting, velvety cup crafted with whole leaf orthodox nuances and warm cinnamon sweetness made for long conversations.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-02-200",
+          "price": 349,
+          "stock": true,
+          "weight": "200 g"
+        },
+        {
+          "sku": "SH-RECIPE-02-500",
+          "price": 799,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-02-1000",
+          "price": 1499,
+          "stock": true,
+          "weight": "1000 g"
+        }
+      ],
+      "flavourNotes": [
+        "CEYLON CINNAMON",
+        "SWEET GINGER",
+        "MELLOW MALT"
+      ],
+      "ingredients": [
+        "Assam & Dooars Black Tea",
+        "Ceylon Cinnamon",
+        "Ginger Root",
+        "Mace",
+        "Cardamom"
+      ],
+      "brewInstructions": [
+        "Boil 150 ml water.",
+        "Add 1 tsp Recipe 02 Masala Chai.",
+        "Add brown sugar or jaggery to taste.",
+        "Pour milk gently.",
+        "Simmer on gentle heat 3–4 minutes.",
+        "Strain and allow to breathe for a moment before sipping."
+      ],
+      "profile": {
+        "tea": "Orthodox & CTC blend with gentle maltiness",
+        "body": "Medium-bodied, silky and round",
+        "aroma": "Sweet bakery spice and comforting warmth",
+        "finish": "Clean, sweet spice finish",
+        "masala": "Warm cinnamon, sweet ginger, nutmeg and subtle clove"
+      },
+      "chartScores": {
+        "body": 68,
+        "aroma": 76,
+        "finish": 58,
+        "masala": 54,
+        "teaStrength": 60
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T13:46:49.556Z",
+      "updatedAt": "2026-09-15T13:46:49.556Z"
+    },
+    {
+      "id": "recipe-03",
+      "slug": "recipe-03",
+      "name": "Hill Ginger Zing CTC",
+      "recipeNumber": "RECIPE 03",
+      "code": "003",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Bright, fragrant, and unexpectedly sharp.",
+      "cup": "Fresh high-grown tea elevated by sun-dried hill ginger and lively aromatic spices.",
+      "mood": "Curious. Energised. Recharging.",
+      "moment": "For midday resets and when thoughts need to untangle.",
+      "whyThisRecipe": "Chai can wake the mind without feeling heavy. We tuned the cut of ginger against high-fired Broken Pekoe for an invigorating, bright spark.",
+      "subtitle": "Curious · Energised · Recharging",
+      "description": "A crisp, uplifting infusion where sun-dried ginger cuts through brisk tea leaves for a sharp, clarifying finish.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-03-200",
+          "price": 349,
+          "stock": true,
+          "weight": "200 g"
+        },
+        {
+          "sku": "SH-RECIPE-03-500",
+          "price": 799,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-03-1000",
+          "price": 1499,
+          "stock": true,
+          "weight": "1000 g"
+        }
+      ],
+      "flavourNotes": [
+        "SUN-DRIED GINGER",
+        "BRISK PEKOE",
+        "ZESTY HEAT"
+      ],
+      "ingredients": [
+        "Broken Pekoe Black Tea",
+        "Sun-dried Hill Ginger",
+        "Green Cardamom",
+        "Black Pepper"
+      ],
+      "brewInstructions": [
+        "Boil 160 ml water briskly.",
+        "Add 1 tsp Recipe 03 Masala Chai.",
+        "Add raw sugar to taste.",
+        "Add fresh milk.",
+        "Simmer 3 minutes on high heat for lively aroma.",
+        "Strain hot and drink immediately."
+      ],
+      "profile": {
+        "tea": "Broken Pekoe (BP) with vibrant briskness",
+        "body": "Crisp with sparkling astringency",
+        "aroma": "Zesty, brisk and open",
+        "finish": "Bright, refreshing heat",
+        "masala": "Sun-dried hill ginger, green cardamom and black pepper"
+      },
+      "chartScores": {
+        "body": 62,
+        "aroma": 88,
+        "finish": 82,
+        "masala": 82,
+        "teaStrength": 76
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T13:46:49.561Z",
+      "updatedAt": "2026-09-15T13:46:49.561Z"
+    },
+    {
+      "id": "recipe-04",
+      "slug": "recipe-04",
+      "name": "Royal Saffron Reserve",
+      "recipeNumber": "RECIPE 04",
+      "code": "004",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Intense, royal, and unapologetically rich.",
+      "cup": "Dense caramel liquor woven with royal saffron strands, nutmeg and aromatic elaichi.",
+      "mood": "Celebratory. Opulent. Late-night.",
+      "moment": "For celebrations, festive evenings, and conversations that stretch past midnight.",
+      "whyThisRecipe": "How rich can a cup become before it loses its identity as chai? We paired golden-tip leaves with aromatic saffron and nutmeg for a feast of a cup.",
+      "subtitle": "Celebratory · Opulent · Late-Night",
+      "description": "An indulgent, slow-steeped composition featuring golden-tip tea, saffron warmth, and fragrant nutmeg for rare celebrations.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-04-200",
+          "price": 399,
+          "stock": true,
+          "weight": "200 g"
+        },
+        {
+          "sku": "SH-RECIPE-04-500",
+          "price": 899,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-04-1000",
+          "price": 1699,
+          "stock": true,
+          "weight": "1000 g"
+        }
+      ],
+      "flavourNotes": [
+        "KASHMIRI SAFFRON",
+        "NUTMEG",
+        "GOLDEN TIP LEAVES"
+      ],
+      "ingredients": [
+        "Golden Tip Black Tea Blend",
+        "Kashmiri Saffron",
+        "Nutmeg",
+        "Star Anise",
+        "Cardamom",
+        "Clove"
+      ],
+      "brewInstructions": [
+        "Warm equal parts water (100 ml) and rich milk (100 ml).",
+        "Add 1 rounded tsp Recipe 04 Masala Chai.",
+        "Add honey or unrefined sugar.",
+        "Simmer slowly over low flame for 5–6 minutes to release saffron depth.",
+        "Strain into heavy earthenware cups."
+      ],
+      "profile": {
+        "tea": "CTC & Orthodox golden tip blend",
+        "body": "Full, velvety, and luxurious",
+        "aroma": "Honeyed spice and fragrant floral depth",
+        "finish": "Deep, resonant sweetness",
+        "masala": "Kashmiri saffron, nutmeg, star anise and crushed elaichi"
+      },
+      "chartScores": {
+        "body": 92,
+        "aroma": 98,
+        "finish": 95,
+        "masala": 88,
+        "teaStrength": 86
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T13:46:49.565Z",
+      "updatedAt": "2026-09-15T13:46:49.565Z"
+    }
+  ],
+  "railway": [
+    {
+      "id": "recipe-01",
+      "slug": "recipe-01",
+      "name": "Sham's Signature Masala Chai",
+      "recipeNumber": "RECIPE 01",
+      "code": "001",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Uncompromising, bold, and grounded in morning grit.",
+      "cup": "Full-bodied black tea with green cardamom lift and a warm black pepper finish.",
+      "mood": "Bold. Restless. Unapologetic.",
+      "moment": "For morning clarity and days that require quiet defiance.",
+      "whyThisRecipe": "Can masala chai be deeply kadak without the spices drowning out the brisk estate tea? We explored the exact balance where tea stays firmly in charge.",
+      "subtitle": "Bold · Restless · Unapologetic",
+      "description": "A robust, kadak formulation where dark estate tea leads with quiet authority, met by sharp green cardamom and peppery warmth.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-01-500",
+          "price": 450,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-01-1000",
+          "price": 850,
+          "stock": true,
+          "weight": "1 kg"
+        }
+      ],
+      "flavourNotes": [
+        "BLACK TEA",
+        "GREEN CARDAMOM",
+        "BLACK PEPPER"
+      ],
+      "ingredients": [
+        "Black Tea Leaves",
+        "Green Cardamom",
+        "Clove",
+        "Black Pepper",
+        "Cinnamon"
+      ],
+      "brewInstructions": [
+        "Boil 150 ml water.",
+        "Add 1 tsp Recipe 01 Masala Chai.",
+        "Add sugar to taste.",
+        "Add whole milk as desired.",
+        "Simmer 4–5 minutes for full body.",
+        "Strain and serve scalding hot."
+      ],
+      "profile": {
+        "tea": "Strong black tea leaves",
+        "body": "Kadak, dense, and full-bodied",
+        "aroma": "Lively crushed green cardamom and toasted spice",
+        "finish": "Clean, lingering peppery warmth",
+        "masala": "Cardamom-forward with spicy clove and black pepper bite"
+      },
+      "chartScores": {
+        "body": 94,
+        "aroma": 86,
+        "finish": 88,
+        "masala": 82,
+        "teaStrength": 92
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T15:20:38.574Z",
+      "updatedAt": "2026-09-15T15:20:38.574Z"
+    },
+    {
+      "id": "recipe-02",
+      "slug": "recipe-02",
+      "name": "Cardamom & Cinnamon Velvet",
+      "recipeNumber": "RECIPE 02",
+      "code": "002",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Unrushed, layered, and deeply comforting.",
+      "cup": "Velvety sweetness balanced by warm Ceylon cinnamon, sweet ginger and fragrant mace.",
+      "mood": "Grounded. Reflective. Golden hour.",
+      "moment": "For four-in-the-afternoon pauses and unhurried talks that wander.",
+      "whyThisRecipe": "What happens when chai feels like warmth rather than a jolt? We crafted a softer leaf balance where sweet spices wrap gently around the cup.",
+      "subtitle": "Grounded · Reflective · Golden hour",
+      "description": "A comforting, velvety cup crafted with whole leaf orthodox nuances and warm cinnamon sweetness made for long conversations.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-02-500",
+          "price": 450,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-02-1000",
+          "price": 850,
+          "stock": true,
+          "weight": "1 kg"
+        }
+      ],
+      "flavourNotes": [
+        "CEYLON CINNAMON",
+        "SWEET GINGER",
+        "MELLOW MALT"
+      ],
+      "ingredients": [
+        "Assam & Dooars Black Tea",
+        "Ceylon Cinnamon",
+        "Ginger Root",
+        "Mace",
+        "Cardamom"
+      ],
+      "brewInstructions": [
+        "Boil 150 ml water.",
+        "Add 1 tsp Recipe 02 Masala Chai.",
+        "Add brown sugar or jaggery to taste.",
+        "Pour milk gently.",
+        "Simmer on gentle heat 3–4 minutes.",
+        "Strain and allow to breathe for a moment before sipping."
+      ],
+      "profile": {
+        "tea": "Orthodox & CTC blend with gentle maltiness",
+        "body": "Medium-bodied, silky and round",
+        "aroma": "Sweet bakery spice and comforting warmth",
+        "finish": "Clean, sweet spice finish",
+        "masala": "Warm cinnamon, sweet ginger, nutmeg and subtle clove"
+      },
+      "chartScores": {
+        "body": 68,
+        "aroma": 90,
+        "finish": 78,
+        "masala": 74,
+        "teaStrength": 64
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T15:20:39.129Z",
+      "updatedAt": "2026-09-15T15:20:39.129Z"
+    },
+    {
+      "id": "recipe-03",
+      "slug": "recipe-03",
+      "name": "Hill Ginger Zing CTC",
+      "recipeNumber": "RECIPE 03",
+      "code": "003",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Bright, fragrant, and unexpectedly sharp.",
+      "cup": "Fresh high-grown tea elevated by sun-dried hill ginger and lively aromatic spices.",
+      "mood": "Curious. Energised. Recharging.",
+      "moment": "For midday resets and when thoughts need to untangle.",
+      "whyThisRecipe": "Chai can wake the mind without feeling heavy. We tuned the cut of ginger against high-fired Broken Pekoe for an invigorating, bright spark.",
+      "subtitle": "Curious · Energised · Recharging",
+      "description": "A crisp, uplifting infusion where sun-dried ginger cuts through brisk tea leaves for a sharp, clarifying finish.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-03-500",
+          "price": 450,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-03-1000",
+          "price": 850,
+          "stock": true,
+          "weight": "1 kg"
+        }
+      ],
+      "flavourNotes": [
+        "SUN-DRIED GINGER",
+        "BRISK PEKOE",
+        "ZESTY HEAT"
+      ],
+      "ingredients": [
+        "Broken Pekoe Black Tea",
+        "Sun-dried Hill Ginger",
+        "Green Cardamom",
+        "Black Pepper"
+      ],
+      "brewInstructions": [
+        "Boil 160 ml water briskly.",
+        "Add 1 tsp Recipe 03 Masala Chai.",
+        "Add raw sugar to taste.",
+        "Add fresh milk.",
+        "Simmer 3 minutes on high heat for lively aroma.",
+        "Strain hot and drink immediately."
+      ],
+      "profile": {
+        "tea": "Broken Pekoe (BP) with vibrant briskness",
+        "body": "Crisp with sparkling astringency",
+        "aroma": "Zesty, brisk and open",
+        "finish": "Bright, refreshing heat",
+        "masala": "Sun-dried hill ginger, green cardamom and black pepper"
+      },
+      "chartScores": {
+        "body": 62,
+        "aroma": 88,
+        "finish": 82,
+        "masala": 82,
+        "teaStrength": 76
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T15:20:39.415Z",
+      "updatedAt": "2026-09-15T15:20:39.415Z"
+    },
+    {
+      "id": "recipe-04",
+      "slug": "recipe-04",
+      "name": "Royal Saffron Reserve",
+      "recipeNumber": "RECIPE 04",
+      "code": "004",
+      "variantNameSlot": "[VARIANT NAME]",
+      "personality": "Intense, royal, and unapologetically rich.",
+      "cup": "Dense caramel liquor woven with royal saffron strands, nutmeg and aromatic elaichi.",
+      "mood": "Celebratory. Opulent. Late-night.",
+      "moment": "For celebrations, festive evenings, and conversations that stretch past midnight.",
+      "whyThisRecipe": "How rich can a cup become before it loses its identity as chai? We paired golden-tip leaves with aromatic saffron and nutmeg for a feast of a cup.",
+      "subtitle": "Celebratory · Opulent · Late-Night",
+      "description": "An indulgent, slow-steeped composition featuring golden-tip tea, saffron warmth, and fragrant nutmeg for rare celebrations.",
+      "category": "The Collection",
+      "images": [
+        "/assets/shams/products/product-lifestyle-v2.png"
+      ],
+      "variants": [
+        {
+          "sku": "SH-RECIPE-04-200",
+          "price": 399,
+          "stock": true,
+          "weight": "200 g"
+        },
+        {
+          "sku": "SH-RECIPE-04-500",
+          "price": 899,
+          "stock": true,
+          "weight": "500 g"
+        },
+        {
+          "sku": "SH-RECIPE-04-1000",
+          "price": 1699,
+          "stock": true,
+          "weight": "1000 g"
+        }
+      ],
+      "flavourNotes": [
+        "KASHMIRI SAFFRON",
+        "NUTMEG",
+        "GOLDEN TIP LEAVES"
+      ],
+      "ingredients": [
+        "Golden Tip Black Tea Blend",
+        "Kashmiri Saffron",
+        "Nutmeg",
+        "Star Anise",
+        "Cardamom",
+        "Clove"
+      ],
+      "brewInstructions": [
+        "Warm equal parts water (100 ml) and rich milk (100 ml).",
+        "Add 1 rounded tsp Recipe 04 Masala Chai.",
+        "Add honey or unrefined sugar.",
+        "Simmer slowly over low flame for 5–6 minutes to release saffron depth.",
+        "Strain into heavy earthenware cups."
+      ],
+      "profile": {
+        "tea": "CTC & Orthodox golden tip blend",
+        "body": "Full, velvety, and luxurious",
+        "aroma": "Honeyed spice and fragrant floral depth",
+        "finish": "Deep, resonant sweetness",
+        "masala": "Kashmiri saffron, nutmeg, star anise and crushed elaichi"
+      },
+      "chartScores": {
+        "body": 92,
+        "aroma": 98,
+        "finish": 95,
+        "masala": 88,
+        "teaStrength": 86
+      },
+      "stock": true,
+      "featured": true,
+      "salesCount": 0,
+      "createdAt": "2026-09-15T15:20:39.698Z",
+      "updatedAt": "2026-09-15T15:20:39.698Z"
+    }
+  ]
+}

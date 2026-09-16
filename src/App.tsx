@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Seo from './components/Seo';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { CatalogProvider } from './context/CatalogContext';
 import CartPage from './CartPage';
 import { LaunchHome, LaunchProducts, LaunchProduct, Availability, FounderLaunch } from './LaunchPages';
 import { JournalLaunch, JournalArticleLaunch } from './JournalPages';
@@ -29,6 +30,7 @@ function ScrollTop() {
 export default function App() {
   return (
     <AuthProvider>
+      <CatalogProvider>
       <CartProvider>
       <Layout>
         <Seo />
@@ -83,6 +85,7 @@ export default function App() {
         </Routes>
       </Layout>
       </CartProvider>
+      </CatalogProvider>
     </AuthProvider>
   );
 }

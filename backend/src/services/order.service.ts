@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { paymentError, priceItems, priceItemsFromDb } from './payment-security';
+import { paymentError, priceItemsFromDb } from './payment-security';
 import { razorpayConfig } from './razorpay-client';
 import prisma from '../config/prisma';
 import { CreateOrderDTO } from '../types';

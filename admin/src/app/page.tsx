@@ -10,7 +10,9 @@ import {
   ShoppingBag, 
   CreditCard, 
   DollarSign, 
-  ArrowUpRight, 
+  ArrowUpRight,
+  ArrowDownRight,
+  Minus,
   Package, 
   Clock, 
   CheckCircle2, 
@@ -20,6 +22,29 @@ import {
   ChevronRight,
   Database
 } from 'lucide-react';
+
+/**
+ * A period-on-period change. Renders an em dash when there is no earlier
+ * window to compare against, so the tile never implies growth it cannot show.
+ */
+function Delta({ value, suffix }: { value: number | null; suffix: string }) {
+  if (value === null) {
+    return (
+      <div className="flex items-center gap-1.5 mt-1.5 text-xs text-[#8a8c83] font-medium">
+        <Minus className="w-3.5 h-3.5" />
+        <span>No prior period yet</span>
+      </div>
+    );
+  }
+  const up = value >= 0;
+  const Icon = up ? ArrowUpRight : ArrowDownRight;
+  return (
+    <div className={`flex items-center gap-1.5 mt-1.5 text-xs font-semibold ${up ? 'text-emerald-700' : 'text-[#a8442f]'}`}>
+      <Icon className="w-3.5 h-3.5" />
+      <span>{up ? '+' : ''}{value}% {suffix}</span>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const [data, setData] = useState<AnalyticsSummary | null>(null);
@@ -113,10 +138,7 @@ export default function DashboardPage() {
                 <div className="text-3xl font-serif font-bold text-[#171815]">
                   {loading ? '...' : formatINR(data?.totalRevenue || 0)}
                 </div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-xs text-emerald-700 font-semibold">
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                  <span>+{data?.revenueGrowthMonth || 18.4}% this month</span>
-                </div>
+                <Delta value={data?.revenueGrowthMonth ?? null} suffix="vs last 30 days" />
               </div>
             </div>
 
@@ -132,10 +154,7 @@ export default function DashboardPage() {
                 <div className="text-3xl font-serif font-bold text-[#171815]">
                   {loading ? '...' : data?.totalOrders || 0}
                 </div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-xs text-emerald-700 font-semibold">
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                  <span>+{data?.ordersGrowthMonth || 12.5}% volume</span>
-                </div>
+                <Delta value={data?.ordersGrowthMonth ?? null} suffix="vs last 30 days" />
               </div>
             </div>
 
@@ -151,9 +170,7 @@ export default function DashboardPage() {
                 <div className="text-3xl font-serif font-bold text-[#171815]">
                   {loading ? '...' : formatINR(data?.averageOrderValue || 0)}
                 </div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-xs text-[#8f6820] font-semibold">
-                  <span>₹1,180 target reached</span>
-                </div>
+                <Delta value={data?.aovGrowthMonth ?? null} suffix="vs last 30 days" />
               </div>
             </div>
 
@@ -222,28 +239,38 @@ export default function DashboardPage() {
                 </span>
               </div>
 
-              {/* Visual Bar Chart */}
-              <div className="h-48 flex items-end justify-between gap-3 pt-4 px-2">
-                {data?.dailyRevenue?.map((d, i) => {
-                  const maxVal = Math.max(...(data?.dailyRevenue.map(x => x.amount) || [25000]));
-                  const heightPercent = Math.max(15, Math.round((d.amount / maxVal) * 100));
-                  return (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                      <div className="text-[11px] font-mono font-bold text-[#171815] opacity-0 group-hover:opacity-100 transition duration-150">
-                        ₹{(d.amount / 1000).toFixed(1)}k
+              {/* Visual Bar Chart. A day with no revenue stays flat rather than
+                  being padded to a minimum height that would imply takings. */}
+              <div className="flex items-end justify-between gap-3 pt-6 px-2">
+                {(() => {
+                  const days = data?.dailyRevenue ?? [];
+                  const peak = Math.max(0, ...days.map(d => d.amount));
+                  return days.map((d, i) => {
+                    const ratio = peak > 0 ? d.amount / peak : 0;
+                    const label = new Date(d.date + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-2 group min-w-0">
+                        <span className={`text-[11px] font-mono tabular-nums ${d.amount > 0 ? 'text-[#171815] font-semibold' : 'text-[#a8a99f]'}`}>
+                          {d.amount > 0 ? '₹' + Math.round(d.amount).toLocaleString('en-IN') : '—'}
+                        </span>
+                        <div className="w-full h-32 flex items-end">
+                          <div
+                            style={{ height: ratio > 0 ? `${Math.max(4, Math.round(ratio * 100))}%` : '2px' }}
+                            title={`${label}: ₹${Math.round(d.amount).toLocaleString('en-IN')} · ${d.orders} order${d.orders === 1 ? '' : 's'}`}
+                            className={`w-full rounded-t-md transition-all duration-300 ${
+                              d.amount > 0
+                                ? 'bg-gradient-to-t from-[#17382f] to-[#2b6152] group-hover:to-[#c89b4b]'
+                                : 'bg-[#e5dcd1]'
+                            }`}
+                          />
+                        </div>
+                        <span className="text-[11px] font-semibold text-[#65675f] group-hover:text-[#171815] transition whitespace-nowrap">
+                          {label}
+                        </span>
                       </div>
-                      <div className="w-full bg-[#f4eee3] rounded-t-lg h-36 flex items-end p-1">
-                        <div
-                          style={{ height: `${heightPercent}%` }}
-                          className="w-full rounded-t-md bg-gradient-to-t from-[#17382f] to-[#2b6152] group-hover:to-[#c89b4b] transition-all duration-300"
-                        ></div>
-                      </div>
-                      <span className="text-[11px] font-bold text-[#65675f] group-hover:text-[#171815] transition">
-                        {d.date}
-                      </span>
-                    </div>
-                  );
-                })}
+                    );
+                  });
+                })()}
               </div>
             </div>
 

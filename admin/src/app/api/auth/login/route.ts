@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = authenticateAdmin(email, password);
+    const user = await authenticateAdmin(email, password);
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Invalid admin credentials' },

@@ -34,8 +34,25 @@ export async function PUT(
       );
     }
 
-    const changed = await queryPostgres('UPDATE orders SET status=$2, "updatedAt"=NOW() WHERE id=$1 RETURNING id', [params.id, status]);
-    const updated = changed.length ? await liveOrder(params.id) : null;
+    let changed;
+    if (status === 'CANCELLED') {
+      changed = await queryPostgres(
+        'UPDATE orders SET status=$2, "paymentStatus"=\'REFUNDED\', "updatedAt"=NOW() WHERE id=$1 OR "orderNumber"=$1 RETURNING id',
+        [params.id, status]
+      );
+      if (changed.length) {
+        await queryPostgres(
+          'UPDATE payments SET status=\'REFUNDED\', "updatedAt"=NOW() WHERE "orderId"=$1',
+          [changed[0].id]
+        );
+      }
+    } else {
+      changed = await queryPostgres(
+        'UPDATE orders SET status=$2, "updatedAt"=NOW() WHERE id=$1 OR "orderNumber"=$1 RETURNING id',
+        [params.id, status]
+      );
+    }
+    const updated = changed.length ? await liveOrder(changed[0].id) : null;
 
     if (!updated) {
       return NextResponse.json(

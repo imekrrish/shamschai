@@ -2,20 +2,11 @@ import { FormEvent, useMemo, useState, useEffect, useRef } from 'react';
 import { ArrowRight, Check, ChevronLeft, Minus, Plus, ShieldCheck, CreditCard, MapPin, Sparkles, AlertCircle } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eyebrow, money } from './components/ui';
-import { products } from './data/products';
 import { useAuth } from './context/AuthContext';
 import { api, Address } from './utils/api';
 import { loadRazorpay, openPayment } from './utils/razorpay';
-import { useCart } from './context/CartContext';
+import { useCart, useCartRows, CartSize } from './context/CartContext';
 import { checkoutFingerprint } from './utils/checkoutFingerprint';
-
-const sizes = ['500g', '1000g'] as const;
-type Size = typeof sizes[number];
-
-const sizePrices: Record<Size, number> = {
-  '500g': 450,
-  '1000g': 850,
-};
 
 export function Checkout() {
   const [params] = useSearchParams();
@@ -23,13 +14,20 @@ export function Checkout() {
   const { user, isAuthenticated } = useAuth();
   const cart = useCart();
 
-  const initial = sizes.includes(params.get('size') as Size) ? (params.get('size') as Size) : '500g';
+  const sizes = useCartRows();
   const requested = Number(params.get('quantity') || 1);
   const initialQuantity = Number.isFinite(requested) ? Math.max(1, Math.min(20, Math.floor(requested))) : 1;
+  const requestedSize = params.get('size');
 
-  const [quantities, setQuantities] = useState<Record<Size, number>>(() =>
-    Object.fromEntries(sizes.map((size) => [size, params.has('size') && size === initial ? initialQuantity : cart.count ? cart.quantities[size] : size === initial ? initialQuantity : 0])) as Record<Size, number>
-  );
+  const [quantities, setQuantities] = useState<Record<CartSize, number>>(() => ({ ...cart.quantities }));
+
+  // A deep link such as /checkout?size=500g&quantity=2 preselects that pack
+  // once the catalogue confirms the size exists.
+  useEffect(() => {
+    if (!requestedSize || !sizes.includes(requestedSize)) return;
+    setQuantities((current) => (current[requestedSize] === initialQuantity ? current : { ...current, [requestedSize]: initialQuantity }));
+  }, [requestedSize, initialQuantity, sizes.join(',')]);
+
   useEffect(() => { cart.replace(quantities); }, [quantities, cart.replace]);
 
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
@@ -78,21 +76,21 @@ export function Checkout() {
 
   const totalPacks = useMemo(() => Object.values(quantities).reduce((sum, qty) => sum + qty, 0), [quantities]);
   const subtotal = useMemo(
-    () => sizes.reduce((sum, size) => sum + quantities[size] * (cart.prices ? cart.prices[size] : sizePrices[size]), 0),
-    [quantities, cart.prices]
+    () => sizes.reduce((sum, size) => sum + (quantities[size] ?? 0) * (cart.prices[size] ?? 0), 0),
+    [quantities, cart.prices, sizes]
   );
   const shippingFee = subtotal >= 500 || subtotal === 0 ? 0 : 50;
   const grandTotal = subtotal + shippingFee;
 
-  const change = (size: Size, delta: number) => {
-    if (delta > 0 && cart.stockStatus && !cart.stockStatus[size]) {
+  const change = (size: CartSize, delta: number) => {
+    if (delta > 0 && cart.stockStatus[size] === false) {
       setError(`${size} pack is currently out of stock.`);
       return;
     }
     setError('');
     setQuantities((current) => ({
       ...current,
-      [size]: Math.max(0, Math.min(20, current[size] + delta)),
+      [size]: Math.max(0, Math.min(20, (current[size] ?? 0) + delta)),
     }));
   };
 
@@ -125,11 +123,11 @@ export function Checkout() {
     try {
       // Build order items
       const items = sizes
-        .filter((s) => quantities[s] > 0)
+        .filter((s) => (quantities[s] ?? 0) > 0)
         .map((s) => ({
           title: "Sham's Masala Chai",
           size: s,
-          unitPrice: cart.prices ? cart.prices[s] : sizePrices[s],
+          unitPrice: cart.prices[s] ?? 0,
           quantity: quantities[s],
         }));
 
@@ -163,8 +161,9 @@ export function Checkout() {
       sessionStorage.setItem(storageKey, JSON.stringify({ fingerprint, requestId }));
       await loadRazorpay();
       const { order, paymentIntent } = await api.createOrder({ ...orderPayload, requestId });
+      // The packs stay in the cart until the payment actually succeeds, so a
+      // failed or abandoned attempt leaves the basket exactly as it was.
       cart.rememberPayment({ orderId: order.id, userId: user!.id, quantities: { ...quantities }, fingerprint });
-      cart.complete(order.id);
       if (order.paymentStatus !== 'PAID') {
         if (!paymentIntent) throw new Error('This order cannot be paid. Please check My Orders.');
         await openPayment(order.id, paymentIntent, user);
@@ -192,7 +191,7 @@ export function Checkout() {
       return;
     }
     for (const s of sizes) {
-      if (quantities[s] > 0 && cart.stockStatus && !cart.stockStatus[s]) {
+      if ((quantities[s] ?? 0) > 0 && cart.stockStatus[s] === false) {
         setError(`Sham's Masala Chai (${s}) is currently out of stock. Please remove it from your selection.`);
         return;
       }
@@ -262,8 +261,8 @@ export function Checkout() {
 
         <div className="pack-chooser">
           {sizes.map((size) => {
-            const isOos = cart.stockStatus && !cart.stockStatus[size];
-            const currentPrice = cart.prices ? cart.prices[size] : sizePrices[size];
+            const isOos = cart.stockStatus[size] === false;
+            const currentPrice = cart.prices[size] ?? 0;
             return (
               <div 
                 className={`${quantities[size] ? 'pack-choice active' : 'pack-choice'} ${isOos ? 'pack-choice-oos' : ''}`} 
@@ -272,7 +271,7 @@ export function Checkout() {
               >
                 <div>
                   <span>SHAM'S MASALA CHAI</span>
-                  <strong>{size === '1000g' ? '1kg' : size}</strong>
+                  <strong>{cart.labels[size] ?? size}</strong>
                   <span className="pack-price-tag">{money(currentPrice)}</span>
                   {isOos && (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 mt-1 inline-block">

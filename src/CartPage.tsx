@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Minus, Plus, ShoppingBag, Trash2, ArrowRight, AlertTriangle } from 'lucide-react';
-import { cartPrices, cartSizes, useCart, CartSize } from './context/CartContext';
+import { useCart, useCartRows, CartSize } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
 import { api } from './utils/api';
 import { money } from './components/ui';
@@ -34,12 +34,14 @@ export default function CartPage() {
     return () => { cancelled = true; };
   }, [cart.pending?.orderId, user?.id, cart.complete, navigate]);
 
-  const getItemPrice = (size: CartSize) => (cart.prices ? cart.prices[size] : cartPrices[size]) || (size === '1000g' ? 850 : 450);
-  const isItemInStock = (size: CartSize) => !cart.stockStatus || cart.stockStatus[size];
+  const rows = useCartRows();
+  const getItemPrice = (size: CartSize) => cart.prices[size] ?? 0;
+  const isItemInStock = (size: CartSize) => cart.stockStatus[size] !== false;
+  const sizeLabel = (size: CartSize) => cart.labels[size] ?? (size === '1000g' ? '1 kg' : size);
 
-  const subtotal = cartSizes.reduce((sum, size) => sum + cart.quantities[size] * getItemPrice(size), 0);
+  const subtotal = rows.reduce((sum, size) => sum + (cart.quantities[size] ?? 0) * getItemPrice(size), 0);
   const shipping = subtotal >= 500 || subtotal === 0 ? 0 : 50;
-  const hasOutOfStockItems = cartSizes.some((size) => cart.quantities[size] > 0 && !isItemInStock(size));
+  const hasOutOfStockItems = rows.some((size) => (cart.quantities[size] ?? 0) > 0 && !isItemInStock(size));
 
   return (
     <section className="cart-page">
@@ -56,7 +58,7 @@ export default function CartPage() {
       {cart.count ? (
         <div className="cart-layout">
           <div className="cart-items">
-            {cartSizes.filter(size => cart.quantities[size] > 0).map(size => {
+            {rows.filter(size => (cart.quantities[size] ?? 0) > 0).map(size => {
               const inStock = isItemInStock(size);
               const price = getItemPrice(size);
 
@@ -66,7 +68,7 @@ export default function CartPage() {
                   <div>
                     <h2>Masala Chai</h2>
                     <p>
-                      {size === '1000g' ? '1kg' : size} · {money(price)} each
+                      {sizeLabel(size)} · {money(price)} each
                       {!inStock && (
                         <span className="ml-2 text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 inline-block">
                           Out of stock
@@ -118,7 +120,7 @@ export default function CartPage() {
             >
               {checking ? 'Checking your order...' : hasOutOfStockItems ? 'Item Out of Stock' : 'Take these to the kettle'} <ArrowRight size={16} />
             </button>
-            <small>Your shelf clears when your order is created.</small>
+            <small>Your shelf clears once your payment goes through.</small>
           </aside>
         </div>
       ) : (

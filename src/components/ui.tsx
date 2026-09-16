@@ -16,3 +16,21 @@ export function Reveal({children,className=''}:{children:ReactNode;className?:st
   const reduced=useReducedMotion();
   return <motion.div className={className} initial={reduced?false:{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.1}} transition={{duration:.65,ease:[.22,1,.36,1]}}>{children}</motion.div>;
 }
+
+const WORDS=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
+/** Small counts read better spelled out in a headline. */
+export const numberWord=(n:number)=>WORDS[n]??String(n);
+
+/**
+ * Shown wherever a page needs catalogue data it does not have. The storefront
+ * keeps no bundled copy, so an unreachable database says so rather than
+ * rendering a price or pack size that nobody published.
+ */
+export function CatalogNotice({loading,error,reload,heading=false}:{loading:boolean;error:string|null;reload:()=>void;heading?:boolean}){
+  if(loading) return <div className="catalog-notice" role="status" aria-live="polite"><span className="catalog-spinner" aria-hidden="true"/><p>Loading the catalogue…</p></div>;
+  return <div className="catalog-notice catalog-notice--error" role="alert">
+    {heading&&<h1>The catalogue is unavailable.</h1>}
+    <p>{error||'We could not reach the catalogue just now, so pack sizes and prices are not showing.'}</p>
+    <button type="button" className="btn btn-light" onClick={reload}>Try again <ArrowRight size={14}/></button>
+  </div>;
+}

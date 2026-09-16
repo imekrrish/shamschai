@@ -2,14 +2,31 @@
 
 const user = { id: 'buyer-test', name: 'Test Buyer', email: 'buyer@example.com' };
 const address = { id: 'address-test', recipientName: 'Test Buyer', phone: '9999999999', streetAddress: 'Test Street', city: 'Hyderabad', state: 'Telangana', postalCode: '500001', country: 'India', isDefault: true };
-const initialOrder = { id: '4bc26947-22a2-42ce-abcd-0b1088b24f84', orderNumber: 'ORD-TEST', status: 'PENDING', paymentStatus: 'PENDING', paymentMethod: 'RAZORPAY', subtotal: 349, shippingFee: 50, totalAmount: 399, currency: 'INR', createdAt: new Date().toISOString(), shippingSnapshot: address, items: [{ title: "Sham's Masala Chai", size: '200g', quantity: 1, unitPrice: 349, subtotal: 349 }] };
+const initialOrder = { id: '4bc26947-22a2-42ce-abcd-0b1088b24f84', orderNumber: 'ORD-TEST', status: 'PENDING', paymentStatus: 'PENDING', paymentMethod: 'RAZORPAY', subtotal: 450, shippingFee: 50, totalAmount: 500, currency: 'INR', createdAt: new Date().toISOString(), shippingSnapshot: address, items: [{ title: "Sham's Masala Chai", size: '500g', quantity: 1, unitPrice: 450, subtotal: 450 }] };
 
-async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offline') {
+// The storefront reads its catalogue from the API, so the fixture serves it.
+const catalogProduct = {
+  id: 'recipe-01', slug: 'recipe-01', name: "Sham's Masala Chai", recipeNumber: 'RECIPE 01', code: '001',
+  variantNameSlot: 'Masala Chai', personality: '', cup: '', mood: '', moment: '', whyThisRecipe: '',
+  subtitle: 'It\u2019s a modern woman\u2019s recipe',
+  description: 'Aromatic black tea leaves blended with handpicked spices for a bold, warming cup of masala chai.',
+  category: 'The Collection', images: ['/assets/shams/products/product-lifestyle-v2.png'],
+  variants: [{ weight: '500 g', price: 450, sku: 'SH-RECIPE-01-500', stock: true }, { weight: '1 kg', price: 850, sku: 'SH-RECIPE-01-1000', stock: true }],
+  flavourNotes: ['BLACK TEA', 'CARDAMOM', 'BLACK PEPPER'],
+  ingredients: ['Black Tea Leaves', 'Clove', 'Cinnamon', 'Cardamom', 'Nutmeg', 'Black Pepper'],
+  brewInstructions: ['Boil 150 ml water.', 'Add 1 tsp Masala Chai.', 'Add sugar to taste.', 'Add milk as desired.', 'Simmer 3\u20135 minutes.', 'Strain & enjoy hot.'],
+  profile: { tea: '', masala: '', aroma: '', body: '', finish: '' },
+  chartScores: { teaStrength: 0, masala: 0, aroma: 0, body: 0, finish: 0 },
+  stock: true, featured: true,
+};
+
+async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offline', seedCart = true) {
   let order = { ...initialOrder };
   const requestIds: string[] = [];
-  await page.addInitScript(({ user, mode }) => {
+  await page.addInitScript(({ user, mode, seedCart }) => {
     localStorage.setItem('shams_user', JSON.stringify(user));
     localStorage.setItem('shams_token', 'test-token');
+    if (seedCart) localStorage.setItem('shams-cart-v2', JSON.stringify({ quantities: { '500g': 1, '1000g': 0 }, pending: null }));
     (window as any).Razorpay = class {
       constructor(public options: any) {}
       open() {
@@ -17,10 +34,12 @@ async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offl
         else this.options.handler({ razorpay_order_id: 'order_Test', razorpay_payment_id: 'pay_Test', razorpay_signature: 'a'.repeat(64) });
       }
     };
-  }, { user, mode });
+  }, { user, mode, seedCart });
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname;
     const ok = (data: unknown) => route.fulfill({ json: { success: true, data } });
+    if (path === '/api/products') return ok([catalogProduct]);
+    if (path.startsWith('/api/products/')) return ok(catalogProduct);
     if (path.endsWith('/users/me')) return ok(user);
     if (path.endsWith('/addresses')) return ok([address]);
     if (path === '/api/orders/pending-checkout') return ok(null);
@@ -43,7 +62,7 @@ async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offl
 }
 
 async function submit(page: Page) {
-  await page.getByRole('button', { name: 'PLACE ORDER & PAY NOW' }).click();
+  await page.getByRole('button', { name: 'MAKE THIS CUP YOURS' }).click();
   await page.getByRole('button', { name: /CONFIRM ADDRESS & PAY/ }).click();
 }
 
@@ -63,9 +82,9 @@ for (const mode of ['offline', 'dismiss', 'unverified'] as const) {
     await submit(page);
     await expect(page).toHaveURL(/cart/);
     await expect(page.locator('.cart-notice')).toBeVisible();
-    await expect(page.getByRole('status', { name: '200g quantity' })).toHaveText('1');
+    await expect(page.getByRole('status', { name: '500g quantity' })).toHaveText('1');
     await page.reload();
-    await page.getByRole('button', { name: 'Continue to checkout' }).click();
+    await page.getByRole('button', { name: 'Take these to the kettle' }).click();
     await submit(page);
     await expect(page).toHaveURL(/cart/);
     await expect(page.locator('.cart-notice')).toBeVisible();
@@ -103,16 +122,25 @@ test('offline login never fabricates an authenticated session', async ({ page })
 
 
 test('cart persists selected packs and quantity changes through refresh', async ({ page }) => {
-  await setup(page, 'dismiss');
+  await setup(page, 'dismiss', false);
   await page.goto('/products/recipe-01');
   await page.getByRole('button', { name: 'ADD TO CART' }).click();
   await expect(page).toHaveURL(/cart/);
-  await page.getByRole('button', { name: 'Add one 200g', exact: true }).click();
+  await page.getByRole('button', { name: 'Add one 500g', exact: true }).click();
   await page.reload();
-  await expect(page.getByRole('status', { name: '200g quantity' })).toHaveText('2');
+  await expect(page.getByRole('status', { name: '500g quantity' })).toHaveText('2');
   await expect(page.getByRole('link', { name: 'Cart, 2 items' })).toBeVisible();
-  await page.getByRole('button', { name: 'Continue to checkout' }).click();
-  await expect(page.locator('[aria-label="200g quantity"] output')).toHaveText('2');
+  await page.getByRole('button', { name: 'Take these to the kettle' }).click();
+  await expect(page.locator('[aria-label="500g quantity"] output')).toHaveText('2');
+});
+
+test('a failed payment leaves the packs in the cart', async ({ page }) => {
+  await setup(page, 'dismiss');
+  await page.goto('/checkout');
+  await submit(page);
+  await expect(page).toHaveURL(/cart/);
+  await expect(page.getByRole('status', { name: '500g quantity' })).toHaveText('1');
+  await expect(page.getByRole('link', { name: 'Cart, 1 items' })).toBeVisible();
 });
 
 test('paid checkout clears purchased packs from cart', async ({ page }) => {
@@ -121,7 +149,7 @@ test('paid checkout clears purchased packs from cart', async ({ page }) => {
   await submit(page);
   await expect(page).toHaveURL(/order-confirmation/);
   await page.getByRole('link', { name: 'Cart, 0 items' }).click();
-  await expect(page.getByText('Your cart is empty.')).toBeVisible();
+  await expect(page.getByText('The shelf is waiting.')).toBeVisible();
 });
 
 test('unpaid attempts stay out of customer order history', async ({ page }) => {
@@ -137,17 +165,17 @@ test('latest interrupted checkout can restore an empty cart after signing in', a
   await setup(page, 'dismiss');
   await page.route('**/api/orders/pending-checkout', route => route.fulfill({ json: { success: true, data: initialOrder } }));
   await page.goto('/cart');
-  await expect(page.getByRole('status', { name: '200g quantity' })).toHaveText('1');
-  await expect(page.getByRole('button', { name: 'Continue to checkout' })).toBeEnabled();
+  await expect(page.getByRole('status', { name: '500g quantity' })).toHaveText('1');
+  await expect(page.getByRole('button', { name: 'Take these to the kettle' })).toBeEnabled();
 });
 
 
 test('cart stays usable on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await setup(page, 'dismiss');
+  await setup(page, 'dismiss', false);
   await page.goto('/products/recipe-01');
   await page.getByRole('button', { name: 'ADD TO CART' }).click();
-  await expect(page.getByRole('button', { name: 'Continue to checkout' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Take these to the kettle' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBeTruthy();
   await page.screenshot({ path: 'test-results/cart-mobile.png', fullPage: true });
 });

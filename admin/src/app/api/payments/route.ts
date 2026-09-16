@@ -52,5 +52,64 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  return NextResponse.json({ success: false, message: 'Payment status is managed by Razorpay and cannot be edited here.' }, { status: 409 });
+  const denied = requireAdmin(); if (denied) return denied;
+  try {
+    const body = await req.json();
+    const { id, status } = body;
+
+    if (!id || !status) {
+      return NextResponse.json(
+        { success: false, message: 'Payment id and status are required' },
+        { status: 400 }
+      );
+    }
+
+    const updatedRows = await queryPostgres(
+      `UPDATE payments 
+       SET status = $2, "updatedAt" = NOW() 
+       WHERE id = $1 OR "transactionRef" = $1 
+       RETURNING *`,
+      [id, status]
+    );
+
+    if (!updatedRows.length) {
+      return NextResponse.json(
+        { success: false, message: 'Payment not found' },
+        { status: 404 }
+      );
+    }
+
+    const payment = updatedRows[0];
+
+    // If payment was marked PAID or REFUNDED, sync the associated order's paymentStatus
+    if (payment.orderId) {
+      if (status === 'REFUNDED') {
+        await queryPostgres(
+          `UPDATE orders SET "paymentStatus" = 'REFUNDED', "updatedAt" = NOW() WHERE id = $1`,
+          [payment.orderId]
+        );
+      } else if (status === 'PAID') {
+        await queryPostgres(
+          `UPDATE orders SET "paymentStatus" = 'PAID', "updatedAt" = NOW() WHERE id = $1`,
+          [payment.orderId]
+        );
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `Payment status updated to ${status}`,
+      data: {
+        ...payment,
+        amount: number(payment.amount),
+        settlementStatus: payment.status === 'PAID' ? 'SETTLED' : payment.status === 'REFUNDED' ? 'REFUNDED' : 'PENDING_SETTLEMENT'
+      }
+    });
+  } catch (error: any) {
+    console.error('Error updating payment in PostgreSQL:', error);
+    return NextResponse.json(
+      { success: false, message: error?.message || 'Failed to update payment' },
+      { status: 500 }
+    );
+  }
 }

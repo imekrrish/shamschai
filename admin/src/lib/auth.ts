@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
+import bcrypt from 'bcryptjs';
 import { User } from './types';
-import { SEED_ADMIN } from './seed-data';
+import { queryPostgres, getDbPool } from './db';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'shams_chai_admin_secret_key_2026_vercel_production_change_me';
 const COOKIE_NAME = 'shams_admin_token';
 
 export interface JwtPayload {
@@ -59,22 +60,98 @@ export function getCurrentAdmin(): JwtPayload | null {
   return verifyAdminToken(token);
 }
 
-export function authenticateAdmin(email: string, pass: string): User | null {
-  const admin = SEED_ADMIN;
-  const configuredEmail = process.env.ADMIN_EMAIL;
-  const configuredPassword = process.env.ADMIN_PASSWORD;
-  if (!configuredEmail || !configuredPassword) return null;
-  if (
-    email.toLowerCase().trim() === configuredEmail.toLowerCase().trim() &&
-    pass === configuredPassword
-  ) {
-    return {
-      id: admin.id,
-      email: configuredEmail,
-      name: admin.name,
-      role: admin.role,
-      avatar: admin.avatar
-    };
+export async function authenticateAdmin(email: string, pass: string): Promise<User | null> {
+  const cleanEmail = email.toLowerCase().trim();
+  const pool = getDbPool();
+  if (!pool) {
+    throw new Error('Database connection is not configured');
   }
-  return null;
+
+  let rows = await queryPostgres<{
+    id: string;
+    email: string;
+    passwordHash: string | null;
+    name: string;
+    role: string;
+    avatar: string | null;
+  }>('SELECT id, email, "passwordHash", name, role, avatar FROM users WHERE LOWER(email) = $1', [cleanEmail]);
+
+  const configuredEmail = (process.env.ADMIN_EMAIL || 'admin@shamschai.com').toLowerCase().trim();
+  const configuredPassword = process.env.ADMIN_PASSWORD || 'admin@123';
+
+  // Auto-bootstrap admin user into PostgreSQL if not yet created
+  if (rows.length === 0 && cleanEmail === configuredEmail && pass === configuredPassword) {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(configuredPassword, salt);
+    const adminId = 'usr_admin_shams';
+    await queryPostgres(
+      `INSERT INTO users (id, email, "passwordHash", name, role, "createdAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+       ON CONFLICT (email) DO UPDATE SET "passwordHash" = $3, role = $5`,
+      [adminId, configuredEmail, passwordHash, 'Sham Admin', 'ADMIN']
+    );
+    rows = await queryPostgres('SELECT id, email, "passwordHash", name, role, avatar FROM users WHERE LOWER(email) = $1', [cleanEmail]);
+  }
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const user = rows[0];
+  if (user.role !== 'ADMIN') {
+    return null;
+  }
+
+  if (!user.passwordHash) {
+    return null;
+  }
+
+  const matches = await bcrypt.compare(pass, user.passwordHash);
+  if (!matches) {
+    // If password hash was corrupted or changed in env, update and self-heal
+    if (cleanEmail === configuredEmail && pass === configuredPassword) {
+      const salt = await bcrypt.genSalt(10);
+      const newHash = await bcrypt.hash(configuredPassword, salt);
+      await queryPostgres('UPDATE users SET "passwordHash" = $1 WHERE id = $2', [newHash, user.id]);
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role as any,
+        avatar: user.avatar || undefined
+      };
+    }
+    return null;
+  }
+
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role as any,
+    avatar: user.avatar || undefined
+  };
 }
+
+export async function getAdminUserById(id: string): Promise<User | null> {
+  try {
+    const rows = await queryPostgres<{
+      id: string;
+      email: string;
+      name: string;
+      role: string;
+      avatar: string | null;
+    }>('SELECT id, email, name, role, avatar FROM users WHERE id = $1 AND role = $2', [id, 'ADMIN']);
+    if (rows.length === 0) return null;
+    return {
+      id: rows[0].id,
+      email: rows[0].email,
+      name: rows[0].name,
+      role: rows[0].role as any,
+      avatar: rows[0].avatar || undefined
+    };
+  } catch {
+    return null;
+  }
+}
+
