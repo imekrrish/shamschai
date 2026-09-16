@@ -1,3 +1,4 @@
+import AddressLocationFields from './components/AddressLocationFields';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -603,31 +604,7 @@ export function AccountPage() {
                       placeholder="Near park or temple"
                     />
                   </label>
-                  <label>
-                    CITY
-                    <input
-                      required
-                      value={addressForm.city}
-                      onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
-                    />
-                  </label>
-                  <label>
-                    STATE
-                    <input
-                      required
-                      value={addressForm.state}
-                      onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
-                    />
-                  </label>
-                  <label>
-                    PIN CODE
-                    <input
-                      required
-                      maxLength={6}
-                      value={addressForm.postalCode}
-                      onChange={(e) => setAddressForm({ ...addressForm, postalCode: e.target.value })}
-                    />
-                  </label>
+                  <AddressLocationFields value={addressForm} onChange={patch => setAddressForm(current => ({ ...current, ...patch }))} />
                   <label>
                     ADDRESS TYPE
                     <select

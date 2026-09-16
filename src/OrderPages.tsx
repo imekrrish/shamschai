@@ -1,3 +1,4 @@
+import AddressLocationFields from './components/AddressLocationFields';
 import { FormEvent, useMemo, useState, useEffect, useRef } from 'react';
 import { ArrowRight, Check, ChevronLeft, Minus, Plus, ShieldCheck, CreditCard, MapPin, Sparkles, AlertCircle } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -406,40 +407,11 @@ export function Checkout() {
                 placeholder="Nearby landmark"
               />
             </label>
-            <label>
-              CITY
-              <input
-                name="city"
-                autoComplete="address-level2"
-                required
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-              />
-            </label>
-            <label>
-              STATE
-              <input
-                name="state"
-                autoComplete="address-level1"
-                required
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-              />
-            </label>
-            <label>
-              PIN CODE
-              <input
-                name="pincode"
-                inputMode="numeric"
-                autoComplete="postal-code"
-                required
-                pattern="[0-9]{6}"
-                maxLength={6}
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-                placeholder="6 digits"
-              />
-            </label>
+            <AddressLocationFields value={{ postalCode: pincode, city, state }} onChange={patch => {
+              if (patch.postalCode !== undefined) setPincode(patch.postalCode);
+              if (patch.city !== undefined) setCity(patch.city);
+              if (patch.state !== undefined) setState(patch.state);
+            }} />
           </div>
         )}
 

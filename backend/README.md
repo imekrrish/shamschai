@@ -255,6 +255,12 @@ EMAIL_NOTIFY_TO="your-team@example.com"
 
 The logo is loaded from the repository-relative asset at `public/assets/shams/brand/shams-logo.png` and embedded into each email as an inline attachment, so email clients do not need to fetch a public image URL.
 
+### Address PIN lookup
+
+`GET /api/locations/pincode/:pincode` looks up a six-digit Indian PIN using [Postal PIN Code API](https://www.postalpincode.in/Api-Details). It returns `{ pincode, places: [{ city, state }] }`; `city` is the provider's district, so the customer can correct it to their town or city. Only the PIN is sent to the provider. Successful results are cached for 24 hours (at most 500 entries), and provider calls time out after six seconds. The checkout and account address forms support manual entry when lookup is unavailable or a PIN has multiple districts.
+
+Run the endpoint checks from `backend` with `node -r ts-node/register scripts/test-pincode.cjs`. Run the form checks from the repository root with `npx playwright test tests/pincode-address.spec.ts`.
+
 For Railway, Brevo is recommended. Set `BREVO_API_KEY`, `BREVO_SENDER_EMAIL`, and `BREVO_SENDER_NAME`; Brevo is selected automatically and sends through HTTPS on port 443. SMTP remains available as a fallback when `BREVO_API_KEY` is absent.
 
 After pulling the schema change, run `npm run prisma:push:local` for development or `npm run prisma:push:railway` for production, followed by `npm run prisma:generate`. The protected fulfillment endpoint is `PATCH /api/admin/orders/:id/status` with `{ "status": "SHIPPED" }`; it sends the tracking update mail when the status actually changes.

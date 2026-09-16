@@ -7,6 +7,7 @@ import paymentRoutes from './payment.routes';
 import waitlistRoutes from './waitlist.routes';
 import adminOrderRoutes from './admin-order.routes';
 import productRoutes from './product.routes';
+import locationRoutes from './location.routes';
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use('/payments', paymentRoutes);
 router.use('/waitlist', waitlistRoutes);
 router.use('/admin/orders', adminOrderRoutes);
 router.use('/products', productRoutes);
+router.use('/locations', locationRoutes);
 
 router.get('/health', (_req, res) => {
   res.status(200).json({
