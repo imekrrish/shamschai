@@ -14,7 +14,7 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-      message: 'PostgreSQL database seeded successfully with admin user, products, orders, and payments (admin@shamschai.com / admin@123)',
+      message: 'Seeded the admin user and product catalogue. No orders, payments or customers were created.',
       postgresSeeded: true
     });
   } catch (error) {

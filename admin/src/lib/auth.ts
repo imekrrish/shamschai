@@ -4,7 +4,9 @@ import bcrypt from 'bcryptjs';
 import { User } from './types';
 import { queryPostgres, getDbPool } from './db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'shams_chai_admin_secret_key_2026_vercel_production_change_me';
+// A fallback here would be published with the repository, and anyone holding
+// it could mint a valid admin session.
+const JWT_SECRET = process.env.JWT_SECRET;
 const COOKIE_NAME = 'shams_admin_token';
 
 export interface JwtPayload {
@@ -77,10 +79,11 @@ export async function authenticateAdmin(email: string, pass: string): Promise<Us
   }>('SELECT id, email, "passwordHash", name, role, avatar FROM users WHERE LOWER(email) = $1', [cleanEmail]);
 
   const configuredEmail = (process.env.ADMIN_EMAIL || 'admin@shamschai.com').toLowerCase().trim();
-  const configuredPassword = process.env.ADMIN_PASSWORD || 'admin@123';
+  const configuredPassword = (process.env.ADMIN_PASSWORD || '').trim();
+  const canBootstrap = configuredPassword.length > 0;
 
-  // Auto-bootstrap admin user into PostgreSQL if not yet created
-  if (rows.length === 0 && cleanEmail === configuredEmail && pass === configuredPassword) {
+  // Create the admin on first sign-in, but only against a configured password.
+  if (canBootstrap && rows.length === 0 && cleanEmail === configuredEmail && pass === configuredPassword) {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(configuredPassword, salt);
     const adminId = 'usr_admin_shams';
@@ -108,8 +111,9 @@ export async function authenticateAdmin(email: string, pass: string): Promise<Us
 
   const matches = await bcrypt.compare(pass, user.passwordHash);
   if (!matches) {
-    // If password hash was corrupted or changed in env, update and self-heal
-    if (cleanEmail === configuredEmail && pass === configuredPassword) {
+    // Re-hash only when ADMIN_PASSWORD was deliberately rotated in the
+    // environment; without it a stale hash is simply a failed sign-in.
+    if (canBootstrap && cleanEmail === configuredEmail && pass === configuredPassword) {
       const salt = await bcrypt.genSalt(10);
       const newHash = await bcrypt.hash(configuredPassword, salt);
       await queryPostgres('UPDATE users SET "passwordHash" = $1 WHERE id = $2', [newHash, user.id]);

@@ -35,7 +35,7 @@ export default function SettingsPage() {
   }, []);
 
   const handleResetSeed = async () => {
-    if (!confirm('Re-seed PostgreSQL database and demo store? This will populate real database tables (users, orders, order_items, payments) and set admin credentials (admin@shamschai.com / admin@123).')) {
+    if (!confirm('Re-seed PostgreSQL? This creates the admin user from ADMIN_EMAIL/ADMIN_PASSWORD and the product catalogue. It does not create orders, payments or customers.')) {
       return;
     }
 
@@ -58,10 +58,12 @@ export default function SettingsPage() {
     }
   };
 
-  const vercelEnvSnippet = `DATABASE_URL="postgresql://postgres:211002@127.0.0.1:5433/shamschai_dev?schema=public"
-JWT_SECRET="shams_chai_admin_secret_key_2026_vercel_production_change_me"
+  // A template only. Real values belong in the host's environment settings,
+  // never in a page that renders them back as copyable text.
+  const vercelEnvSnippet = `DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+JWT_SECRET="<a long random string>"
 ADMIN_EMAIL="admin@shamschai.com"
-ADMIN_PASSWORD="admin@123"`;
+ADMIN_PASSWORD="<choose a strong password>"`;
 
   const copyEnv = () => {
     navigator.clipboard.writeText(vercelEnvSnippet);
@@ -176,10 +178,10 @@ ADMIN_PASSWORD="admin@123"`;
               </div>
 
               <div className="p-4 rounded-xl bg-[#faf7f1] border border-[#e5dcd1]">
-                <p className="text-[11px] text-[#65675f] uppercase font-bold">Configured Password</p>
-                <p className="text-sm font-mono font-bold text-[#171815] mt-1">admin@123</p>
+                <p className="text-[11px] text-[#65675f] uppercase font-bold">Password</p>
+                <p className="text-sm font-mono font-bold text-[#171815] mt-1">••••••••</p>
                 <span className="inline-block mt-2 text-[10px] px-2.5 py-0.5 rounded-full bg-[#f4eee3] text-[#9d542f] border border-[#d8cfc2] font-bold">
-                  Bcrypt Hashed & Verified
+                  Set via ADMIN_PASSWORD &middot; bcrypt hashed
                 </span>
               </div>
             </div>

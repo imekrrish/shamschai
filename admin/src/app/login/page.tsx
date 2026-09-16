@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Coffee, Lock, Mail, ArrowRight, Sparkles, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Coffee, Lock, Mail, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@shamschai.com');
-  const [password, setPassword] = useState('admin@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -36,12 +36,6 @@ export default function LoginPage() {
       setError(err.message || 'Network error occurred');
       setLoading(false);
     }
-  };
-
-  const handleFillDemo = () => {
-    setEmail('admin@shamschai.com');
-    setPassword('admin@123');
-    setError('');
   };
 
   return (
@@ -88,7 +82,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@shamschai.com"
+                  placeholder="you@shamschai.com"
                   className="w-full bg-[#faf7f1] border border-[#d8cfc2] focus:border-[#17382f] focus:ring-1 focus:ring-[#17382f] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#171815] placeholder-[#9c9b94] outline-none transition"
                 />
               </div>
@@ -121,30 +115,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick Demo Credential Button */}
-          <div className="mt-6 pt-5 border-t border-[#f0eae1]">
-            <div className="p-3.5 rounded-xl bg-[#f4eee3] border border-[#e5dcd1]">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-[#171815] flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#9d542f]" />
-                  Pre-configured Admin Seed
-                </span>
-                <button
-                  type="button"
-                  onClick={handleFillDemo}
-                  className="text-[11px] font-bold text-[#17382f] hover:text-white bg-[#e0d6c7] hover:bg-[#17382f] px-2.5 py-0.5 rounded transition"
-                >
-                  Auto-fill
-                </button>
-              </div>
-              <p className="text-xs text-[#65675f] font-mono">
-                Email: <span className="text-[#171815] font-bold">admin@shamschai.com</span>
-              </p>
-              <p className="text-xs text-[#65675f] font-mono mt-0.5">
-                Password: <span className="text-[#171815] font-bold">admin@123</span>
-              </p>
-            </div>
-          </div>
         </div>
 
         <p className="text-center text-xs text-[#8e8d87] mt-6">
