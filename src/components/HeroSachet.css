@@ -122,9 +122,11 @@
   isolation: isolate;
   order: 1;
   width: 100%;
-  height: min(58svh, 420px);
+  height: min(64svh, 480px);
   overflow: visible;
   background: transparent;
+  /* Horizontal drags turn the pack; vertical ones still scroll the page. */
+  touch-action: pan-y;
 }
 .hero-glow {
   position: absolute;
@@ -225,8 +227,8 @@
 .sachet-motion-toggle {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--fg);
@@ -234,6 +236,12 @@
   cursor: pointer;
   transition: background var(--transition), color var(--transition), border-color var(--transition);
 }
+/* When the pack is held still, the control is the invitation to start it. */
+.sachet-controls--paused .sachet-motion-toggle {
+  border-color: var(--coffee);
+  color: var(--coffee);
+}
+.sachet-controls--paused > span { color: var(--coffee); }
 .sachet-motion-toggle svg { width: 12px; height: 12px; stroke-width: 1.8; }
 .sachet-motion-toggle:hover { background: var(--fg); color: var(--surface); border-color: var(--fg); }
 .sachet-controls > span {
@@ -329,8 +337,10 @@
   .sachet-controls > span { display: none; }
 }
 
+/* Reduce Motion holds the pack still by default, but the viewer can start it,
+   so the play control has to stay reachable. */
 @media (prefers-reduced-motion: reduce) {
   .sachet-fallback { animation: none; }
   .sachet-fallback, .sachet-canvas { transition: none; }
-  .sachet-controls, .hero-scroll { display: none; }
+  .hero-scroll { display: none; }
 }

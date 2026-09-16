@@ -16,10 +16,15 @@ export function LaunchHome() {
   const packSizes = chai?.variants ?? [];
   const from = packSizes.length ? Math.min(...packSizes.map(v => v.price)) : null;
 
-  // Each headline line rises out of its own mask, one after the next.
+  // Each headline line rises out of its own mask, one after the next. Under
+  // Reduce Motion the same cadence plays as a fade, with nothing travelling.
+  const ease = [0.22, 1, 0.36, 1] as const;
   const line = (i: number) => reduced
-    ? {}
-    : { initial: { y: '110%' }, animate: { y: '0%' }, transition: { duration: 1, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] as const } };
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.6, delay: 0.1 + i * 0.1 } }
+    : { initial: { y: '110%' }, animate: { y: '0%' }, transition: { duration: 1, delay: 0.15 + i * 0.12, ease } };
+  const fadeUp = (delay: number) => reduced
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.6, delay } }
+    : { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay } };
 
   return (
     <>
@@ -28,7 +33,7 @@ export function LaunchHome() {
         <div className="hero-copy">
           <motion.div
             className="hero-kicker"
-            initial={reduced ? false : { opacity: 0 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
           >
@@ -41,12 +46,7 @@ export function LaunchHome() {
             <span className="line"><motion.em {...line(2)}>recipe.</motion.em></span>
           </h1>
 
-          <motion.div
-            className="hero-actions"
-            initial={reduced ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.62 }}
-          >
+          <motion.div className="hero-actions" {...fadeUp(0.62)}>
             <Link className="btn btn-light" to="/the-collection">
               Shop the pack <ArrowUpRight size={14} />
             </Link>
@@ -55,7 +55,7 @@ export function LaunchHome() {
 
           <motion.ul
             className="hero-assurance"
-            initial={reduced ? false : { opacity: 0 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.85 }}
           >
@@ -65,9 +65,9 @@ export function LaunchHome() {
 
         <motion.div
           className="hero-product"
-          initial={reduced ? false : { opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+          animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+          transition={{ duration: reduced ? 0.7 : 1.4, delay: 0.1, ease }}
         >
           <div className="hero-glow" aria-hidden="true" />
           {packSizes[0] && (

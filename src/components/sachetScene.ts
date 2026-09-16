@@ -57,7 +57,7 @@ function pouchGeometry() {
   return { front, back, edge };
 }
 
-export async function mountSachet(host: HTMLElement, asset: string, backAsset: string, onReady: () => void, onFailure: () => void, isPaused: () => boolean = () => false) {
+export async function mountSachet(host: HTMLElement, asset: string, backAsset: string, onReady: () => void, onFailure: () => void, isPaused: () => boolean = () => false, wantsMotion: () => boolean = () => true) {
   const target = host.querySelector<HTMLElement>('.sachet-canvas')!;
   const hero = host.closest<HTMLElement>('.home-hero')!;
   let renderer: THREE.WebGLRenderer;
@@ -111,15 +111,15 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
   const render = (now: number) => {
     frame = 0;
     if (disposed || failed || !visible || document.hidden) return;
-    if (!reduced.matches && last && now - last < 1000 / 30) {
+    if (wantsMotion() && last && now - last < 1000 / 60) {
       frame = requestAnimationFrame(render);
       return;
     }
     const dt = last ? Math.min((now - last) / 1000, .05) : 0;
     last = now;
-    if (!reduced.matches && !isPaused()) elapsed += dt;
+    if (wantsMotion() && !isPaused()) elapsed += dt;
     interactionDelay = Math.max(0, interactionDelay - dt);
-    if (!reduced.matches && !isPaused() && dragId === null && interactionDelay === 0) {
+    if (wantsMotion() && !isPaused() && dragId === null && interactionDelay === 0) {
       turnTime += dt;
       // Hold the artwork, then ease through a complete turn.
       const progress = THREE.MathUtils.clamp((turnTime % 16 - 6) / 10, 0, 1);
@@ -127,14 +127,15 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
       autoRotation = (Math.floor(turnTime / 16) + eased) * Math.PI * 2;
     }
     const intensity = coarse.matches ? .4 : 1;
-    if (!isPaused()) smooth.lerp(reduced.matches ? new THREE.Vector2() : pointer, 1 - Math.exp(-dt * 4));
-    const idle = reduced.matches ? 0 : elapsed;
-    const enter = reduced.matches ? 1 : 1 - Math.pow(1 - Math.min(elapsed / 1.2, 1), 3);
+    if (!isPaused()) smooth.lerp(wantsMotion() ? pointer : new THREE.Vector2(), 1 - Math.exp(-dt * 4));
+    const still = !wantsMotion();
+    const idle = still ? 0 : elapsed;
+    const enter = still ? 1 : 1 - Math.pow(1 - Math.min(elapsed / 1.2, 1), 3);
     packet.rotation.set(
-      THREE.MathUtils.degToRad(reduced.matches ? 2 : (2 * Math.cos(idle * .26) + smooth.y * 3) * intensity),
-      rotation + (reduced.matches ? 0 : autoRotation) + THREE.MathUtils.degToRad(-10 + smooth.x * 7 * intensity - (1 - enter) * 28),
-      THREE.MathUtils.degToRad(reduced.matches ? -4 : -4 + Math.sin(idle * .52) * 2));
-    packet.position.y = (reduced.matches ? 0 : Math.sin(idle * .9) * .09) - (1 - enter) * .24;
+      THREE.MathUtils.degToRad(still ? 2 : (2 * Math.cos(idle * .26) + smooth.y * 3) * intensity),
+      rotation + (still ? 0 : autoRotation) + THREE.MathUtils.degToRad(-10 + smooth.x * 7 * intensity - (1 - enter) * 28),
+      THREE.MathUtils.degToRad(still ? -4 : -4 + Math.sin(idle * .52) * 2));
+    packet.position.y = (still ? 0 : Math.sin(idle * .9) * .09) - (1 - enter) * .24;
     const packetScale = .94 + .06 * enter;
     packet.scale.set(packetScale * 1.08, packetScale, packetScale);
     shine.position.x = -2 + smooth.x * 3;
@@ -142,7 +143,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
     shadow.style.transform = `scaleX(${.7 + .25 * Math.abs(Math.cos(packet.rotation.y)) - packet.position.y * .5})`;
     shadow.style.opacity = String(.4 - packet.position.y * .7);
     renderer.render(scene, camera);
-    if (!reduced.matches) frame = requestAnimationFrame(render);
+    if (wantsMotion()) frame = requestAnimationFrame(render);
   };
   const schedule = () => { if (!frame && !disposed && !failed && visible && !document.hidden) frame = requestAnimationFrame(render); };
   const resize = () => {
@@ -154,7 +155,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
     camera.updateProjectionMatrix(); renderer.setSize(width, height); schedule();
   };
   const move = (event: PointerEvent) => {
-    if (reduced.matches || coarse.matches || event.pointerType === 'touch') return;
+    if (!wantsMotion() || coarse.matches || event.pointerType === 'touch') return;
     const rect = hero.getBoundingClientRect();
     pointer.set(THREE.MathUtils.clamp((event.clientX - rect.left) / rect.width * 2 - 1, -1, 1),
       THREE.MathUtils.clamp(1 - (event.clientY - rect.top) / rect.height * 2, -1, 1));
@@ -193,7 +194,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
   const scroll = () => {
     const scrollDelta = THREE.MathUtils.clamp(window.scrollY - lastScrollY, -120, 120);
     lastScrollY = window.scrollY;
-    if (!reduced.matches && !isPaused() && dragId === null) rotation += scrollDelta * .002;
+    if (wantsMotion() && !isPaused() && dragId === null) rotation += scrollDelta * .002;
     schedule();
   };
   const visibility = () => { cancelAnimationFrame(frame); frame = 0; last = 0; schedule(); };
@@ -207,6 +208,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
   window.addEventListener('scroll', scroll, { passive: true });
   document.addEventListener('visibilitychange', visibility);
   reduced.addEventListener('change', motionChange);
+  host.addEventListener('shams:motion', motionChange);
   renderer.domElement.addEventListener('webglcontextlost', contextLost);
   resize();
   renderer.render(scene, camera);
@@ -223,6 +225,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
     hero.removeEventListener('pointermove', move); hero.removeEventListener('pointerleave', leave);
     window.removeEventListener('scroll', scroll);
     document.removeEventListener('visibilitychange', visibility); reduced.removeEventListener('change', motionChange);
+    host.removeEventListener('shams:motion', motionChange);
     renderer.domElement.removeEventListener('webglcontextlost', contextLost);
     Object.values(geometry).forEach(item => item.dispose());
     texture.dispose(); backTexture.dispose(); edgeMaterial.dispose(); frontMaterial.dispose(); rearMaterial.dispose(); renderer.dispose(); renderer.domElement.remove();
