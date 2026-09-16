@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Coffee, Lock, Mail, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,10 +43,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Brand Banner */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#17382f] text-[#c89b4b] shadow-md mb-4 border border-[#17382f]/20">
-            <Coffee className="w-8 h-8" />
-          </div>
-          <h1 className="text-4xl font-serif font-bold text-[#171815] tracking-tight">Sham’s Chai</h1>
+          <h1><img src="/assets/shams/brand/shams-logo.png" alt="Sham's Masala Chai" className="h-44 w-auto mx-auto mb-4 bg-[#121110]" /></h1>
           <p className="text-sm text-[#65675f] mt-1 font-medium">Executive Admin & Operations Portal</p>
         </div>
 

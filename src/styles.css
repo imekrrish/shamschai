@@ -4034,3 +4034,9 @@ textarea {resize:vertical}
 }
 @keyframes catalog-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .catalog-spinner { animation: none; } }
+
+/* One sachet-derived artwork across every brand placement. */
+.brand-logo-image { display:block; height:82px; width:auto; max-width:none; object-fit:contain; }
+.footer-wordmark { padding:48px 0 32px; line-height:1; }
+.footer-wordmark .brand-logo-image { height:auto; width:240px; max-width:60vw; }
+@media (max-width:760px) { .site-header .brand-logo-image, .mobile-menu .brand-logo-image { height:62px; } }

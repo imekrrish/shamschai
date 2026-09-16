@@ -16,8 +16,7 @@ const mainNavLinks = [
 function Logo() {
   return (
     <Link to="/" className="logo brand-logo-modern" aria-label="Shams Masala Chai Home">
-      <span className="logo-wordmark">SHAMS</span>
-      <small className="logo-tagline">IT’S A MODERN WOMAN’S RECIPE</small>
+      <img className="brand-logo-image" src="/assets/shams/brand/shams-logo.png" alt="Sham’s Masala Chai — It’s a modern woman’s recipe" />
     </Link>
   );
 }
@@ -306,8 +305,8 @@ function Footer() {
         </div>
       </div>
 
-      <div className="footer-wordmark" aria-hidden="true">
-        SHAMS
+      <div className="footer-wordmark">
+        <Logo />
       </div>
 
       <div className="footer-bottom-statement">

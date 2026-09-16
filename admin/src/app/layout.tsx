@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
+  icons: { icon: "/assets/shams/brand/shams-logo.png" },
   title: "Sham's Chai | Executive Admin & Operations",
   description: "Executive control panel for Sham's Chai - Manage menu pricing, view live customer orders, verify payment settlements, and monitor store analytics.",
 };

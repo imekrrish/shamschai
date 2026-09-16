@@ -11,7 +11,6 @@ import {
   BarChart3, 
   Settings, 
   LogOut, 
-  Coffee,
   Database,
   ExternalLink
 } from 'lucide-react';
@@ -45,15 +44,12 @@ export default function AdminSidebar() {
       <div>
         {/* Brand Header */}
         <div className="h-20 flex items-center px-6 border-b border-[#e5dcd1] gap-3 bg-[#faf7f1]">
-          <div className="w-10 h-10 rounded-xl bg-[#17382f] flex items-center justify-center text-[#c89b4b] shadow-sm">
-            <Coffee className="w-5 h-5" />
-          </div>
+          <Link href="/" aria-label="Sham's Chai admin home" className="shrink-0">
+            <img src="/assets/shams/brand/shams-logo.png" alt="Sham's Masala Chai" className="h-16 w-auto bg-[#121110]" />
+          </Link>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-serif font-bold text-xl tracking-wide text-[#171815]">Sham’s Chai</span>
-              <span className="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider bg-[#17382f]/10 text-[#17382f] rounded border border-[#17382f]/20">Admin</span>
-            </div>
-            <p className="text-[11px] text-[#65675f] font-medium">Estate Operations & Control</p>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#17382f]">Admin</span>
+            <p className="text-[11px] text-[#65675f] font-medium">Estate Operations &amp; Control</p>
           </div>
         </div>
 

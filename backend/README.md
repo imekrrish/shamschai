@@ -253,7 +253,7 @@ MAIL_FROM="Sham's Chai <notifications@example.com>"
 EMAIL_NOTIFY_TO="your-team@example.com"
 ```
 
-The logo is loaded from the repository-relative asset at `public/assets/shams/brand/chai-mark.svg` and embedded into each email as an inline attachment, so email clients do not need to fetch a public image URL.
+The logo is loaded from the repository-relative asset at `public/assets/shams/brand/shams-logo.png` and embedded into each email as an inline attachment, so email clients do not need to fetch a public image URL.
 
 For Railway, Brevo is recommended. Set `BREVO_API_KEY`, `BREVO_SENDER_EMAIL`, and `BREVO_SENDER_NAME`; Brevo is selected automatically and sends through HTTPS on port 443. SMTP remains available as a fallback when `BREVO_API_KEY` is absent.
 

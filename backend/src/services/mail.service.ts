@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const frontendUrl = () => (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
-const logoPath = path.resolve(__dirname, '../../../public/assets/shams/brand/chai-mark.png');
+const logoPath = path.resolve(__dirname, '../../../public/assets/shams/brand/shams-logo.png');
 const escapeHtml = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character] || character));
 
 /**
@@ -36,8 +36,8 @@ const SERIF = "Georgia,'Times New Roman',serif";
 
 function layout(preheader: string, content: string) {
   const logo = existsSync(logoPath)
-    ? `<img src="cid:shams-chai-logo" alt="" width="46" height="46" style="display:block;margin:0 auto 12px;border:0">`
-    : '';
+    ? `<img src="cid:shams-chai-logo" alt="Sham's Masala Chai" width="180" style="display:block;width:180px;max-width:100%;height:auto;margin:0 auto;border:0">`
+    : `<div style="font:400 26px/1 ${SERIF};color:${CREAM};">Sham&rsquo;s Masala Chai</div>`;
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="x-apple-disable-message-reformatting"><title>Sham's Chai</title></head>
 <body style="margin:0;padding:0;background:${CREAM};">
@@ -48,8 +48,6 @@ function layout(preheader: string, content: string) {
 
       <tr><td style="background:${INK};padding:30px 24px;text-align:center;">
         ${logo}
-        <div style="font:400 26px/1 ${SERIF};color:${CREAM};letter-spacing:.02em;font-style:italic;">Sham&rsquo;s</div>
-        <div style="font:600 9px/1.6 ${SANS};color:${COFFEE};letter-spacing:.28em;text-transform:uppercase;margin-top:8px;">It&rsquo;s a modern woman&rsquo;s recipe</div>
       </td></tr>
 
       <tr><td style="background:#FFFFFF;border:1px solid ${LINE};border-top:0;padding:38px 32px;">
@@ -185,7 +183,7 @@ class MailService {
 
   private getLogoAttachment() {
     if (!existsSync(logoPath)) return undefined;
-    return { name: 'chai-mark.png', content: readFileSync(logoPath).toString('base64'), contentId: 'shams-chai-logo' };
+    return { name: 'shams-logo.png', content: readFileSync(logoPath).toString('base64'), contentId: 'shams-chai-logo' };
   }
 
   private getTransporter() {
@@ -242,7 +240,7 @@ class MailService {
       ...(bcc.length ? { bcc } : {}),
       subject: message.subject,
       html: message.html,
-      ...(existsSync(logoPath) ? { attachments: [{ filename: 'chai-mark.png', path: logoPath, cid: 'shams-chai-logo' }] } : {}),
+      ...(existsSync(logoPath) ? { attachments: [{ filename: 'shams-logo.png', path: logoPath, cid: 'shams-chai-logo' }] } : {}),
     });
     return true;
   }
