@@ -15,7 +15,7 @@ export type Quantities = Record<CartSize, number>;
 /** Matches the backend's ProductService.normalizeSize so both agree on a key. */
 export const normalizeSize = (weight: string) => {
   const cleaned = String(weight || '').toLowerCase().replace(/\s+/g, '');
-  return cleaned === '1kg' ? '1000g' : cleaned;
+  return cleaned.replace(/^(\d+(?:\.\d+)?)kg$/, (_, kg: string) => `${Number(kg) * 1000}g`);
 };
 
 export const emptyCart = (): Quantities => ({});
