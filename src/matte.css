@@ -1,0 +1,141 @@
+/* Matte charcoal, warm paper and approachable everyday photography. */
+:root {
+  --matte-black:#141414; --ink:#0d0d0d; --raise:#1d1d1c;
+  --coffee:#c5b8a7; --coffee-fill:#d7cfc4; --coffee-deep:#998d7f;
+  --white:#f1eee8; --muted:rgba(241,238,232,.68); --line:rgba(241,238,232,.15);
+}
+.site-header {border-bottom:1px solid var(--line)}
+.announcement {color:#c8c4bd}
+.matte-home {background:var(--surface)}
+.home-hero.matte-hero {position:relative; display:grid; grid-template-columns:.95fr 1.05fr; align-items:center; gap:40px; isolation:isolate; min-height:590px; padding:38px max(6vw,var(--pad)) 58px; overflow:hidden; background:#141414; border-bottom:1px solid var(--line)}
+.matte-hero-image {position:relative; grid-column:2; grid-row:1; width:100%; height:auto; max-width:570px; max-height:570px; aspect-ratio:1; object-fit:contain; justify-self:center; border-radius:5px}
+.matte-hero-shade {display:none}
+.matte-hero-copy {grid-column:1; grid-row:1; width:100%; max-width:520px; color:var(--fg)}
+.matte-hero-copy .eyebrow {font-size:10px; letter-spacing:.2em; margin-bottom:25px; color:#d0ccc5}
+.matte-hero h1 {font-size:clamp(64px,6.3vw,92px); font-weight:450; line-height:.98; letter-spacing:-.04em}
+.matte-hero h1 em {color:#d5cabe}
+.headline-mask {display:block; overflow:hidden; padding-bottom:.09em; margin-bottom:-.09em}
+.headline-mask>span {display:block}
+.everyday-card-reveal {min-width:0; display:flex}
+.everyday-card-reveal>.everyday-card {width:100%}
+.matte-home :is(.matte-button,.matte-story-link) {transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
+.matte-button:hover {box-shadow:0 5px 22px rgba(0,0,0,.15)}
+.matte-story-link svg,.everyday-card-link svg {transition:transform .3s var(--ease)}
+.matte-story-link:hover svg,.everyday-card:hover .everyday-card-link svg {transform:translate(3px,-2px)}
+.matte-hero-copy p {font-size:14px; line-height:1.8; max-width:29ch; margin:24px 0 30px; color:#dad5ce}
+.matte-button {border-radius:4px; background:#f1eee8; border-color:#f1eee8; color:#171717; min-height:52px; padding-inline:25px; gap:28px; font-size:12px; letter-spacing:0}
+.matte-button:hover {background:#d5cabe; border-color:#d5cabe; color:#171717}
+.matte-story-link {display:inline-flex; align-items:center; gap:12px; margin-left:25px; padding-block:14px; font-size:12px; border-bottom:1px solid rgba(241,238,232,.3)}
+.matte-hero-caption {position:absolute; bottom:25px; left:max(6vw,var(--pad)); right:max(6vw,var(--pad)); display:flex; justify-content:space-between; color:#c7c2b9; font-size:9px; letter-spacing:.15em}
+.matte-assurances {display:flex; justify-content:center; gap:65px; padding:23px 24px; border-bottom:1px solid var(--line); color:#bcb8b1; font-size:10px; letter-spacing:.1em; text-transform:uppercase}
+.matte-assurances span+span {border-left:1px solid var(--line); padding-left:65px}
+.matte-pack {display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,7vw,110px); align-items:center; max-width:1500px; margin:auto}
+.matte-pack-art {height:510px; min-width:0; position:relative; background:radial-gradient(ellipse at 50% 40%,#393633 0,#222120 50%,#191919 80%); border:1px solid var(--line); border-radius:10px; touch-action:pan-y; isolation:isolate}
+.matte-pack-number {position:absolute; top:22px; left:25px; font:500 11px var(--sans); letter-spacing:.15em; color:var(--muted)}
+.matte-pack-art .sachet-controls {bottom:16px; left:16px}
+.matte-pack-copy h2 {font-size:clamp(44px,4.6vw,68px)}
+.matte-pack-copy h2 em,.everyday-stories h2 em {color:#c5b8a7}
+.matte-pack-copy p {max-width:38ch; font-size:15px; margin:24px 0}
+.matte-pack-meta {display:flex; flex-wrap:wrap; gap:24px; border-top:1px solid var(--line); padding-top:22px; margin-bottom:30px; font-size:12px; color:var(--fg)}
+.matte-pack-copy>.text-link {display:flex; width:fit-content; margin-top:22px; font-size:12px}
+.everyday-stories {background:#101010; border-block:1px solid var(--line)}
+.stories-heading {display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:40px}
+.stories-heading h2 {font-size:clamp(44px,4.6vw,64px)}
+.stories-heading .eyebrow {margin-bottom:18px}
+.everyday-card-grid {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px}
+.everyday-card {display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--line); border-radius:8px; background:#1a1a19; transition:border-color .25s,transform .25s}
+.everyday-card:hover {border-color:#8f867b; transform:translateY(-4px)}
+.everyday-card:focus-visible {outline-offset:5px}
+.everyday-card-image {aspect-ratio:4/3; overflow:hidden; background:#222}
+.everyday-card-image img {width:100%; height:100%; object-fit:cover; transition:transform .5s}
+.everyday-card:hover img {transform:scale(1.035)}
+.everyday-card-copy {padding:26px; display:flex; flex-direction:column; flex:1}
+.everyday-card-copy>span {font:600 9px/1.6 var(--sans); letter-spacing:.13em; color:#c1b5a6}
+.everyday-card h3 {font-size:clamp(27px,2.5vw,36px); line-height:1.1; margin:14px 0 0; text-wrap:initial}
+.everyday-card p {font-size:13px; line-height:1.75; margin:15px 0 24px}
+.everyday-card-link {display:flex; justify-content:space-between; align-items:center; gap:18px; padding-top:18px; border-top:1px solid var(--line); margin-top:auto; font-size:11px}
+.everyday-article-body {max-width:720px; margin:60px auto 80px; padding-inline:24px}
+.everyday-article-body section+section {margin-top:38px}
+.everyday-article-body>div+div {margin-top:38px}
+.everyday-article-body h2 {font-size:36px}
+.everyday-article-body p {font-size:16px; line-height:1.9; margin:18px 0 28px}
+.modern-master-footer {padding-top:60px}
+.modern-master-footer .footer-lead {padding-bottom:30px}
+.modern-master-footer .footer-lead h2 {font-size:clamp(30px,3.5vw,48px)}
+.modern-master-footer .footer-grid {margin:0; padding:40px 0 24px; gap:30px}
+.modern-master-footer .footer-wordmark {display:flex; justify-content:center; align-items:center; padding:8px 0 24px; font-size:initial; line-height:1; letter-spacing:normal}
+.modern-master-footer .footer-wordmark .brand-logo-image {width:130px}
+.shams-edit-page .edit-hero {padding-block:70px 42px}
+.shams-edit-page .edit-hero h1 {font-size:clamp(56px,6.5vw,90px)}
+.shams-edit-page .edit-hero .lead-text {font-size:15px; max-width:44ch}
+.shams-edit-page .edit-pillars-bar {padding-block:0 28px; border-bottom:1px solid var(--line)}
+.pillar-pill-btn {transition:background .22s,color .22s,border-color .22s; border-radius:4px}
+.pillar-pill-btn:hover {border-color:#9c9389}
+.pillar-pill-btn.active {background:#e5dfd6; color:#161616; border-color:#e5dfd6}
+.shams-edit-page .journal-feature {padding-block:38px 48px}
+.journal-new-card {overflow:hidden; border:1px solid var(--line); border-radius:8px; background:#1b1b1a; transition:border-color .3s,box-shadow .3s}
+.journal-new-card:hover {border-color:#8c8377; box-shadow:0 16px 35px rgba(0,0,0,.16)}
+.journal-new-card>a {display:flex; flex-direction:column; height:100%}
+.journal-new-card .journal-card-image {overflow:hidden}
+.journal-new-card .journal-card-copy {padding:26px; display:flex; flex-direction:column; flex:1}
+.journal-new-card .journal-card-copy h2 {font-size:32px; line-height:1.12; text-wrap:initial}
+.journal-new-card .journal-card-copy p {font-size:13px; line-height:1.8}
+.journal-new-card .journal-card-copy>b {margin-top:auto; padding-top:20px; justify-content:space-between}
+.journal-card-copy>b svg {transition:transform .3s var(--ease)}
+.journal-new-card:hover .journal-card-copy>b svg {transform:translateX(4px)}
+.shams-edit-page .journal-new-card--large>a {gap:0; grid-template-columns:1.05fr 1fr; align-items:stretch}
+.shams-edit-page .journal-new-card--large .journal-card-copy {justify-content:center; padding:clamp(25px,4vw,60px)}
+.shams-edit-page .journal-new-card--large h2 {font-size:clamp(36px,3.5vw,52px)}
+.shams-edit-page .journal-new-card--large .journal-card-copy>b {margin-top:10px; justify-content:flex-start}
+.shams-edit-page .journal-new-grid {gap:24px}
+.edit-article-story .journal-story-image {max-width:1040px; margin-inline:auto; padding-inline:24px}
+.edit-article-story .journal-story-image .image-slot {border-radius:8px}
+.story-reading-progress {position:fixed; top:0; left:0; width:100%; height:3px; background:#d4c6b5; transform-origin:left; z-index:150; pointer-events:none}
+@media (min-width:1600px) {.home-hero.matte-hero {min-height:690px}}
+@media (max-width:1100px) and (min-width:761px) {
+  .home-hero.matte-hero {min-height:550px; padding-inline:30px; gap:24px}
+  .matte-hero h1 {font-size:66px}
+  .matte-story-link {display:flex; width:fit-content; margin-left:0; margin-top:8px}
+  .matte-assurances {gap:28px}
+  .matte-assurances span+span {padding-left:28px}
+  .matte-pack {gap:35px}
+  .matte-pack-art {height:470px}
+  .everyday-card-grid {gap:15px}
+  .everyday-card-copy {padding:19px}
+}
+@media (max-width:760px) {
+  .home-hero.matte-hero {display:flex; flex-direction:column; align-items:stretch; gap:0; min-height:0; padding:0 24px 24px; background:#141414}
+  .matte-hero-copy {order:0; width:100%; max-width:none; padding:36px 0 26px}
+  .matte-hero-copy .eyebrow {font-size:9px; margin-bottom:20px}
+  .matte-hero h1 {font-size:clamp(58px,13vw,76px); line-height:.95}
+  .matte-hero-copy p {font-size:13px; max-width:30ch; margin:20px 0 24px}
+  .matte-hero-image {order:1; width:100%; height:auto; max-width:390px; max-height:none; object-fit:contain; align-self:center}
+  .matte-hero-shade,.matte-hero-caption {display:none}
+  .matte-story-link {margin-left:22px; font-size:11px}
+  .matte-button {padding-inline:20px; gap:18px; font-size:11px}
+  .matte-assurances {gap:12px; padding:21px 18px; text-align:center; font-size:8px; line-height:1.8; letter-spacing:.04em}
+  .matte-assurances span {flex:1}
+  .matte-assurances span+span {padding-left:12px}
+  .matte-pack {grid-template-columns:1fr; gap:35px; padding-block:55px}
+  .matte-pack-art {height:420px; max-width:450px; width:100%; margin:auto}
+  .matte-pack-copy h2 {font-size:49px}
+  .stories-heading {align-items:flex-start; margin-bottom:30px}
+  .stories-heading .text-link {font-size:10px; gap:9px; flex-shrink:0}
+  .stories-heading h2 {font-size:44px}
+  .everyday-card-grid {grid-template-columns:1fr; gap:24px}
+  .everyday-card-copy {padding:24px}
+  .everyday-card h3 {font-size:33px}
+  .shams-edit-page .journal-new-card--large>a {grid-template-columns:1fr; gap:0}
+  .shams-edit-page .journal-new-card--large .journal-card-copy {padding:25px}
+  .shams-edit-page .journal-new-card--large h2 {font-size:35px}
+  .shams-edit-page .journal-new-grid {gap:24px}
+  .shams-edit-page .edit-hero {padding-block:45px 30px}
+  .modern-master-footer .master-footer-grid {grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 22px}
+  .modern-master-footer .newsletter-col {grid-column:1/-1; max-width:440px}
+  .modern-master-footer .footer-lead h2 {font-size:32px}
+}
+@media (prefers-reduced-motion:reduce) {
+  .everyday-card,.everyday-card-image img,.journal-new-card,.journal-card-image img,.pillar-pill-btn,.matte-home .matte-button,.matte-home .matte-story-link,.journal-card-copy>b svg,.matte-story-link svg,.everyday-card-link svg {transition:none}
+  .everyday-card:hover,.everyday-card:hover img {transform:none}
+  .journal-new-card:hover img,.journal-new-card:hover .journal-card-copy>b svg,.matte-story-link:hover svg,.everyday-card:hover .everyday-card-link svg {transform:none}
+}

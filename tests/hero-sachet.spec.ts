@@ -20,15 +20,19 @@ for (const width of [390, 1440]) {
     page.on('pageerror', error => errors.push(error.message));
     await page.goto('/');
     const hero = page.locator('.home-hero');
-    await expect(hero.locator('.sachet-stage')).toHaveClass(/sachet-stage--ready/, { timeout: 20000 });
-    await expect(hero.locator('svg image')).toHaveAttribute('href', '/assets/shams/products/sachet-front.png');
-    await expect(hero.locator('canvas')).toHaveCount(1);
+    const viewer = page.locator('.matte-pack');
+    await expect(hero.locator('.matte-hero-image')).toHaveJSProperty('naturalWidth', 1254);
+    await expect(hero.locator('canvas')).toHaveCount(0);
+    await viewer.scrollIntoViewIfNeeded();
+    await expect(viewer.locator('.sachet-stage')).toHaveClass(/sachet-stage--ready/, { timeout: 20000 });
+    await expect(viewer.locator('svg image')).toHaveAttribute('href', '/assets/shams/products/sachet-front.png');
+    await expect(viewer.locator('canvas')).toHaveCount(1);
     await page.mouse.move(width * .7, 250);
     await page.waitForTimeout(1500);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBeTruthy();
     await hero.screenshot({ path: `test-results/hero-${width}.png` });
-    await hero.getByRole('link', { name: 'Read the pack' }).click();
-    await expect(page).toHaveURL(/products\/recipe-01/);
+    await hero.getByRole('link', { name: 'Discover the blend' }).click();
+    await expect(page).toHaveURL(/the-collection/);
     expect(errors).toEqual([]);
   });
 }

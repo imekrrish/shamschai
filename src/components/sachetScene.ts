@@ -59,7 +59,7 @@ function pouchGeometry() {
 
 export async function mountSachet(host: HTMLElement, asset: string, backAsset: string, onReady: () => void, onFailure: () => void, isPaused: () => boolean = () => false, wantsMotion: () => boolean = () => true) {
   const target = host.querySelector<HTMLElement>('.sachet-canvas')!;
-  const hero = host.closest<HTMLElement>('.home-hero')!;
+  const interactionSurface = host.closest<HTMLElement>('.hero-product') ?? host;
   let renderer: THREE.WebGLRenderer;
   try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' }); }
   catch { onFailure(); return () => {}; }
@@ -156,7 +156,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
   };
   const move = (event: PointerEvent) => {
     if (!wantsMotion() || coarse.matches || event.pointerType === 'touch') return;
-    const rect = hero.getBoundingClientRect();
+    const rect = interactionSurface.getBoundingClientRect();
     pointer.set(THREE.MathUtils.clamp((event.clientX - rect.left) / rect.width * 2 - 1, -1, 1),
       THREE.MathUtils.clamp(1 - (event.clientY - rect.top) / rect.height * 2, -1, 1));
   };
@@ -203,8 +203,8 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
   const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; visibility(); });
   const resizeObserver = new ResizeObserver(resize);
   observer.observe(host); resizeObserver.observe(target);
-  hero.addEventListener('pointermove', move, { passive: true });
-  hero.addEventListener('pointerleave', leave);
+  interactionSurface.addEventListener('pointermove', move, { passive: true });
+  interactionSurface.addEventListener('pointerleave', leave);
   window.addEventListener('scroll', scroll, { passive: true });
   document.addEventListener('visibilitychange', visibility);
   reduced.addEventListener('change', motionChange);
@@ -222,7 +222,7 @@ export async function mountSachet(host: HTMLElement, asset: string, backAsset: s
     host.removeEventListener('lostpointercapture', up);
     host.removeEventListener('keydown', keydown);
     observer.disconnect(); resizeObserver.disconnect();
-    hero.removeEventListener('pointermove', move); hero.removeEventListener('pointerleave', leave);
+    interactionSurface.removeEventListener('pointermove', move); interactionSurface.removeEventListener('pointerleave', leave);
     window.removeEventListener('scroll', scroll);
     document.removeEventListener('visibilitychange', visibility); reduced.removeEventListener('change', motionChange);
     host.removeEventListener('shams:motion', motionChange);

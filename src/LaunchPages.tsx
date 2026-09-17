@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Check, QrCode } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useCatalog, useProduct } from './context/CatalogContext';
 import { pack } from './data/pack';
-import { CatalogNotice, Eyebrow, ImageSlot, money, numberWord, Reveal } from './components/ui';
+import { CatalogNotice, Eyebrow, ImageSlot, money, Reveal } from './components/ui';
 import ProductSelector from './components/ProductSelector';
 import RecipeWaitlist from './components/RecipeWaitlist';
 import HeroSachet from './components/HeroSachet';
@@ -16,170 +16,73 @@ export function LaunchHome() {
   const packSizes = chai?.variants ?? [];
   const from = packSizes.length ? Math.min(...packSizes.map(v => v.price)) : null;
 
-  // Each headline line rises out of its own mask, one after the next. Under
-  // Reduce Motion the same cadence plays as a fade, with nothing travelling.
-  const ease = [0.22, 1, 0.36, 1] as const;
-  const line = (i: number) => reduced
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.6, delay: 0.1 + i * 0.1 } }
-    : { initial: { y: '110%' }, animate: { y: '0%' }, transition: { duration: 1, delay: 0.15 + i * 0.12, ease } };
-  const fadeUp = (delay: number) => reduced
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.6, delay } }
-    : { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay } };
-
   return (
-    <>
-      {/* 1. HERO */}
-      <section className="home-hero signature-hero">
-        <div className="hero-copy">
-          <motion.div
-            className="hero-kicker"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-          >
-            <span /> {chai?.variantNameSlot || 'Masala Chai'}
-          </motion.div>
-
-          <h1>
-            <span className="line"><motion.span {...line(0)}>It’s a modern</motion.span></span>
-            <span className="line"><motion.span {...line(1)}>woman’s</motion.span></span>
-            <span className="line"><motion.em {...line(2)}>recipe.</motion.em></span>
+    <div className="matte-home">
+      <section className="home-hero matte-hero" aria-labelledby="home-title">
+        <motion.img className="matte-hero-image" src="/assets/shams/hero/matte-sachet-v2.webp"
+          initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : .15, ease: [.22, 1, .36, 1] }}
+          alt="Shams black masala chai sachet and a freshly brewed glass of chai on a charcoal counter"
+          width="1254" height="1254" fetchPriority="high" />
+        <div className="matte-hero-shade" aria-hidden="true" />
+        <div className="matte-hero-copy">
+          <Eyebrow>GOOD CHAI. EVERY DAY.</Eyebrow>
+          <h1 id="home-title" aria-label="Your day. Your chai. Your way.">
+            {['Your day.', 'Your chai.', 'Your way.'].map((line, index) => <span className="headline-mask" key={line} aria-hidden="true">
+              <motion.span initial={reduced ? false : { y: '105%', opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: reduced ? 0 : .85, delay: reduced ? 0 : .08 + index * .1, ease: [.22, 1, .36, 1] }}>
+                {index === 2 ? <em>{line}</em> : line}
+              </motion.span>
+            </span>)}
           </h1>
-
-          <motion.div className="hero-actions" {...fadeUp(0.62)}>
-            <Link className="btn btn-light" to="/the-collection">
-              Shop the pack <ArrowUpRight size={14} />
-            </Link>
-            <Link className="hero-story-link" to="/our-story">Our story <ArrowRight size={14} /></Link>
-          </motion.div>
-
-          <motion.ul
-            className="hero-assurance"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.85 }}
-          >
-            {pack.assurances.map(claim => <li key={claim}>{claim}</li>)}
-          </motion.ul>
+          <p>Bold tea, real spices. For whatever the day brings.</p>
+          <Link className="btn matte-button" to="/the-collection">Discover the blend <ArrowUpRight size={16} /></Link>
+          <Link className="matte-story-link" to="/our-story">Our story <ArrowRight size={14} /></Link>
         </div>
+        <div className="matte-hero-caption" aria-hidden="true"><span>MASALA CHAI</span><span>MAKE YOURSELF AT HOME.</span></div>
+      </section>
 
-        <motion.div
-          className="hero-product"
-          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-          animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-          transition={{ duration: reduced ? 0.7 : 1.4, delay: 0.1, ease }}
-        >
-          <div className="hero-glow" aria-hidden="true" />
-          {packSizes[0] && (
-            <div className="hero-edition"><span>Net weight</span><strong>{packSizes[0].weight}</strong></div>
-          )}
+      <div className="matte-assurances" aria-label="Our promise">
+        {pack.assurances.map(claim => <span key={claim}>{claim}</span>)}
+      </div>
+
+      <section className="section matte-pack" id="the-collection" aria-labelledby="pack-title">
+        <div className="matte-pack-art hero-product">
+          <span className="matte-pack-number" aria-hidden="true">01</span>
           <HeroSachet />
-          <Link to="/products/recipe-01" className="hero-detail-link" aria-label="Read the pack">
-            <ArrowUpRight />
-          </Link>
-        </motion.div>
-
-        <div className="hero-scroll" aria-hidden="true"><span /></div>
-      </section>
-
-      {/* 2. WHAT IS IN IT */}
-      <section className="section pack-blend">
-        <Reveal className="pack-blend-head">
-          <Eyebrow>INGREDIENTS</Eyebrow>
-          <h2>{chai ? `${numberWord(chai.ingredients.length)} things.` : 'What’s inside.'}<br /><em>Nothing else.</em></h2>
-          {chai?.description && <p>{chai.description}</p>}
+        </div>
+        <Reveal className="matte-pack-copy">
+          <Eyebrow>MEET YOUR DAILY RITUAL</Eyebrow>
+          <h2 id="pack-title">A good cup.<br /><em>Without the fuss.</em></h2>
+          <p>Black tea and warming spices. Make it strong, milky, sweet, or just the way you grew up with.</p>
+          {chai ? <>
+            <div className="matte-pack-meta">
+              <span>{packSizes.map(v => v.weight).join(' / ')}</span>
+              {from !== null && <span>From {money(from)}</span>}
+            </div>
+            <Link className="btn matte-button" to="/products/recipe-01">Explore the pack <ArrowUpRight size={16} /></Link>
+          </> : <CatalogNotice loading={loading} error={error} reload={reload} />}
+          <Link className="text-link" to="/brew-guide">Make it your way <ArrowRight size={14} /></Link>
         </Reveal>
-        {chai ? (
-          <ol className="pack-ingredients">
-            {chai.ingredients.map((item, i) => (
-              <li key={item}>
-                <span>{String(i + 1).padStart(2, '0')}</span>
-                <strong>{item}</strong>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <CatalogNotice loading={loading} error={error} reload={reload} />
-        )}
       </section>
 
-      {/* 3. THE PACK ITSELF */}
-      <section className="section pack-shelf" id="the-collection">
-        <div className="shelf-layout">
-          <Reveal className="shelf-photo">
-            <ImageSlot
-              src={chai?.images[0] || '/assets/shams/optimized/lifestyle-home-v2.webp'}
-              alt="Sham’s masala chai poured at home"
-              ratio="4 / 5"
-            />
-          </Reveal>
-          <div className="shelf-copy">
-            <Eyebrow>THE PACK</Eyebrow>
-            <h2>100% pure.<br /><em>Handcrafted.</em></h2>
-            {chai ? (
-              <>
-                <dl className="shelf-specs">
-                  <div>
-                    <dt>Net weight</dt>
-                    <dd>{packSizes.map(v => v.weight).join(' · ')}</dd>
-                  </div>
-                  {from !== null && (
-                    <div>
-                      <dt>From</dt>
-                      <dd>{money(from)} <small>{pack.details.mrpNote}</small></dd>
-                    </div>
-                  )}
-                  <div>
-                    <dt>Best before</dt>
-                    <dd>{pack.details.bestBefore}</dd>
-                  </div>
-                </dl>
-                <Link to="/the-collection" className="btn btn-light">
-                  See pack sizes &amp; prices <ArrowUpRight size={14} />
-                </Link>
-              </>
-            ) : (
-              <CatalogNotice loading={loading} error={error} reload={reload} />
-            )}
-          </div>
+      <section className="section everyday-stories" aria-labelledby="stories-title">
+        <Reveal className="stories-heading">
+          <div><Eyebrow>THE SHAMS EDIT</Eyebrow><h2 id="stories-title">Life happens.<br /><em>Chai helps.</em></h2></div>
+          <Link className="text-link" to="/the-edit">All stories <ArrowUpRight size={16} /></Link>
+        </Reveal>
+        <div className="everyday-card-grid">
+          {[
+            { image: 'home', tag: 'AT HOME', title: 'Every home has its own recipe.', copy: 'A little more milk. One extra simmer. The small things that make it yours.', slug: 'why-every-indian-home-makes-chai-differently', alt: 'Shams sachet and two glasses of chai in a sunlit home kitchen' },
+            { image: 'spice', tag: 'IN THE CUP', title: 'Good spice. Better balance.', copy: 'How tea, ginger and cardamom find their sweet spot.', slug: 'does-more-masala-mean-better-chai', alt: 'Shams sachet with ginger, cardamom and a glass of masala chai' },
+            { image: 'pause', tag: 'A MOMENT FOR YOU', title: 'Make room for a small pause.', copy: 'Rain outside. A warm cup inside. Some moments need very little.', slug: 'why-chai-tastes-different-every-morning', alt: 'Shams sachet beside a cup of chai and a book by a rainy window' },
+          ].map((story, index) => <Reveal className="everyday-card-reveal" key={story.image} delay={index * .09}><Link className="everyday-card" to={`/the-edit/${story.slug}`}>
+            <div className="everyday-card-image"><img src={`/assets/shams/journal/matte-${story.image}-v1.webp`} alt={story.alt} width="1448" height="1086" loading="lazy" /></div>
+            <div className="everyday-card-copy"><span>{story.tag}</span><h3>{story.title}</h3><p>{story.copy}</p><div className="everyday-card-link">Read the story <ArrowUpRight size={16} /></div></div>
+          </Link></Reveal>)}
         </div>
       </section>
-
-      {/* 4. HOW TO BREW IT */}
-      {(chai?.brewInstructions.length ?? 0) > 0 && (
-        <section className="section pack-method">
-          <Reveal className="method-head">
-            <Eyebrow>BREWING INSTRUCTIONS</Eyebrow>
-            <h2>{numberWord(chai!.brewInstructions.length)} steps,<br /><em>straight off the pack.</em></h2>
-          </Reveal>
-          <ol className="method-steps">
-            {chai!.brewInstructions.map((step, i) => (
-              <li key={step}>
-                <span>{String(i + 1).padStart(2, '0')}</span>
-                <p>{step}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      {/* 5. CLOSING */}
-      <section className="final-homepage-moment">
-        <div className="moment-content">
-          <h2>Aromatic black tea.<br /><em>Handpicked spices.</em></h2>
-          <div className="moment-cta">
-            <Link to="/the-collection" className="btn btn-light">
-              Bring {pack.brand} home <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-        <div className="moment-record">
-          <span>FSSAI {pack.record.fssai}</span>
-          <span>{pack.record.packedBy}</span>
-          <a href={`mailto:${pack.record.email}`}>{pack.record.email}</a>
-        </div>
-      </section>
-    </>
+    </div>
   );
 }
 

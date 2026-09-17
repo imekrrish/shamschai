@@ -12,9 +12,9 @@ export function ImageSlot({src,alt,ratio='4 / 5',className='',priority=false}:{s
 export function Eyebrow({children}:{children:ReactNode}){return <div className="eyebrow">{children}</div>}
 export function SectionTitle({eyebrow,title,copy,center=false}:{eyebrow?:string;title:string;copy?:string;center?:boolean}){return <div className={`section-title ${center?'center':''}`}>{eyebrow&&<Eyebrow>{eyebrow}</Eyebrow>}<h2>{title}</h2>{copy&&<p>{copy}</p>}</div>}
 export function ButtonLink({children,outline=false,onClick}:{children:ReactNode;outline?:boolean;onClick?:()=>void}){return <button onClick={onClick} className={`btn ${outline?'btn-outline':''}`}>{children}<ArrowRight size={18}/></button>}
-export function Reveal({children,className=''}:{children:ReactNode;className?:string}){
+export function Reveal({children,className='',delay=0}:{children:ReactNode;className?:string;delay?:number}){
   const reduced=useReducedMotion();
-  return <motion.div className={className} initial={reduced?false:{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.1}} transition={{duration:.65,ease:[.22,1,.36,1]}}>{children}</motion.div>;
+  return <motion.div className={className} initial={reduced?false:{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.12}} transition={{duration:reduced?0:.7,delay:reduced?0:delay,ease:[.22,1,.36,1]}}>{children}</motion.div>;
 }
 
 const WORDS=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];

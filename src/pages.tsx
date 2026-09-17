@@ -61,7 +61,7 @@ export function OurStory() {
 
           <div className="story-image-column">
             <ImageSlot
-              src="/assets/shams/optimized/lifestyle-home-v2.webp"
+              src="/assets/shams/journal/matte-home-v1.webp"
               alt="Shams tea testing in morning kitchen light"
               ratio="4 / 5"
               priority
