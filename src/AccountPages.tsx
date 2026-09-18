@@ -42,6 +42,8 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const googleButton = useRef<HTMLDivElement>(null);
+  // Measured to size Google's button, which only accepts a pixel width.
+  const googleWrap = useRef<HTMLDivElement>(null);
 
   const { login, register, loginWithGoogle, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -64,57 +66,79 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
     if (!clientId || !googleButton.current) return;
 
     let isCancelled = false;
+    const cleanups: Array<() => void> = [() => { isCancelled = true; }];
+    let initialised = false;
+    let renderedWidth = 0;
+
+    /**
+     * Google renders at an exact pixel width, so it is measured against the
+     * card rather than pinned to a desktop default that overhangs a phone.
+     * Google itself clamps to 200–400px.
+     */
+    const buttonWidth = () =>
+      Math.round(Math.min(400, Math.max(200, googleWrap.current?.clientWidth ?? 0)));
 
     const render = () => {
       if (isCancelled) return;
       const google = window.google;
       if (!google || !googleButton.current) return;
       try {
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: async ({ credential }) => {
-            setError('');
-            setLoading(true);
-            try {
-              await callbackRef.current.loginWithGoogle(credential);
-              callbackRef.current.navigate(callbackRef.current.redirect, { replace: true });
-            } catch (err: any) {
-              setError(err.message || 'Google sign-in could not be completed.');
-            } finally {
-              setLoading(false);
-            }
-          },
-        });
-        if (googleButton.current) {
-          googleButton.current.innerHTML = '';
-          google.accounts.id.renderButton(googleButton.current, {
-            type: 'standard',
-            theme: 'outline',
-            size: 'large',
-            text: 'continue_with',
-            shape: 'rectangular',
-            width: 320,
+        if (!initialised) {
+          google.accounts.id.initialize({
+            client_id: clientId,
+            callback: async ({ credential }) => {
+              setError('');
+              setLoading(true);
+              try {
+                await callbackRef.current.loginWithGoogle(credential);
+                callbackRef.current.navigate(callbackRef.current.redirect, { replace: true });
+              } catch (err: any) {
+                setError(err.message || 'Google sign-in could not be completed.');
+              } finally {
+                setLoading(false);
+              }
+            },
           });
+          initialised = true;
         }
+        const width = buttonWidth();
+        googleButton.current.innerHTML = '';
+        google.accounts.id.renderButton(googleButton.current, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          text: 'continue_with',
+          shape: 'rectangular',
+          width,
+        });
+        renderedWidth = width;
       } catch (err) {
         console.warn('Google identity render error:', err);
       }
     };
 
+    // Rotating the phone or resizing re-measures. The width guard stops an
+    // unchanged size from re-rendering the button on every observer tick.
+    if (typeof ResizeObserver !== 'undefined' && googleWrap.current) {
+      const observer = new ResizeObserver(() => {
+        if (window.google && buttonWidth() !== renderedWidth) render();
+      });
+      observer.observe(googleWrap.current);
+      cleanups.push(() => observer.disconnect());
+    }
+
+    const teardown = () => cleanups.forEach(fn => fn());
+
     if (window.google) {
       render();
-      return () => {
-        isCancelled = true;
-      };
+      return teardown;
     }
 
     const existing = document.querySelector<HTMLScriptElement>('script[data-google-identity]');
     if (existing) {
       existing.addEventListener('load', render);
-      return () => {
-        isCancelled = true;
-        existing.removeEventListener('load', render);
-      };
+      cleanups.push(() => existing.removeEventListener('load', render));
+      return teardown;
     }
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
@@ -122,10 +146,8 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
     script.dataset.googleIdentity = 'true';
     script.addEventListener('load', render);
     document.head.appendChild(script);
-    return () => {
-      isCancelled = true;
-      script.removeEventListener('load', render);
-    };
+    cleanups.push(() => script.removeEventListener('load', render));
+    return teardown;
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -253,7 +275,7 @@ export function AuthPage({ initialMode = 'login' }: { initialMode?: 'login' | 'r
         </form>
 
         {__GOOGLE_CLIENT_ID__ && (
-          <div className="google-signin">
+          <div className="google-signin" ref={googleWrap}>
             <span>OR</span>
             <div ref={googleButton} aria-label="Continue with Google" />
           </div>

@@ -7,26 +7,55 @@
 .site-header {border-bottom:1px solid var(--line)}
 .announcement {color:#c8c4bd}
 .matte-home {background:var(--surface)}
-.home-hero.matte-hero {position:relative; display:grid; grid-template-columns:.95fr 1.05fr; align-items:center; gap:40px; isolation:isolate; min-height:590px; padding:38px max(6vw,var(--pad)) 58px; overflow:hidden; background:#141414; border-bottom:1px solid var(--line)}
-.matte-hero-image {position:relative; grid-column:2; grid-row:1; width:100%; height:auto; max-width:570px; max-height:570px; aspect-ratio:1; object-fit:contain; justify-self:center; border-radius:5px}
-.matte-hero-shade {display:none}
-.matte-hero-copy {grid-column:1; grid-row:1; width:100%; max-width:520px; color:var(--fg)}
-.matte-hero-copy .eyebrow {font-size:10px; letter-spacing:.2em; margin-bottom:25px; color:#d0ccc5}
-.matte-hero h1 {font-size:clamp(64px,6.3vw,92px); font-weight:450; line-height:.98; letter-spacing:-.04em}
-.matte-hero h1 em {color:#d5cabe}
+/* Home hero: the photograph bleeds to the top, bottom and right edges so the
+   page reads as one lit surface instead of a picture pasted onto a panel. */
+.home-hero.matte-hero {
+  /* One gutter for the whole page: the hero lines up with every section under it. */
+  --hero-pad:var(--pad);
+  position:relative; isolation:isolate; overflow:hidden;
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.02fr); align-items:center;
+  column-gap:clamp(28px,4vw,72px);
+  min-height:min(84vh,780px);
+  padding:clamp(44px,6vh,76px) var(--hero-pad) clamp(80px,9vh,108px);
+  background:#141414; border-bottom:1px solid var(--line);
+}
+/* Sits inside the copy column for the phone layout, so it is pushed behind
+   that column's own text rather than painting over the wider screens' links. */
+.matte-hero-media {position:absolute; inset:0 0 0 auto; z-index:-1; width:clamp(460px,53%,1180px); margin:0; overflow:hidden}
+.matte-hero-image {width:100%; height:100%; max-width:none; object-fit:cover; object-position:52% 54%}
+/* The studio backdrop is a flat warm grey, so a single gradient dissolves it
+   into the charcoal page with no seam where the photograph starts. */
+.matte-hero-shade {display:block; position:absolute; inset:0;
+  background:linear-gradient(to right,#141414 0,rgba(20,20,20,.97) 14%,rgba(20,20,20,.62) 36%,rgba(20,20,20,0) 68%),
+    linear-gradient(to top,rgba(20,20,20,.55),rgba(20,20,20,0) 24%),
+    linear-gradient(to bottom,rgba(20,20,20,.45),rgba(20,20,20,0) 22%)}
+.matte-hero-copy {z-index:1; grid-column:1; grid-row:1; width:100%; max-width:540px; color:var(--fg)}
+.matte-hero-copy .eyebrow {margin-bottom:22px; font-size:10px; letter-spacing:.22em; color:#bcab98}
+.matte-hero h1 {font-size:clamp(54px,5.5vw,88px); font-weight:450; line-height:.96; letter-spacing:-.042em}
+.matte-hero h1 em {color:#d9bfa4}
 .headline-mask {display:block; overflow:hidden; padding-bottom:.09em; margin-bottom:-.09em}
 .headline-mask>span {display:block}
-.everyday-card-reveal {min-width:0; display:flex}
-.everyday-card-reveal>.everyday-card {width:100%}
+.matte-hero-copy p {font-size:15px; line-height:1.75; max-width:40ch; margin:26px 0 34px; color:rgba(238,233,226,.72)}
+.matte-hero-actions {display:flex; align-items:center; flex-wrap:wrap; gap:14px 26px}
+/* Let the pair wrap onto two rows rather than squeezing a label out of shape. */
+.matte-hero-actions>* {flex:0 0 auto; white-space:nowrap}
+.matte-hero-meta {display:flex; align-items:center; flex-wrap:wrap; gap:8px 16px; min-height:18px; margin-top:32px;
+  font:600 10px/1.6 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:rgba(238,233,226,.5)}
+.matte-hero-meta span+span::before {content:'·'; margin-right:16px; color:rgba(238,233,226,.32)}
+.matte-hero-caption {position:absolute; z-index:1; bottom:clamp(24px,3.4vh,38px); left:var(--hero-pad); right:var(--hero-pad);
+  display:flex; justify-content:space-between; gap:20px;
+  font:600 9px/1.6 var(--sans); letter-spacing:.2em; text-transform:uppercase; color:rgba(238,233,226,.44)}
+.matte-hero-caption::before {content:''; position:absolute; left:0; right:0; top:-18px; height:1px;
+  background:linear-gradient(to right,rgba(241,238,232,.18),rgba(241,238,232,0) 70%)}
 .matte-home :is(.matte-button,.matte-story-link) {transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
-.matte-button:hover {box-shadow:0 5px 22px rgba(0,0,0,.15)}
+.matte-button {border-radius:4px; background:#f3f0ea; border-color:#f3f0ea; color:#161616; min-height:54px; padding-inline:28px; gap:26px; font-size:12px; letter-spacing:.03em}
+.matte-button:hover {background:#d9bfa4; border-color:#d9bfa4; color:#161616; box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.matte-story-link {display:inline-flex; align-items:center; gap:12px; min-height:44px; padding-block:11px; font-size:12px; font-weight:600; letter-spacing:.03em; color:#e8e3db; border-bottom:1px solid rgba(241,238,232,.3)}
+.matte-story-link:hover {color:#fff; border-bottom-color:rgba(241,238,232,.75)}
 .matte-story-link svg,.everyday-card-link svg {transition:transform .3s var(--ease)}
 .matte-story-link:hover svg,.everyday-card:hover .everyday-card-link svg {transform:translate(3px,-2px)}
-.matte-hero-copy p {font-size:14px; line-height:1.8; max-width:29ch; margin:24px 0 30px; color:#dad5ce}
-.matte-button {border-radius:4px; background:#f1eee8; border-color:#f1eee8; color:#171717; min-height:52px; padding-inline:25px; gap:28px; font-size:12px; letter-spacing:0}
-.matte-button:hover {background:#d5cabe; border-color:#d5cabe; color:#171717}
-.matte-story-link {display:inline-flex; align-items:center; gap:12px; margin-left:25px; padding-block:14px; font-size:12px; border-bottom:1px solid rgba(241,238,232,.3)}
-.matte-hero-caption {position:absolute; bottom:25px; left:max(6vw,var(--pad)); right:max(6vw,var(--pad)); display:flex; justify-content:space-between; color:#c7c2b9; font-size:9px; letter-spacing:.15em}
+.everyday-card-reveal {min-width:0; display:flex}
+.everyday-card-reveal>.everyday-card {width:100%}
 .matte-assurances {display:flex; justify-content:center; gap:65px; padding:23px 24px; border-bottom:1px solid var(--line); color:#bcb8b1; font-size:10px; letter-spacing:.1em; text-transform:uppercase}
 .matte-assurances span+span {border-left:1px solid var(--line); padding-left:65px}
 .matte-pack {display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,7vw,110px); align-items:center; max-width:1500px; margin:auto}
@@ -91,11 +120,19 @@
 .edit-article-story .journal-story-image {max-width:1040px; margin-inline:auto; padding-inline:24px}
 .edit-article-story .journal-story-image .image-slot {border-radius:8px}
 .story-reading-progress {position:fixed; top:0; left:0; width:100%; height:3px; background:#d4c6b5; transform-origin:left; z-index:150; pointer-events:none}
-@media (min-width:1600px) {.home-hero.matte-hero {min-height:690px}}
+@media (min-width:1600px) {
+  .home-hero.matte-hero {min-height:min(84vh,860px)}
+  .matte-hero-copy {max-width:620px}
+}
 @media (max-width:1100px) and (min-width:761px) {
-  .home-hero.matte-hero {min-height:550px; padding-inline:30px; gap:24px}
-  .matte-hero h1 {font-size:66px}
-  .matte-story-link {display:flex; width:fit-content; margin-left:0; margin-top:8px}
+  /* A shorter, wider frame here: a tall narrow crop of a square photograph
+     would cut the glass off the side of the counter. */
+  .home-hero.matte-hero {grid-template-columns:minmax(0,1fr) minmax(0,.72fr); column-gap:24px; min-height:min(74vh,560px); padding-block:40px 76px}
+  .matte-hero-media {width:clamp(380px,57%,640px)}
+  .matte-hero-shade {background:linear-gradient(to right,#141414 0,rgba(20,20,20,.97) 18%,rgba(20,20,20,.55) 44%,rgba(20,20,20,0) 76%),linear-gradient(to top,rgba(20,20,20,.55),rgba(20,20,20,0) 24%)}
+  .matte-hero h1 {font-size:clamp(44px,5.9vw,62px)}
+  .matte-hero-copy p {font-size:14px; max-width:34ch; margin:22px 0 28px}
+  .matte-hero-meta {margin-top:26px; font-size:9px}
   .matte-assurances {gap:28px}
   .matte-assurances span+span {padding-left:28px}
   .matte-pack {gap:35px}
@@ -104,15 +141,24 @@
   .everyday-card-copy {padding:19px}
 }
 @media (max-width:760px) {
-  .home-hero.matte-hero {display:flex; flex-direction:column; align-items:stretch; gap:0; min-height:0; padding:0 24px 24px; background:#141414}
-  .matte-hero-copy {order:0; width:100%; max-width:none; padding:36px 0 26px}
-  .matte-hero-copy .eyebrow {font-size:9px; margin-bottom:20px}
-  .matte-hero h1 {font-size:clamp(58px,13vw,76px); line-height:.95}
-  .matte-hero-copy p {font-size:13px; max-width:30ch; margin:20px 0 24px}
-  .matte-hero-image {order:1; width:100%; height:auto; max-width:390px; max-height:none; object-fit:contain; align-self:center}
-  .matte-hero-shade,.matte-hero-caption {display:none}
-  .matte-story-link {margin-left:22px; font-size:11px}
-  .matte-button {padding-inline:20px; gap:18px; font-size:11px}
+  /* Copy and the buy button stay above the fold; the photograph runs edge to
+     edge underneath and fades out, so the page has somewhere to lead. */
+  .home-hero.matte-hero {display:flex; flex-direction:column; align-items:stretch; min-height:0; padding:26px var(--hero-pad) 0}
+  .matte-hero-copy {width:100%; max-width:none}
+  .matte-hero-copy .eyebrow {font-size:9px; letter-spacing:.2em; margin-bottom:16px}
+  .matte-hero h1 {font-size:clamp(40px,10.9vw,58px); line-height:.97}
+  .matte-hero-copy p {font-size:14px; line-height:1.7; max-width:34ch; margin:22px 0 26px}
+  .matte-hero-actions {flex-direction:column; align-items:stretch; gap:12px}
+  .matte-hero-meta {margin-top:20px; gap:6px 12px; font-size:9px; letter-spacing:.12em}
+  .matte-hero-meta span+span::before {margin-right:12px}
+  .matte-hero-media {position:relative; inset:auto; width:auto; aspect-ratio:1; margin:18px calc(var(--hero-pad) * -1) 0}
+  .matte-hero-image {object-position:50% 50%}
+  .matte-hero-shade {background:linear-gradient(to bottom,#141414 0,rgba(20,20,20,.4) 12%,rgba(20,20,20,0) 24%,rgba(20,20,20,0) 82%,rgba(20,20,20,.8) 95%,#141414 100%)}
+  .matte-hero-shipping {display:none}
+  .matte-hero-caption {position:static; margin-top:24px; padding:16px 0 26px; border-top:1px solid var(--line); font-size:8px; letter-spacing:.16em}
+  .matte-hero-caption::before {display:none}
+  .matte-story-link {align-self:flex-start; font-size:11px}
+  .matte-button {width:100%; justify-content:space-between; min-height:52px; padding-inline:22px; gap:18px; font-size:11px}
   .matte-assurances {gap:12px; padding:21px 18px; text-align:center; font-size:8px; line-height:1.8; letter-spacing:.04em}
   .matte-assurances span {flex:1}
   .matte-assurances span+span {padding-left:12px}

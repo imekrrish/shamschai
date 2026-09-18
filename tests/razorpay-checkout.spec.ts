@@ -27,11 +27,18 @@ async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offl
     localStorage.setItem('shams_user', JSON.stringify(user));
     localStorage.setItem('shams_token', 'test-token');
     if (seedCart) localStorage.setItem('shams-cart-v2', JSON.stringify({ quantities: { '500g': 1, '1000g': 0 }, pending: null }));
+    (window as any).__rzpEvents = [];
     (window as any).Razorpay = class {
       constructor(public options: any) {}
       open() {
         if (mode === 'dismiss') this.options.modal.ondismiss();
         else this.options.handler({ razorpay_order_id: 'order_Test', razorpay_payment_id: 'pay_Test', razorpay_signature: 'a'.repeat(64) });
+      }
+      // Razorpay reaches ondismiss on a programmatic close as well, so the
+      // fixture does too: closing on success must not read as an abandonment.
+      close() {
+        (window as any).__rzpEvents.push('close');
+        this.options.modal.ondismiss();
       }
     };
   }, { user, mode, seedCart });
@@ -73,6 +80,23 @@ test('successful checkout waits for server verification and shows paid order', a
   await expect(page).toHaveURL(/order-confirmation\/ORD-TEST/);
   await expect(page.getByText('PAYMENT CONFIRMED', { exact: true })).toBeVisible();
   expect(ids).toHaveLength(1);
+});
+
+test('the payment window closes before verification and the wait happens on our own screen', async ({ page }) => {
+  await setup(page, 'paid');
+  // Hold verification open so the gap between "paid" and "confirmed" is observable.
+  await page.route('**/payments/verify', async route => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await route.fulfill({ json: { success: true, data: { paymentStatus: 'PAID', orderStatus: 'CONFIRMED' } } });
+  });
+  await page.goto('/checkout');
+  await submit(page);
+  await expect(page.locator('.payment-confirming')).toBeVisible();
+  await expect(page.getByText('Payment received')).toBeVisible();
+  // Closed already, and the dismissal it triggers is not mistaken for a cancellation.
+  expect(await page.evaluate(() => (window as any).__rzpEvents)).toEqual(['close']);
+  // The screen is held until verification lands, then hands over to the receipt.
+  await expect(page).toHaveURL(/order-confirmation\/ORD-TEST/);
 });
 
 for (const mode of ['offline', 'dismiss', 'unverified'] as const) {

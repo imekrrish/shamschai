@@ -19,7 +19,12 @@ export function loadRazorpay(): Promise<void> {
   return loader;
 }
 
-export async function openPayment(orderId: string, intent: PaymentIntent, user: UserProfile | null): Promise<void> {
+/**
+ * @param onCaptured Runs the moment Razorpay reports a successful payment and
+ *   its window is dismissed, before the verification round-trip. The caller
+ *   uses it to put its own confirmation state on screen.
+ */
+export async function openPayment(orderId: string, intent: PaymentIntent, user: UserProfile | null, onCaptured?: () => void): Promise<void> {
   await loadRazorpay();
   return new Promise((resolve, reject) => {
     let processing = false;
@@ -27,9 +32,15 @@ export async function openPayment(orderId: string, intent: PaymentIntent, user: 
       key: intent.keyId, order_id: intent.razorpayOrderId, amount: intent.amount, currency: intent.currency,
       name: "Sham's Chai", description: 'Masala Chai', theme: { color: '#B48A68' },
       prefill: { name: user?.name, email: user?.email, contact: user?.phone },
+      // `processing` also covers the programmatic close below, which reaches
+      // ondismiss the same way a cancelled payment would.
       modal: { ondismiss: () => { if (!processing) reject(new Error('Payment window closed. Your packs are saved in your cart.')); } },
       handler: async (result: Result) => {
         processing = true;
+        // Razorpay already has the money, so its window comes down before we
+        // verify rather than after: the payer never waits on a dead screen.
+        try { checkout.close(); } catch { /* Razorpay may have closed it already. */ }
+        onCaptured?.();
         try {
           const verified = await api.verifyPayment({ ...result, orderId });
           if (verified.paymentStatus !== 'PAID') throw new Error('Payment is awaiting confirmation. Check My Orders before paying again.');

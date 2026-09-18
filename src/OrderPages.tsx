@@ -48,6 +48,9 @@ export function Checkout() {
   const [agreed, setAgreed] = useState(true);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Set once Razorpay reports success, so the wait for our own verification
+  // happens on our screen instead of behind Razorpay's.
+  const [confirming, setConfirming] = useState(false);
   const submitting = useRef(false);
 
   // Load saved addresses if user is logged in
@@ -167,7 +170,12 @@ export function Checkout() {
       cart.rememberPayment({ orderId: order.id, userId: user!.id, quantities: { ...quantities }, fingerprint });
       if (order.paymentStatus !== 'PAID') {
         if (!paymentIntent) throw new Error('This order cannot be paid. Please check My Orders.');
-        await openPayment(order.id, paymentIntent, user);
+        await openPayment(order.id, paymentIntent, user, () => {
+          // The address step is settled once the money is taken; only the
+          // confirmation should be on screen from here.
+          setShowAddressConfirm(false);
+          setConfirming(true);
+        });
       }
       sessionStorage.removeItem(storageKey);
       cart.complete(order.id);
@@ -175,6 +183,7 @@ export function Checkout() {
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to place order. Please check details and try again.');
+      setConfirming(false);
       setIsSubmitting(false);
       setShowAddressConfirm(false);
       navigate('/cart', { state: { message: err.message || 'Checkout was interrupted. Your packs are saved in your cart.' } });
@@ -499,6 +508,18 @@ export function Checkout() {
           Instant confirmation. Once confirmed, you will receive real-time order status and tracking in your account dashboard.
         </p>
       </form>
+
+      {/* Holds the screen from the instant Razorpay closes until the payment is
+          verified and the confirmation page takes over. */}
+      {confirming && (
+        <div className="modal-backdrop payment-confirming" role="status" aria-live="polite">
+          <div className="payment-confirming-card">
+            <span className="catalog-spinner" aria-hidden="true" />
+            <h2>Payment received</h2>
+            <p>Confirming your order with the bank. This takes a moment &mdash; please do not close this window or pay again.</p>
+          </div>
+        </div>
+      )}
 
       {/* First-Time / New Order Address Confirmation Modal */}
       {showAddressConfirm && (

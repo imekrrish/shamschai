@@ -95,8 +95,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       </a>
 
       {/* Modern Announcement Strip */}
+      {/* Narrow phones only have room for the offer, so the brand lines drop away. */}
       <div className="announcement">
-        SHAMS MASALA CHAI <span>·</span> IT’S A MODERN WOMAN’S RECIPE <span>·</span> COMPLIMENTARY EXPRESS SHIPPING OVER ₹500
+        <b>SHAMS MASALA CHAI</b> <span>·</span> <b>IT’S A MODERN WOMAN’S RECIPE</b> <span>·</span> COMPLIMENTARY EXPRESS SHIPPING OVER ₹500
       </div>
 
       <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>

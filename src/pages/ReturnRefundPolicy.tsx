@@ -12,10 +12,10 @@ export function ReturnRefundPolicy() {
             At Shams Chai, we take great care in preparing, packing and delivering our products so that they reach our customers in excellent condition.
           </p>
           <p>
-            Because our products are consumable food products, we currently do not accept general returns or exchanges once an order has been delivered.
+            Because tea is a consumable food product, we do not accept general returns or exchanges once an order has been delivered.
           </p>
           <p>
-            However, if there is a genuine problem with an order, customers may contact us and we will review the issue and provide an appropriate resolution where applicable.
+            If there is a genuine problem with an order &mdash; damage, a missing item or an incorrect product &mdash; please get in touch. The sections below set out what is covered and how to raise it.
           </p>
         </>
       }
@@ -30,7 +30,7 @@ export function ReturnRefundPolicy() {
           <li>Products that have been opened, consumed, used or tampered with after delivery</li>
         </ul>
         <p>
-          Because tea and related products are consumable food items, returned products generally cannot be resold due to hygiene, food safety and quality-control requirements.
+          Returned food products generally cannot be resold, because of hygiene, food safety and quality-control requirements.
         </p>
         <p>
           Nothing in this policy limits any rights available to customers under applicable consumer-protection laws.
@@ -49,7 +49,7 @@ export function ReturnRefundPolicy() {
           <li>The product received is materially different from what was described on the website</li>
         </ul>
         <p>
-          Customers should contact us as soon as reasonably possible after receiving the order.
+          These issues should be raised as soon as reasonably possible after the order is received.
         </p>
         <p>For quicker resolution, customers should provide:</p>
         <ul className="legal-list">
@@ -68,10 +68,7 @@ export function ReturnRefundPolicy() {
 
       <LegalSection number={3} title="Resolution of Eligible Issues">
         <p>
-          After receiving a complaint, Shams Chai will review the information provided.
-        </p>
-        <p>
-          Depending on the circumstances, available evidence and applicable law, an eligible issue may be resolved through one of the following:
+          Once a complaint is received, Shams Chai will review the information provided. Depending on the circumstances, available evidence and applicable law, an eligible issue may be resolved through one of the following:
         </p>
         <ul className="legal-list">
           <li>Replacement of the affected product</li>
@@ -81,13 +78,7 @@ export function ReturnRefundPolicy() {
           <li>Full refund</li>
         </ul>
         <p>
-          The resolution offered will depend on the nature of the issue.
-        </p>
-        <p>
-          Submitting a complaint does not automatically guarantee a refund.
-        </p>
-        <p>
-          Each request will be reviewed individually.
+          Submitting a complaint does not automatically guarantee a refund. Each request is reviewed individually, and the resolution offered depends on the nature of the issue.
         </p>
       </LegalSection>
 
@@ -112,13 +103,7 @@ export function ReturnRefundPolicy() {
 
       <LegalSection number={5} title="Order Cancellation">
         <p>
-          Customers who wish to cancel an order should contact Shams Chai as soon as possible.
-        </p>
-        <p>
-          An order may be cancelled only if it has not yet been processed, packed or handed over for shipping.
-        </p>
-        <p>
-          Once an order has been processed or dispatched, cancellation may no longer be possible.
+          Customers who wish to cancel an order should contact Shams Chai as soon as possible. An order may be cancelled only while it has not yet been processed, packed or handed over for shipping; once it has been dispatched, cancellation may no longer be possible.
         </p>
         <p>
           Shams Chai may also cancel an order due to circumstances such as:
@@ -166,25 +151,19 @@ export function ReturnRefundPolicy() {
           If a customer believes a product may have a genuine food-safety, contamination, manufacturing or quality issue, the product should not be consumed.
         </p>
         <p>
-          Customers should retain:
+          Alongside the details listed in Section 2, customers should retain:
         </p>
         <ul className="legal-list">
-          <li>The affected product</li>
-          <li>Product packaging</li>
-          <li>Batch information</li>
-          <li>Manufacturing or packing details</li>
-          <li>Photographs or videos</li>
-          <li>Order information</li>
+          <li>The affected product and its packaging, kept unopened and unused where possible</li>
+          <li>Batch, manufacturing and packing details printed on the pack</li>
         </ul>
         <p>
-          Shams Chai may request additional information so the issue can be reviewed properly.
+          Shams Chai may request additional information so the concern can be reviewed properly.
         </p>
       </LegalSection>
 
       <LegalSection number={8} title="Contact Us">
-        <p>
-          For any order-related issue, complaint or refund request, please contact:
-        </p>
+        {/* The card carries its own lead line; a paragraph here would repeat it. */}
         <LegalContactBox
           title="Shams Chai Customer Support"
           description="For any order-related issue, complaint or refund request, please contact us:"

@@ -31,7 +31,7 @@ for (const width of [390, 1440]) {
     await page.waitForTimeout(1500);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBeTruthy();
     await hero.screenshot({ path: `test-results/hero-${width}.png` });
-    await hero.getByRole('link', { name: 'Discover the blend' }).click();
+    await hero.getByRole('link', { name: 'Shop the blend' }).click();
     await expect(page).toHaveURL(/the-collection/);
     expect(errors).toEqual([]);
   });

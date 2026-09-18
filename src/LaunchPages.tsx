@@ -19,27 +19,41 @@ export function LaunchHome() {
   return (
     <div className="matte-home">
       <section className="home-hero matte-hero" aria-labelledby="home-title">
-        <motion.img className="matte-hero-image" src="/assets/shams/hero/matte-sachet-v2.webp"
-          initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : .15, ease: [.22, 1, .36, 1] }}
-          alt="Shams black masala chai sachet and a freshly brewed glass of chai on a charcoal counter"
-          width="1254" height="1254" fetchPriority="high" />
-        <div className="matte-hero-shade" aria-hidden="true" />
         <div className="matte-hero-copy">
-          <Eyebrow>GOOD CHAI. EVERY DAY.</Eyebrow>
-          <h1 id="home-title" aria-label="Your day. Your chai. Your way.">
-            {['Your day.', 'Your chai.', 'Your way.'].map((line, index) => <span className="headline-mask" key={line} aria-hidden="true">
+          <Eyebrow>IT&rsquo;S A MODERN WOMAN&rsquo;S RECIPE</Eyebrow>
+          <h1 id="home-title" aria-label="Strong tea. Whole spices. Proper chai.">
+            {['Strong tea.', 'Whole spices.', 'Proper chai.'].map((line, index) => <span className="headline-mask" key={line} aria-hidden="true">
               <motion.span initial={reduced ? false : { y: '105%', opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: reduced ? 0 : .85, delay: reduced ? 0 : .08 + index * .1, ease: [.22, 1, .36, 1] }}>
                 {index === 2 ? <em>{line}</em> : line}
               </motion.span>
             </span>)}
           </h1>
-          <p>Bold tea, real spices. For whatever the day brings.</p>
-          <Link className="btn matte-button" to="/the-collection">Discover the blend <ArrowUpRight size={16} /></Link>
-          <Link className="matte-story-link" to="/our-story">Our story <ArrowRight size={14} /></Link>
+          <figure className="matte-hero-media">
+            <motion.img className="matte-hero-image" src="/assets/shams/hero/matte-sachet-v2.webp"
+              initial={reduced ? false : { opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: reduced ? 0 : 1.4, delay: reduced ? 0 : .1, ease: [.22, 1, .36, 1] }}
+              alt="Shams black masala chai sachet and a freshly brewed glass of chai on a charcoal counter"
+              width="1254" height="1254" fetchPriority="high" />
+            <span className="matte-hero-shade" aria-hidden="true" />
+          </figure>
+          <p>Black tea, ginger and cardamom, blended in small batches in Hyderabad. No added sugar, no preservatives &mdash; just the cup you grew up on.</p>
+          <div className="matte-hero-actions">
+            <Link className="btn matte-button" to="/the-collection">Shop the blend <ArrowUpRight size={16} /></Link>
+            <Link className="matte-story-link" to="/our-story">Read our story <ArrowRight size={14} /></Link>
+          </div>
+          {/* Reserved whether or not the catalogue answers, so the hero never shifts under the reader. */}
+          <div className="matte-hero-meta">
+            {chai && <>
+              {packSizes.length > 0 && <span>{packSizes.map(v => v.weight).join(' / ')}</span>}
+              {from !== null && <span>From {money(from)}</span>}
+              {/* The announcement strip is the only line phones keep, so this
+                  would only repeat it there. */}
+              <span className="matte-hero-shipping">Free delivery over &#8377;500</span>
+            </>}
+          </div>
         </div>
-        <div className="matte-hero-caption" aria-hidden="true"><span>MASALA CHAI</span><span>MAKE YOURSELF AT HOME.</span></div>
+        <div className="matte-hero-caption" aria-hidden="true"><span>Recipe 01 &middot; Masala Chai</span><span>Make yourself at home.</span></div>
       </section>
 
       <div className="matte-assurances" aria-label="Our promise">
