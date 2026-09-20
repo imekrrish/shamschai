@@ -1,6 +1,6 @@
 import AddressLocationFields from './components/AddressLocationFields';
 import { FormEvent, useMemo, useState, useEffect, useRef } from 'react';
-import { ArrowRight, Check, ChevronLeft, Minus, Plus, ShieldCheck, CreditCard, MapPin, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowRight, Check, Minus, Plus, ShieldCheck, CreditCard, MapPin, AlertCircle } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eyebrow, money } from './components/ui';
 import { useAuth } from './context/AuthContext';
@@ -8,6 +8,7 @@ import { api, Address } from './utils/api';
 import { loadRazorpay, openPayment } from './utils/razorpay';
 import { useCart, useCartRows, CartSize } from './context/CartContext';
 import { checkoutFingerprint } from './utils/checkoutFingerprint';
+import { BackLink, OrderFlowBar, OrderSteps } from './components/OrderFlow';
 
 export function Checkout() {
   const [params] = useSearchParams();
@@ -225,12 +226,15 @@ export function Checkout() {
 
   const currentAddress = resolveCurrentAddress();
 
+  const chosenSizes = sizes.filter((size) => (quantities[size] ?? 0) > 0);
+
   return (
-    <section className="checkout-page section">
+    <section className="checkout-page">
       <div className="checkout-heading">
-        <Link to="/products/masala-chai" className="checkout-back">
-          <ChevronLeft /> BACK TO THE BLEND
-        </Link>
+        <OrderFlowBar>
+          <BackLink to="/cart">BACK TO BAG</BackLink>
+        </OrderFlowBar>
+        <OrderSteps current={2} />
         <Eyebrow>ONE LAST POUR</Eyebrow>
         <h1>
           Your chai,
@@ -259,10 +263,10 @@ export function Checkout() {
         </div>
       </div>
 
-      <form className="checkout-form" onSubmit={submit}>
+      <form id="checkout-form" className="checkout-form" onSubmit={submit}>
         {/* Step 01: Packs */}
         <div className="checkout-section">
-          <span className="checkout-step">01</span>
+          <span className="checkout-step">STEP 01</span>
           <div>
             <h2>Choose your packs</h2>
             <p>Select the quantity you need in each handcrafted size.</p>
@@ -316,7 +320,7 @@ export function Checkout() {
 
         {/* Step 02: Delivery Details */}
         <div className="checkout-section details-title">
-          <span className="checkout-step">02</span>
+          <span className="checkout-step">STEP 02</span>
           <div>
             <h2>Delivery details</h2>
             <p>Where should we deliver your freshly blended chai?</p>
@@ -439,7 +443,7 @@ export function Checkout() {
 
         {/* Step 03: Payment Method */}
         <div className="checkout-section details-title">
-          <span className="checkout-step">03</span>
+          <span className="checkout-step">STEP 03</span>
           <div>
             <h2>Payment Method</h2>
             <p>Pay securely through Razorpay.</p>
@@ -451,63 +455,85 @@ export function Checkout() {
             <input type="radio" name="payment-method" defaultChecked />
             <CreditCard size={20} />
             <div>
-              <strong>Razorpay ? UPI, Cards & Netbanking</strong>
+              <strong>Razorpay · UPI, Cards & Netbanking</strong>
               <small>Choose from the payment methods available in the secure payment window.</small>
             </div>
           </label>
         </div>
 
-        {/* Order Price Summary */}
-        <div className="checkout-cost-breakdown">
-          <div className="cost-row">
-            <span>Subtotal ({totalPacks} {totalPacks === 1 ? 'pack' : 'packs'})</span>
-            <span>{money(subtotal)}</span>
-          </div>
-          <div className="cost-row">
-            <span>Shipping</span>
-            <span>{shippingFee === 0 ? <strong className="complimentary">FREE</strong> : money(shippingFee)}</span>
-          </div>
-          {shippingFee > 0 && (
-            <p className="shipping-hint">Add ₹{500 - subtotal} more for Complimentary Free Shipping!</p>
-          )}
-          <div className="cost-row total-cost-row">
-            <strong>TOTAL PAYABLE</strong>
-            <strong>{money(grandTotal)}</strong>
-          </div>
-        </div>
-
-        <label className="policy-check">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-          />
-          <span>
-            I have read and agree to the <Link to="/return-refund-policy" target="_blank">Return, Refund &amp; Cancellation Policy</Link>.
-          </span>
-        </label>
-
-        {error && (
-          <div className="form-error auth-error" role="alert">
-            <AlertCircle size={16} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <div className="checkout-submit">
-          <div>
-            <span>TOTAL AMOUNT</span>
-            <strong>{money(grandTotal)}</strong>
-          </div>
-          <button className="btn order-submit-btn" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'SETTING YOUR ORDER...' : 'MAKE THIS CUP YOURS'} <ArrowRight />
-          </button>
-        </div>
-
-        <p className="checkout-fineprint">
-          Instant confirmation. Once confirmed, you will receive real-time order status and tracking in your account dashboard.
-        </p>
       </form>
+
+      {/* The running total tracks the form on desktop and closes the page on
+          phones, so the amount is never more than a glance away. */}
+      <aside className="checkout-aside" aria-label="Order summary">
+        <div className="checkout-summary-card">
+          <h2>Order summary</h2>
+
+          <ul className="checkout-summary-items">
+            {chosenSizes.length ? chosenSizes.map((size) => (
+              <li key={size}>
+                <span>
+                  {cart.labels[size] ?? size}
+                  <small>× {quantities[size]}</small>
+                </span>
+                <strong>{money((cart.prices[size] ?? 0) * (quantities[size] ?? 0))}</strong>
+              </li>
+            )) : (
+              <li className="checkout-summary-empty"><span>No packs chosen yet.</span></li>
+            )}
+          </ul>
+
+          <div className="checkout-cost-breakdown">
+            <div className="cost-row">
+              <span>Subtotal ({totalPacks} {totalPacks === 1 ? 'pack' : 'packs'})</span>
+              <span>{money(subtotal)}</span>
+            </div>
+            <div className="cost-row">
+              <span>Shipping</span>
+              <span>{shippingFee === 0 ? <strong className="complimentary">FREE</strong> : money(shippingFee)}</span>
+            </div>
+            {shippingFee > 0 && (
+              <p className="shipping-hint">Add {money(500 - subtotal)} more for complimentary shipping.</p>
+            )}
+            <div className="cost-row total-cost-row">
+              <strong>TOTAL PAYABLE</strong>
+              <strong>{money(grandTotal)}</strong>
+            </div>
+          </div>
+
+          <label className="policy-check">
+            <input
+              type="checkbox"
+              form="checkout-form"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />
+            <span>
+              I have read and agree to the <Link to="/return-refund-policy" target="_blank">Return, Refund &amp; Cancellation Policy</Link>.
+            </span>
+          </label>
+
+          {error && (
+            <div className="form-error auth-error" role="alert">
+              <AlertCircle size={16} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <button className="btn order-submit-btn" form="checkout-form" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'SETTING YOUR ORDER...' : 'MAKE THIS CUP YOURS'} <ArrowRight size={16} />
+          </button>
+
+          <p className="checkout-fineprint">
+            Instant confirmation. Once confirmed, you will receive real-time order status and tracking in your account dashboard.
+          </p>
+
+          <div className="checkout-aside-trust">
+            <ShieldCheck size={14} aria-hidden="true" />
+            <span>Secure payment · Dispatch in 24–48 hours</span>
+          </div>
+        </div>
+      </aside>
 
       {/* Holds the screen from the instant Razorpay closes until the payment is
           verified and the confirmation page takes over. */}

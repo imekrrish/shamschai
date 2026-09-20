@@ -5,6 +5,7 @@ import { api, Order } from './utils/api';
 import { Eyebrow, money } from './components/ui';
 import { openPayment } from './utils/razorpay';
 import { useAuth } from './context/AuthContext';
+import { OrderSteps } from './components/OrderFlow';
 import { useCart } from './context/CartContext';
 
 export function OrderConfirmationPage() {
@@ -58,6 +59,8 @@ export function OrderConfirmationPage() {
   return (
     <section className="confirmation-page section">
       <div className="confirmation-card">
+        <OrderSteps current={4} />
+
         <div className="confirmation-badge" aria-hidden="true">
           {paid ? <CheckCircle size={52} /> : <Clock size={52} />}
         </div>
