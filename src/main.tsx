@@ -6,6 +6,7 @@ import BackSoon from './BackSoon';
 import {MotionConfig} from 'framer-motion';
 import './styles.css';
 import './matte.css';
+import './edit.css';
 
 // Set to false to bring the storefront back.
 const TEMPORARILY_CLOSED = false;

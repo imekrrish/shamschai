@@ -1,6 +1,6 @@
 import { useRef, useState, type RefObject } from 'react';
 import { AnimatePresence, motion, useReducedMotion, useScroll } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { articles, editPillars } from './data/content';
 import { Eyebrow, ImageSlot, Reveal } from './components/ui';
@@ -23,36 +23,37 @@ const everydayStories: Record<string, { title: string; copy: string }[]> = {
   ],
 };
 
-function EditCard({ article, index, large = false }: { article: typeof articles[0]; index: number; large?: boolean }) {
-  const reduced = useReducedMotion();
-  return (
-    <motion.article
-      className={`journal-new-card ${large ? 'journal-new-card--large' : ''}`}
-      initial={reduced ? false : { opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .08 }}
-      transition={{ duration: reduced ? 0 : .65, delay: reduced ? 0 : Math.min(index, 2) * .08, ease }}
-    >
-      <Link to={`/the-edit/${article.slug}`}>
-        <div className="journal-card-image">
-          <ImageSlot
-            src={article.image}
-            alt={article.title}
-            ratio="4 / 3"
-          />
-          
-        </div>
-        <div className="journal-card-copy">
-          <div>
-            <span className="pillar-badge">{article.category}</span>
-            <i>{article.readTime}</i>
-          </div>
-          <h2>{article.title}</h2>
-          <p>{article.excerpt}</p>
-          <b>READ STORY <ArrowRight size={14} /></b>
-        </div>
-      </Link>
-    </motion.article>
-  );
+type Article = typeof articles[0];
+const kicker = (a: Article) => `${a.category.replace('THE ', '')} · ${a.readTime.replace(' READ', '')}`;
+
+function CoverStory({ article }: { article: Article }) {
+  return <Reveal className="edit-cover-reveal"><Link className="edit-cover" to={`/the-edit/${article.slug}`}>
+    <img src={article.image} alt="" width="1448" height="1086" fetchPriority="high" />
+    <div className="edit-cover-copy">
+      <span className="edit-kicker">Cover story · {kicker(article)}</span>
+      <h2>{article.title}</h2>
+      <p>{article.excerpt}</p>
+      <b>Read the story <ArrowUpRight size={16} /></b>
+    </div>
+  </Link></Reveal>;
+}
+
+function PairStory({ article, index }: { article: Article; index: number }) {
+  return <Reveal className="edit-pair-item" delay={index * .08}><Link to={`/the-edit/${article.slug}`}>
+    <figure><img src={article.image} alt="" width="1448" height="1086" loading="lazy" /></figure>
+    <span className="edit-kicker">{kicker(article)}</span>
+    <h3>{article.title}</h3>
+    <p>{article.excerpt}</p>
+  </Link></Reveal>;
+}
+
+function IndexRow({ article, n }: { article: Article; n: number }) {
+  return <li><Link className="edit-index-row" to={`/the-edit/${article.slug}`}>
+    <span className="edit-index-num">{String(n).padStart(2, '0')}</span>
+    <div><span className="edit-kicker">{kicker(article)}</span><h3>{article.title}</h3></div>
+    <img src={article.image} alt="" width="1448" height="1086" loading="lazy" />
+    <ArrowUpRight className="edit-index-arrow" size={20} />
+  </Link></li>;
 }
 
 export function JournalLaunch() {
@@ -109,23 +110,13 @@ export function JournalLaunch() {
         initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         transition={{ duration: reduced ? 0 : .18 }}>
       <p className="sr-only" role="status">{filteredArticles.length} stories</p>
-      {/* Featured Lead Story */}
-      {featured && (
-        <section className="journal-feature">
-          <EditCard article={featured} index={0} large />
-
-        </section>
-      )}
-
-      {/* Grid of Stories */}
-      {rest.length > 0 && <section className="journal-new-grid">
-        <div className="journal-grid-label">
-          <span>MORE STORIES</span>
-          
-        </div>
-        {rest.map((a, i) => (
-          <EditCard key={a.slug} article={a} index={i + 1} />
-        ))}
+      {featured && <section className="edit-cover-wrap"><CoverStory article={featured} /></section>}
+      {rest.length > 0 && <section className="edit-pair">
+        {rest.slice(0, 2).map((a, i) => <PairStory key={a.slug} article={a} index={i} />)}
+      </section>}
+      {rest.length > 2 && <section className="edit-index">
+        <h2 className="edit-index-title">More to read</h2>
+        <ol>{rest.slice(2).map((a, i) => <IndexRow key={a.slug} article={a} n={i + 4} />)}</ol>
       </section>}
       </motion.div>
       </AnimatePresence>
@@ -150,30 +141,30 @@ export function JournalArticleLaunch() {
   return (
     <article className="journal-story edit-article-story" ref={storyRef}>
       <ReadingProgress target={storyRef} />
-      <header>
+      <header className="edit-article-head">
         <Link to="/the-edit" className="journal-back">
           <ArrowLeft size={14} /> THE SHAMS EDIT
         </Link>
-        <motion.div initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : .8, ease }}>
-          <Eyebrow>{article.category}</Eyebrow>
-          <h1>{article.title}</h1>
-          <p className="article-lead">{article.excerpt}</p>
-          <div className="journal-byline">
-            <span>SHAMS LAB &amp; EDIT</span>
-            <span><Clock size={13} /> {article.readTime}</span>
+        <motion.div className="edit-article-head-grid" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : .8, ease }}>
+          <div>
+            <span className="edit-kicker">{kicker(article)}</span>
+            <h1>{article.title}</h1>
+          </div>
+          <div className="edit-article-meta">
+            <p className="article-lead">{article.excerpt}</p>
+            <span>By the Shams kitchen</span>
           </div>
         </motion.div>
       </header>
 
-      <motion.div
-        className="journal-story-image"
+      <motion.figure
+        className="edit-article-image"
         initial={reduced ? false : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduced ? 0 : .9, delay: reduced ? 0 : .15, ease }}
       >
-        <ImageSlot src={article.image} alt={article.title} ratio="4 / 3" />
-        <span>THE SHAMS EDIT · PERSPECTIVES ON CHAI</span>
-      </motion.div>
+        <ImageSlot src={article.image} alt={article.title} ratio="16 / 9" priority />
+      </motion.figure>
 
       {everyday ? <div className="everyday-article-body">
         {everyday.map(section => <Reveal key={section.title}><section><h2>{section.title}</h2><p>{section.copy}</p></section></Reveal>)}
@@ -223,15 +214,13 @@ export function JournalArticleLaunch() {
         </div>
       </div>}
 
-      <section className="journal-related">
-        <div className="section-heading-row">
-          <Eyebrow>KEEP READING</Eyebrow>
-          <h2>More from The Shams Edit.</h2>
-        </div>
-        <div className="related-grid">
-          {related.map((a, i) => (
-            <EditCard key={a.slug} article={a} index={i} />
-          ))}
+      <section className="edit-related">
+        <div className="edit-related-head"><Eyebrow>KEEP READING</Eyebrow><Link className="text-link" to="/the-edit">All stories <ArrowRight size={14} /></Link></div>
+        <div className="edit-related-grid">
+          {related.map((a, i) => <Reveal key={a.slug} delay={i * .08}><Link className="edit-tile" to={`/the-edit/${a.slug}`}>
+            <img src={a.image} alt="" width="1448" height="1086" loading="lazy" />
+            <div><span className="edit-kicker">{kicker(a)}</span><h3>{a.title}</h3></div>
+          </Link></Reveal>)}
         </div>
       </section>
     </article>

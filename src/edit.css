@@ -1,0 +1,99 @@
+/* The Shams Edit: magazine layout for the story list and article pages. */
+.edit-kicker {display:block; font:600 10px/1.6 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--coffee)}
+
+/* Cover story: a text panel beside one big photograph. */
+.edit-cover-wrap {padding:40px var(--pad) 0}
+.edit-cover {display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); overflow:hidden; border-radius:4px; background:var(--raise); border:1px solid var(--line); color:#f4f0ea}
+.edit-cover img {order:2; width:100%; height:100%; min-height:520px; object-fit:cover; transition:transform 1.2s var(--ease)}
+.edit-cover:hover img {transform:scale(1.03)}
+.edit-cover-copy {order:1; align-self:end; padding:clamp(28px,4.5vw,64px)}
+.edit-cover-copy h2 {font-size:clamp(40px,4.8vw,72px); line-height:1.02; margin:18px 0 18px; color:#f4f0ea}
+.edit-cover-copy p {font-size:15px; line-height:1.7; color:rgba(244,240,234,.78); margin:0 0 26px; max-width:44ch}
+.edit-cover-copy b {display:inline-flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:.04em; padding-bottom:6px; border-bottom:1px solid rgba(244,240,234,.5)}
+
+/* The pair: two stories at different sizes and heights. */
+.edit-pair {display:grid; grid-template-columns:1.35fr 1fr; gap:clamp(28px,5vw,80px); padding:clamp(56px,7vw,100px) var(--pad); align-items:start}
+.edit-pair-item:nth-child(2) {margin-top:clamp(40px,8vw,140px)}
+.edit-pair-item a {display:block}
+.edit-pair-item figure {margin:0 0 22px; overflow:hidden; border-radius:4px; aspect-ratio:4/3}
+.edit-pair-item:nth-child(2) figure {aspect-ratio:4/5}
+.edit-pair-item img {width:100%; height:100%; display:block; object-fit:cover; transition:transform 1s var(--ease)}
+.edit-pair-item a:hover img {transform:scale(1.04)}
+.edit-pair-item h3 {font-size:clamp(30px,2.8vw,42px); line-height:1.08; margin:12px 0 12px; max-width:18ch}
+.edit-pair-item p {font-size:14px; line-height:1.7; color:var(--muted); margin:0; max-width:46ch}
+
+/* The index: a numbered contents list, thumbnails on the right. */
+.edit-index {padding:0 var(--pad) clamp(70px,9vw,130px)}
+.edit-index-title {font-size:clamp(34px,3.4vw,48px); padding-bottom:22px; margin:0; border-bottom:1px solid var(--line)}
+.edit-index ol {list-style:none; margin:0; padding:0}
+.edit-index li {border-bottom:1px solid var(--line)}
+.edit-index-row {display:grid; grid-template-columns:72px minmax(0,1fr) 168px 28px; align-items:center; gap:clamp(16px,3vw,40px); padding:26px 0}
+.edit-index-num {font:italic 400 34px/1 var(--serif); color:var(--coffee)}
+.edit-index-row h3 {font-size:clamp(24px,2.3vw,34px); line-height:1.12; margin:8px 0 0; transition:color .25s}
+.edit-index-row img {width:168px; height:auto; aspect-ratio:4/3; object-fit:cover; border-radius:3px; opacity:.85; transition:opacity .3s}
+.edit-index-arrow {transition:transform .3s var(--ease)}
+.edit-index-row:hover h3 {color:var(--coffee)}
+.edit-index-row:hover img {opacity:1}
+.edit-index-row:hover .edit-index-arrow {transform:translate(3px,-3px)}
+
+/* Article: headline left, lead right, wide photograph below. */
+.edit-article-story .edit-article-head {padding:48px var(--pad) 44px; text-align:left}
+.edit-article-story .journal-back {margin-bottom:44px}
+.edit-article-head-grid {display:grid; grid-template-columns:1.5fr 1fr; gap:clamp(32px,6vw,96px); align-items:end}
+.edit-article-story .edit-article-head h1 {font-size:clamp(46px,5.8vw,84px); line-height:1.02; margin:18px 0 0; max-width:none}
+.edit-article-meta .article-lead {margin:0 0 22px; font:400 clamp(20px,1.7vw,24px)/1.45 var(--serif); color:var(--fg)}
+.edit-article-meta>span {display:block; padding-top:16px; border-top:1px solid var(--line); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.edit-article-image {margin:0 var(--pad)}
+.edit-article-image .image-slot {border-radius:4px; overflow:hidden}
+.edit-article-image img {width:100%; height:100%; object-fit:cover}
+
+/* Body copy that is comfortable to read on a dark page. */
+.edit-article-story .everyday-article-body {max-width:680px; margin:clamp(56px,7vw,96px) auto}
+.edit-article-story .everyday-article-body h2 {font-size:clamp(30px,2.8vw,40px); margin:0}
+.edit-article-story .everyday-article-body p {font-size:18px; line-height:1.85; color:rgba(241,238,232,.86)}
+.edit-article-story .journal-story-layout {grid-template-columns:220px minmax(0,680px); justify-content:center; gap:clamp(40px,7vw,120px)}
+.edit-article-story .journal-story-body p {font-size:18px; line-height:1.85; color:rgba(241,238,232,.86)}
+.edit-article-story .journal-story-body .journal-dropcap {font-size:clamp(24px,2.2vw,30px); line-height:1.45; color:var(--fg)}
+.edit-article-story .journal-story-body h2 {font-size:clamp(30px,2.8vw,40px)}
+.edit-article-story .journal-story-body blockquote {border-block:0; border-left:2px solid var(--coffee); padding:6px 0 6px 28px; font-size:clamp(26px,2.4vw,32px); line-height:1.35}
+
+/* Keep reading: two photo tiles with titles inside. */
+.edit-related {padding:clamp(56px,7vw,100px) var(--pad); background:var(--surface); border-top:1px solid var(--line)}
+.edit-related-head {display:flex; justify-content:space-between; align-items:center; margin-bottom:28px}
+.edit-related-head .eyebrow {margin:0}
+.edit-related-grid {display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px)}
+.edit-tile {display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:end; gap:24px; color:#f4f0ea}
+.edit-tile img {width:100%; height:auto; aspect-ratio:4/5; object-fit:cover; border-radius:4px; transition:transform 1s var(--ease)}
+.edit-tile>div {padding-bottom:8px}
+.edit-tile h3 {font-size:clamp(24px,2.1vw,32px); line-height:1.12; margin:10px 0 0; color:#f4f0ea; transition:color .25s}
+.edit-tile:hover h3 {color:var(--coffee)}
+.edit-tile:hover img {transform:scale(1.02)}
+
+@media (max-width:900px) {
+  .edit-cover-wrap {padding-top:24px}
+  .edit-cover {grid-template-columns:1fr}
+  .edit-cover img {order:0; min-height:0; aspect-ratio:4/3}
+  .edit-cover-copy {padding:24px 22px 28px}
+  .edit-cover-copy h2 {font-size:38px; margin:12px 0}
+  .edit-cover-copy p {font-size:14px; margin-bottom:18px}
+  .edit-pair {grid-template-columns:1fr; gap:48px}
+  .edit-pair-item:nth-child(2) {margin:0 0 0 12%}
+  .edit-pair-item:nth-child(2) figure {aspect-ratio:4/3}
+  .edit-index-row {grid-template-columns:44px minmax(0,1fr) 88px; gap:14px; padding:20px 0}
+  .edit-index-num {font-size:26px}
+  .edit-index-row img {width:88px}
+  .edit-index-arrow {display:none}
+  .edit-article-head-grid {grid-template-columns:1fr; gap:22px}
+  .edit-article-story .edit-article-head {padding:24px var(--pad) 32px}
+  .edit-article-story .journal-back {margin-bottom:28px}
+  .edit-article-story .edit-article-head h1 {font-size:42px}
+  .edit-article-story .journal-story-layout {display:block}
+  .edit-article-story .everyday-article-body p,.edit-article-story .journal-story-body p {font-size:17px}
+  .edit-related-grid {grid-template-columns:1fr; gap:28px}
+  .edit-tile {grid-template-columns:120px minmax(0,1fr); gap:18px; align-items:center}
+  .edit-tile h3 {font-size:24px}
+}
+@media (prefers-reduced-motion:reduce) {
+  .edit-cover img,.edit-pair-item img,.edit-tile img,.edit-index-arrow {transition:none}
+  .edit-cover:hover img,.edit-pair-item a:hover img,.edit-tile:hover img {transform:none}
+}
