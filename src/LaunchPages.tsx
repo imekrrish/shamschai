@@ -37,7 +37,7 @@ export function LaunchHome() {
               width="1254" height="1254" fetchPriority="high" />
             <span className="matte-hero-shade" aria-hidden="true" />
           </figure>
-          <p>Black tea, ginger and cardamom, blended in small batches in Hyderabad. No added sugar, no preservatives &mdash; just the cup you grew up on.</p>
+          <p>Black tea, ginger and cardamom. Blended in small batches in Hyderabad.</p>
           <div className="matte-hero-actions">
             <Link className="btn matte-button" to="/the-collection">Shop the blend <ArrowUpRight size={16} /></Link>
             <Link className="matte-story-link" to="/our-story">Read our story <ArrowRight size={14} /></Link>
@@ -66,9 +66,9 @@ export function LaunchHome() {
           <HeroSachet />
         </div>
         <Reveal className="matte-pack-copy">
-          <Eyebrow>MEET YOUR DAILY RITUAL</Eyebrow>
-          <h2 id="pack-title">A good cup.<br /><em>Without the fuss.</em></h2>
-          <p>Black tea and warming spices. Make it strong, milky, sweet, or just the way you grew up with.</p>
+          <Eyebrow>THE BLEND</Eyebrow>
+          <h2 id="pack-title">Tastes like home.<br /><em>Takes five minutes.</em></h2>
+          <p>Strong, milky, extra sugar. However you take it.</p>
           {chai ? <>
             <div className="matte-pack-meta">
               <span>{packSizes.map(v => v.weight).join(' / ')}</span>
@@ -82,17 +82,17 @@ export function LaunchHome() {
 
       <section className="section everyday-stories" aria-labelledby="stories-title">
         <Reveal className="stories-heading">
-          <div><Eyebrow>THE SHAMS EDIT</Eyebrow><h2 id="stories-title">Life happens.<br /><em>Chai helps.</em></h2></div>
-          <Link className="text-link" to="/the-edit">All stories <ArrowUpRight size={16} /></Link>
+          <div><Eyebrow>THE SHAMS EDIT</Eyebrow><h2 id="stories-title">Notes from<br /><em>the kitchen.</em></h2></div>
+          <Link className="text-link" to="/the-edit">All notes <ArrowUpRight size={16} /></Link>
         </Reveal>
         <div className="everyday-card-grid">
           {[
-            { image: 'home', tag: 'AT HOME', title: 'Every home has its own recipe.', copy: 'A little more milk. One extra simmer. The small things that make it yours.', slug: 'why-every-indian-home-makes-chai-differently', alt: 'Shams sachet and two glasses of chai in a sunlit home kitchen' },
-            { image: 'spice', tag: 'IN THE CUP', title: 'Good spice. Better balance.', copy: 'How tea, ginger and cardamom find their sweet spot.', slug: 'does-more-masala-mean-better-chai', alt: 'Shams sachet with ginger, cardamom and a glass of masala chai' },
-            { image: 'pause', tag: 'A MOMENT FOR YOU', title: 'Make room for a small pause.', copy: 'Rain outside. A warm cup inside. Some moments need very little.', slug: 'why-chai-tastes-different-every-morning', alt: 'Shams sachet beside a cup of chai and a book by a rainy window' },
+            { image: 'home', tag: 'AT HOME', title: "Why your mom's chai tastes different.", slug: 'why-every-indian-home-makes-chai-differently', alt: 'Shams sachet and two glasses of chai in a sunlit home kitchen' },
+            { image: 'spice', tag: 'IN THE CUP', title: 'Is more masala always better?', slug: 'does-more-masala-mean-better-chai', alt: 'Shams sachet with ginger, cardamom and a glass of masala chai' },
+            { image: 'pause', tag: 'SLOW DAYS', title: 'Rainy evenings and second cups.', slug: 'why-chai-tastes-different-every-morning', alt: 'Shams sachet beside a cup of chai and a book by a rainy window' },
           ].map((story, index) => <Reveal className="everyday-card-reveal" key={story.image} delay={index * .09}><Link className="everyday-card" to={`/the-edit/${story.slug}`}>
             <div className="everyday-card-image"><img src={`/assets/shams/journal/matte-${story.image}-v1.webp`} alt={story.alt} width="1448" height="1086" loading="lazy" /></div>
-            <div className="everyday-card-copy"><span>{story.tag}</span><h3>{story.title}</h3><p>{story.copy}</p><div className="everyday-card-link">Read the story <ArrowUpRight size={16} /></div></div>
+            <div className="everyday-card-copy"><span>{story.tag}</span><h3>{story.title}</h3><div className="everyday-card-link">Read <ArrowUpRight size={16} /></div></div>
           </Link></Reveal>)}
         </div>
       </section>

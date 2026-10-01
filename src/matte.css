@@ -215,3 +215,4 @@
   .everyday-card-reveal:nth-child(3) .everyday-card-copy {margin-left:0}
 }
 @media (prefers-reduced-motion:reduce) {.everyday-card-image {transition:none}}
+.everyday-card h3 {margin-bottom:18px}
