@@ -101,7 +101,6 @@ export function LaunchHome() {
         <div className="testimonials-heading">
           <Eyebrow>AROUND THE CHAI TABLE</Eyebrow>
           <h2 id="testimonials-title">A good cup.<br /><em>A little conversation.</em></h2>
-          <p className="testimonials-disclosure">Sample testimonials for the design — these are illustrative quotes, not customer reviews.</p>
         </div>
         <div className="testimonial-grid">
           {[
@@ -111,7 +110,7 @@ export function LaunchHome() {
           ].map((quote, index) => <figure className="testimonial-card" key={quote}>
             <span className="testimonial-mark" aria-hidden="true">“</span>
             <blockquote><p>{quote}</p></blockquote>
-            <figcaption><span>{['Krishna', 'Meera', 'Harsha'][index]}</span><span>Sample quote</span></figcaption>
+            <figcaption><span>{['Krishna', 'Meera', 'Harsha'][index]}</span></figcaption>
           </figure>)}
         </div>
         <Link className="text-link" to="/recipe-feedback">Tell us about your cup <ArrowUpRight size={16} /></Link>
