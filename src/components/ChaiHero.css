@@ -1,0 +1,20 @@
+.home-hero.matte-hero.chai-signature {grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:0; padding-top:40px; min-height:680px; background:radial-gradient(ellipse at 76% 45%,#302a24 0,#1d1b18 38%,#141414 75%)}
+.chai-hero {position:relative;grid-column:2;grid-row:1;min-width:0;width:100%;aspect-ratio:10/9;isolation:isolate;touch-action:pan-y}
+.chai-canvas,.chai-poster {position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.chai-canvas canvas {display:block;width:100%;height:100%}
+.chai-poster {opacity:1;transition:opacity .6s}
+.chai-hero--ready .chai-poster {opacity:0;pointer-events:none}
+.chai-motion {position:absolute;bottom:10px;right:20px;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid #c5b8a744;border-radius:24px;background:#14141480;color:#e8e3db;font-size:10px;letter-spacing:.06em;z-index:2}
+.chai-motion svg {width:14px;height:14px}
+@media(min-width:1500px){.chai-hero{max-height:650px;aspect-ratio:auto;height:650px}}
+@media(max-width:760px){
+ .home-hero.matte-hero.chai-signature {display:flex;flex-direction:column;align-items:stretch;min-height:0;padding:42px var(--pad) 76px;background:radial-gradient(ellipse at 50% 76%,#302a24 0,#141414 65%)}
+ .chai-signature .matte-hero-copy {width:100%;max-width:540px;margin:0 auto;grid-row:auto}
+ .chai-signature .matte-hero-copy h1 {font-size:clamp(49px,12vw,72px)}
+ .chai-signature .matte-hero-copy p {margin:22px 0 24px}
+ .chai-signature .matte-hero-meta {margin-top:22px}
+ .chai-hero {margin:6px auto 0;max-width:520px;aspect-ratio:1/1}
+ .chai-motion {right:8px;bottom:0}
+ .chai-signature .matte-hero-caption {font-size:8px;bottom:22px;gap:12px}
+}
+@media(prefers-reduced-motion:reduce){.chai-poster{transition:none}}
