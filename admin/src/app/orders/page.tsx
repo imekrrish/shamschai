@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
 import { Order, OrderStatus } from '@/lib/types';
@@ -17,32 +17,29 @@ import {
   Info
 } from 'lucide-react';
 
-const STATUS_FILTERS = [
-  'ALL', 
-  'PENDING', 
-  'CONFIRMED', 
-  'PROCESSING', 
-  'SHIPPED', 
-  'DELIVERED', 
-  'CANCELLED'
-];
+const STATUS_FILTERS = ['CONFIRMED', 'ALL'];
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('ALL');
+  const [activeFilter, setActiveFilter] = useState('CONFIRMED');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
+  const ordersRequest = useRef<AbortController | null>(null);
+
   const fetchOrders = async () => {
+    ordersRequest.current?.abort();
+    const controller = new AbortController();
+    ordersRequest.current = controller;
     try {
       setLoading(true);
       const params = new URLSearchParams();
       if (activeFilter !== 'ALL') params.append('status', activeFilter);
       if (searchTerm) params.append('search', searchTerm);
 
-      const res = await fetch(`/api/orders?${params.toString()}`);
+      const res = await fetch(`/api/orders?${params.toString()}`, { signal: controller.signal });
       if (res.status === 401) {
         window.location.href = '/login';
         return;
@@ -52,14 +49,15 @@ export default function OrdersPage() {
         setOrders(data.data);
       }
     } catch (e) {
-      console.error(e);
+      if (!controller.signal.aborted) console.error(e);
     } finally {
-      setLoading(false);
+      if (!controller.signal.aborted) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchOrders();
+    return () => ordersRequest.current?.abort();
   }, [activeFilter, searchTerm]);
 
   const updateStatus = async (orderId: string, newStatus: OrderStatus) => {
@@ -72,7 +70,7 @@ export default function OrdersPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setOrders(prev => prev.map(o => o.id === orderId ? data.data : o));
+        setOrders(prev => prev.map(o => o.id === orderId ? data.data : o).filter(o => activeFilter === 'ALL' || o.status === activeFilter));
         if (selectedOrder && selectedOrder.id === orderId) {
           setSelectedOrder(data.data);
         }
@@ -111,35 +109,29 @@ export default function OrdersPage() {
 
       <main className="flex-1 flex flex-col min-w-0">
         <AdminHeader
-          title="Orders Fulfillment Management"
+          title="Orders"
           subtitle="Review live customer orders, update tracking states, and handle fulfillment"
           onRefresh={fetchOrders}
           isRefreshing={loading}
         />
 
-        <div className="p-8 space-y-6 flex-1 overflow-y-auto">
-          {/* Origin Banner */}
-          <div className="p-3.5 rounded-xl bg-[#f4eee3] border border-[#e5dcd1] flex items-center justify-between text-xs text-[#65675f]">
-            <div className="flex items-center gap-2">
-              <Database className="w-4 h-4 text-[#17382f]" />
-              <span>
-                <strong>Data Source:</strong> PostgreSQL table <code className="bg-white px-1.5 py-0.5 rounded border border-[#d8cfc2] font-mono text-[#17382f]">orders</code> and <code className="bg-white px-1.5 py-0.5 rounded border border-[#d8cfc2] font-mono text-[#17382f]">order_items</code>.
-              </span>
-            </div>
-            <span className="font-semibold text-[#17382f]">Total Tracked: {orders.length}</span>
+        <div className="p-4 sm:p-6 lg:p-8 space-y-6 flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xl font-bold text-[#17382f]">{activeFilter === 'CONFIRMED' ? 'Confirmed orders' : 'All orders'}</h2>
+            <span className="text-sm text-[#65675f]">{loading ? 'Loading…' : `${orders.length} orders`}</span>
           </div>
 
           {/* Controls: Search & Status Filters */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col gap-4">
             {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
+            <div className="relative w-full lg:max-w-md">
               <Search className="w-4 h-4 text-[#8e8d87] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search order #, customer name, phone, city..."
-                className="w-full bg-white border border-[#d8cfc2] focus:border-[#17382f] rounded-xl pl-10 pr-4 py-2 text-xs text-[#171815] placeholder-[#9c9b94] outline-none transition shadow-2xs"
+                placeholder="Search order #, customer name or email"
+                className="w-full bg-white border border-[#d8cfc2] focus:border-[#17382f] rounded-xl pl-10 pr-4 py-3 text-base text-[#171815] placeholder-[#9c9b94] outline-none transition shadow-2xs"
               />
             </div>
 
@@ -147,22 +139,40 @@ export default function OrdersPage() {
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
               {STATUS_FILTERS.map(f => (
                 <button
-                  key={f}
+                  key={f === 'ALL' ? 'All' : 'Confirmed'}
+                  aria-pressed={activeFilter === f}
                   onClick={() => setActiveFilter(f)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+                  className={`px-5 py-3 rounded-xl text-sm font-bold whitespace-nowrap transition ${
                     activeFilter === f
                       ? 'bg-[#17382f] text-[#faf7f1] shadow-2xs'
                       : 'bg-white text-[#65675f] hover:text-[#171815] hover:bg-[#f4eee3] border border-[#e5dcd1]'
                   }`}
                 >
-                  {f}
+                  {f === 'ALL' ? 'All' : 'Confirmed'}
                 </button>
               ))}
             </div>
           </div>
 
+          <div className="grid gap-3 lg:hidden" aria-live="polite">
+            {loading ? <p className="py-8 text-center">Loading orders…</p> : orders.length === 0 ? (
+              <p className="rounded-2xl border bg-white p-8 text-center">No {activeFilter === 'CONFIRMED' ? 'confirmed ' : ''}orders found.</p>
+            ) : orders.map(order => (
+              <article key={order.id} className="rounded-2xl border border-[#e5dcd1] bg-white p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0"><p className="font-bold break-all">{order.orderNumber}</p><p className="text-sm text-[#65675f]">{new Date(order.createdAt).toLocaleString('en-IN')}</p></div>
+                  <span className="shrink-0">{getStatusBadge(order.status)}</span>
+                </div>
+                <div><p className="font-semibold break-words">{order.customerName}</p><p className="text-sm text-[#65675f]">{order.shippingAddress.city}, {order.shippingAddress.state}</p></div>
+                <div className="text-sm space-y-1">{order.items.map((item, index) => <p key={index}>{item.quantity} × {item.title} ({item.size})</p>)}</div>
+                <div className="flex flex-wrap justify-between gap-2 border-t pt-3"><p className="font-bold text-lg">{formatINR(order.totalAmount)}</p><p className="text-sm">{order.paymentStatus} · {order.paymentMethod}</p></div>
+                <button onClick={() => setSelectedOrder(order)} className="w-full min-h-[44px] rounded-xl bg-[#17382f] text-white text-sm font-semibold">View order</button>
+              </article>
+            ))}
+          </div>
+
           {/* Orders Table */}
-          <div className="bg-white border border-[#e5dcd1] rounded-2xl overflow-hidden shadow-soft">
+          <div className="hidden lg:block bg-white border border-[#e5dcd1] rounded-2xl overflow-hidden shadow-soft">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
@@ -253,17 +263,17 @@ export default function OrdersPage() {
 
         {/* Order Details Drawer / Modal */}
         {selectedOrder && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="bg-white border border-[#e5dcd1] rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-card overflow-hidden">
+          <div className="order-modal fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-xs">
+            <div className="bg-white border border-[#e5dcd1] rounded-2xl w-full max-w-2xl max-h-[calc(100dvh-1rem)] sm:max-h-[90vh] flex flex-col shadow-card overflow-hidden">
               {/* Modal Header */}
-              <div className="p-6 border-b border-[#f0eae1] flex items-center justify-between bg-[#faf7f1]">
+              <div className="p-4 sm:p-6 border-b border-[#f0eae1] flex items-center justify-between bg-[#faf7f1]">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#17382f] text-[#c89b4b] flex items-center justify-center shadow-xs">
                     <ShoppingBag className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-serif font-bold text-[#171815]">Order {selectedOrder.orderNumber}</h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg sm:text-xl break-all font-serif font-bold text-[#171815]">Order {selectedOrder.orderNumber}</h3>
                       {getStatusBadge(selectedOrder.status)}
                     </div>
                     <p className="text-xs text-[#65675f]">
@@ -272,6 +282,7 @@ export default function OrdersPage() {
                   </div>
                 </div>
                 <button
+                  aria-label="Close order details"
                   onClick={() => setSelectedOrder(null)}
                   className="p-1.5 rounded-lg text-[#8e8d87] hover:text-[#171815] transition"
                 >
@@ -280,7 +291,7 @@ export default function OrdersPage() {
               </div>
 
               {/* Modal Body */}
-              <div className="p-6 space-y-6 overflow-y-auto flex-1">
+              <div className="p-4 sm:p-6 space-y-6 overflow-y-auto flex-1">
                 {/* Status Updater Buttons */}
                 <div className="bg-[#faf7f1] border border-[#e5dcd1] rounded-xl p-4">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-[#65675f] mb-2.5">
@@ -288,6 +299,7 @@ export default function OrdersPage() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <button
+                      disabled={updatingId !== null}
                       onClick={() => updateStatus(selectedOrder.id, 'CONFIRMED')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         selectedOrder.status === 'CONFIRMED'
@@ -298,6 +310,7 @@ export default function OrdersPage() {
                       Confirm Order
                     </button>
                     <button
+                      disabled={updatingId !== null}
                       onClick={() => updateStatus(selectedOrder.id, 'PROCESSING')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         selectedOrder.status === 'PROCESSING'
@@ -308,6 +321,7 @@ export default function OrdersPage() {
                       Pack / Processing
                     </button>
                     <button
+                      disabled={updatingId !== null}
                       onClick={() => updateStatus(selectedOrder.id, 'SHIPPED')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         selectedOrder.status === 'SHIPPED'
@@ -318,6 +332,7 @@ export default function OrdersPage() {
                       Mark Shipped
                     </button>
                     <button
+                      disabled={updatingId !== null}
                       onClick={() => updateStatus(selectedOrder.id, 'DELIVERED')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         selectedOrder.status === 'DELIVERED'
@@ -328,6 +343,7 @@ export default function OrdersPage() {
                       Mark Delivered
                     </button>
                     <button
+                      disabled={updatingId !== null}
                       onClick={() => updateStatus(selectedOrder.id, 'CANCELLED')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         selectedOrder.status === 'CANCELLED'
@@ -345,7 +361,7 @@ export default function OrdersPage() {
                   <p className="text-xs font-bold uppercase tracking-wider text-[#65675f] mb-3">
                     Items In Package
                   </p>
-                  <div className="bg-[#faf7f1] border border-[#e5dcd1] rounded-xl overflow-hidden">
+                  <div className="bg-[#faf7f1] border border-[#e5dcd1] rounded-xl overflow-x-auto">
                     <table className="w-full text-left text-xs">
                       <thead className="bg-[#f4eee3] text-[#65675f] uppercase text-[10px] font-bold">
                         <tr>
@@ -400,7 +416,7 @@ export default function OrdersPage() {
                     <p className="text-sm font-bold text-[#171815]">{selectedOrder.customerName}</p>
                     <p className="text-xs text-[#65675f] flex items-center gap-1.5">
                       <Mail className="w-3.5 h-3.5 text-[#17382f]" />
-                      <span>{selectedOrder.customerEmail}</span>
+                      <span className="break-all">{selectedOrder.customerEmail}</span>
                     </p>
                     <p className="text-xs text-[#65675f] flex items-center gap-1.5">
                       <Phone className="w-3.5 h-3.5 text-[#17382f]" />

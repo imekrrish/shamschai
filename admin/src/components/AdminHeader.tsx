@@ -28,9 +28,9 @@ export default function AdminHeader({
   }, []);
 
   return (
-    <header className="h-20 bg-[#faf7f1]/90 backdrop-blur-md border-b border-[#e5dcd1] px-8 flex items-center justify-between sticky top-0 z-20">
-      <div>
-        <h1 className="text-2xl font-serif font-bold text-[#171815] tracking-tight flex items-center gap-3">
+    <header className="admin-header min-h-20 bg-[#faf7f1]/90 backdrop-blur-md border-b border-[#e5dcd1] px-4 py-4 lg:px-8 flex items-center justify-between sticky top-0 z-20">
+      <div className="min-w-0 flex-1">
+        <h1 className="text-xl lg:text-2xl font-serif font-bold text-[#171815] tracking-tight flex items-center gap-3">
           {title}
         </h1>
         {subtitle && (
@@ -40,7 +40,7 @@ export default function AdminHeader({
 
       <div className="flex items-center gap-3.5">
         {/* Live Database Source Indicator */}
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-[#e5dcd1] text-xs shadow-2xs">
+        <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-[#e5dcd1] text-xs shadow-2xs">
           <Database className="w-3.5 h-3.5 text-[#17382f]" />
           <span className="text-[#65675f]">Data Source:</span>
           <span className="font-semibold text-[#17382f] font-mono">
@@ -60,7 +60,7 @@ export default function AdminHeader({
           </button>
         )}
 
-        <div className="flex items-center gap-2 pl-2 border-l border-[#e5dcd1]">
+        <div className="hidden md:flex items-center gap-2 pl-2 border-l border-[#e5dcd1]">
           <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e8efe9] text-[#17382f] border border-[#17382f]/20">
             Admin Authenticated
           </span>

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
@@ -12,6 +12,8 @@ import {
   Settings, 
   LogOut, 
   Database,
+  Menu,
+  X,
   ExternalLink
 } from 'lucide-react';
 
@@ -25,6 +27,7 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminSidebar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -40,7 +43,10 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#f4eee3] border-r border-[#e5dcd1] flex flex-col justify-between shrink-0 h-screen sticky top-0">
+    <>
+      <button className="admin-mobile-toggle lg:hidden" aria-label={mobileOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileOpen} aria-controls="admin-navigation" onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X size={22} /> : <Menu size={22} />}</button>
+      {mobileOpen && <button className="fixed inset-0 z-30 bg-black/40 lg:hidden" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
+    <aside id="admin-navigation" className={`admin-sidebar ${mobileOpen ? "is-open" : ""} w-64 bg-[#f4eee3] border-r border-[#e5dcd1] flex flex-col justify-between shrink-0 h-screen sticky top-0`}>
       <div>
         {/* Brand Header */}
         <div className="h-20 flex items-center px-6 border-b border-[#e5dcd1] gap-3 bg-[#faf7f1]">
@@ -79,6 +85,7 @@ export default function AdminSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
                     ? 'bg-[#17382f] text-[#faf7f1] shadow-sm'
@@ -128,5 +135,6 @@ export default function AdminSidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }
