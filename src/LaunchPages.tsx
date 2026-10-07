@@ -8,7 +8,6 @@ import { CatalogNotice, Eyebrow, ImageSlot, money, Reveal } from './components/u
 import ProductSelector from './components/ProductSelector';
 import RecipeWaitlist from './components/RecipeWaitlist';
 import HeroSachet from './components/HeroSachet';
-import ChaiHero from './components/ChaiHero';
 import { NotFound } from './pages';
 
 export function LaunchHome() {
@@ -19,7 +18,7 @@ export function LaunchHome() {
 
   return (
     <div className="matte-home">
-      <section className="home-hero matte-hero chai-signature" aria-labelledby="home-title">
+      <section className="home-hero matte-hero" aria-labelledby="home-title">
         <div className="matte-hero-copy">
           <Eyebrow>IT&rsquo;S A MODERN WOMAN&rsquo;S RECIPE</Eyebrow>
           <h1 id="home-title" aria-label="Strong tea. Whole spices. Proper chai.">
@@ -30,6 +29,14 @@ export function LaunchHome() {
               </motion.span>
             </span>)}
           </h1>
+          <figure className="matte-hero-media">
+            <motion.img className="matte-hero-image" src="/assets/shams/hero/matte-sachet-v2.webp"
+              initial={reduced ? false : { opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: reduced ? 0 : 1.4, delay: reduced ? 0 : .1, ease: [.22, 1, .36, 1] }}
+              alt="Shams black masala chai sachet and a freshly brewed glass of chai on a charcoal counter"
+              width="1254" height="1254" fetchPriority="high" />
+            <span className="matte-hero-shade" aria-hidden="true" />
+          </figure>
           <p>Black tea, ginger and cardamom. Blended in small batches in Hyderabad.</p>
           <div className="matte-hero-actions">
             <Link className="btn matte-button" to="/the-collection">Shop the blend <ArrowUpRight size={16} /></Link>
@@ -46,7 +53,6 @@ export function LaunchHome() {
             </>}
           </div>
         </div>
-        <ChaiHero />
         <div className="matte-hero-caption" aria-hidden="true"><span>Recipe 01 &middot; Masala Chai</span><span>Make yourself at home.</span></div>
       </section>
 
