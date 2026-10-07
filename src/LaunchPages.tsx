@@ -111,7 +111,7 @@ export function LaunchHome() {
           ].map((quote, index) => <figure className="testimonial-card" key={quote}>
             <span className="testimonial-mark" aria-hidden="true">“</span>
             <blockquote><p>{quote}</p></blockquote>
-            <figcaption><span>Sample quote</span><span>0{index + 1}</span></figcaption>
+            <figcaption><span>{['Krishna', 'Meera', 'Harsha'][index]}</span><span>Sample quote</span></figcaption>
           </figure>)}
         </div>
         <Link className="text-link" to="/recipe-feedback">Tell us about your cup <ArrowUpRight size={16} /></Link>
