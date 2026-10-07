@@ -96,6 +96,26 @@ export function LaunchHome() {
           </Link></Reveal>)}
         </div>
       </section>
+
+      <section className="section home-testimonials" aria-labelledby="testimonials-title">
+        <div className="testimonials-heading">
+          <Eyebrow>AROUND THE CHAI TABLE</Eyebrow>
+          <h2 id="testimonials-title">A good cup.<br /><em>A little conversation.</em></h2>
+          <p className="testimonials-disclosure">Sample testimonials for the design — these are illustrative quotes, not customer reviews.</p>
+        </div>
+        <div className="testimonial-grid">
+          {[
+            'The ginger comes through nicely without taking over. I like mine strong, with a little extra milk.',
+            'A warm cup after work is my favourite part of the evening. This is the kind of chai I would take my time with.',
+            'I usually adjust the milk and sugar until it tastes right. A simple blend that leaves room to make the cup your own.',
+          ].map((quote, index) => <figure className="testimonial-card" key={quote}>
+            <span className="testimonial-mark" aria-hidden="true">“</span>
+            <blockquote><p>{quote}</p></blockquote>
+            <figcaption><span>Sample quote</span><span>0{index + 1}</span></figcaption>
+          </figure>)}
+        </div>
+        <Link className="text-link" to="/recipe-feedback">Tell us about your cup <ArrowUpRight size={16} /></Link>
+      </section>
     </div>
   );
 }

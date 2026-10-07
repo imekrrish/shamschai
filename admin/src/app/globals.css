@@ -87,3 +87,12 @@
 @media (prefers-reduced-motion: reduce) { .admin-sidebar { transition: none; } }
 
 body:has(.order-modal) .admin-mobile-toggle { display: none; }
+
+@media (max-width: 1023px) {
+  .admin-sidebar nav a { min-height: 48px; font-size: 14px; }
+  .admin-sidebar nav svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .admin-sidebar nav { padding: 1rem; }
+  .admin-header > div:last-child { flex-shrink: 0; }
+  .admin-header h1 { line-height: 1.2; }
+  .admin-sidebar > div:last-child { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+}
