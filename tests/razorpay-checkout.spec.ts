@@ -20,7 +20,7 @@ const catalogProduct = {
   stock: true, featured: true,
 };
 
-async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offline', seedCart = true) {
+async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offline', seedCart = true, profile: typeof user & { phone?: string } = user) {
   let order = { ...initialOrder };
   const requestIds: string[] = [];
   await page.addInitScript(({ user, mode, seedCart }) => {
@@ -29,7 +29,7 @@ async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offl
     if (seedCart) localStorage.setItem('shams-cart-v2', JSON.stringify({ quantities: { '500g': 1, '1000g': 0 }, pending: null }));
     (window as any).__rzpEvents = [];
     (window as any).Razorpay = class {
-      constructor(public options: any) {}
+      constructor(public options: any) { (window as any).__rzpOptions = options; }
       open() {
         if (mode === 'dismiss') this.options.modal.ondismiss();
         else this.options.handler({ razorpay_order_id: 'order_Test', razorpay_payment_id: 'pay_Test', razorpay_signature: 'a'.repeat(64) });
@@ -41,13 +41,13 @@ async function setup(page: Page, mode: 'paid' | 'dismiss' | 'unverified' | 'offl
         this.options.modal.ondismiss();
       }
     };
-  }, { user, mode, seedCart });
+  }, { user: profile, mode, seedCart });
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname;
     const ok = (data: unknown) => route.fulfill({ json: { success: true, data } });
     if (path === '/api/products') return ok([catalogProduct]);
     if (path.startsWith('/api/products/')) return ok(catalogProduct);
-    if (path.endsWith('/users/me')) return ok(user);
+    if (path.endsWith('/users/me')) return ok(profile);
     if (path.endsWith('/addresses')) return ok([address]);
     if (path === '/api/orders/pending-checkout') return ok(null);
     if (path === '/api/orders' && route.request().method() === 'POST') {
@@ -80,6 +80,32 @@ test('successful checkout waits for server verification and shows paid order', a
   await expect(page).toHaveURL(/order-confirmation\/ORD-TEST/);
   await expect(page.getByText('PAYMENT CONFIRMED', { exact: true })).toBeVisible();
   expect(ids).toHaveLength(1);
+  const options = await page.evaluate(() => (window as any).__rzpOptions);
+  expect(options.prefill.contact).toBe(address.phone);
+  expect(options.hidden.contact).toBe(true);
+  expect(options.readonly.contact).toBe(true);
+});
+
+test('signed-in phone carries forward to delivery and payment', async ({ page }) => {
+  await setup(page, 'paid', true, { ...user, phone: '8888888888' });
+  await page.goto('/checkout');
+  await page.getByText('+ Enter a different address').click();
+  await expect(page.locator('input[name=phone]')).toHaveValue('8888888888');
+  await page.getByText('Test Buyer (Default)').click();
+  await submit(page);
+  await expect(page).toHaveURL(/order-confirmation/);
+  expect(await page.evaluate(() => (window as any).__rzpOptions.prefill.contact)).toBe('8888888888');
+});
+
+test('missing phone prompts before opening payment', async ({ page }) => {
+  const ids = await setup(page, 'paid');
+  await page.goto('/checkout');
+  await page.getByText('+ Enter a different address').click();
+  await page.locator('textarea[name=address]').fill('Test Street');
+  await page.getByRole('button', { name: 'MAKE THIS CUP YOURS' }).click();
+  expect(await page.locator('input[name=phone]').evaluate((input: HTMLInputElement) => input.validationMessage)).toBe('Please fill in your phone number before continuing to payment.');
+  expect(ids).toHaveLength(0);
+  expect(await page.evaluate(() => (window as any).__rzpOptions)).toBeUndefined();
 });
 
 test('the payment window closes before verification and the wait happens on our own screen', async ({ page }) => {

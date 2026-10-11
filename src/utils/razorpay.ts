@@ -24,14 +24,18 @@ export function loadRazorpay(): Promise<void> {
  *   its window is dismissed, before the verification round-trip. The caller
  *   uses it to put its own confirmation state on screen.
  */
-export async function openPayment(orderId: string, intent: PaymentIntent, user: UserProfile | null, onCaptured?: () => void): Promise<void> {
+export async function openPayment(orderId: string, intent: PaymentIntent, user: UserProfile | null, onCaptured?: () => void, deliveryPhone?: string): Promise<void> {
+  const contact = (user?.phone?.trim() || deliveryPhone?.trim() || '').replace(/[\s()-]/g, '');
+  if (!contact) throw new Error('Please fill in your phone number before continuing to payment.');
   await loadRazorpay();
   return new Promise((resolve, reject) => {
     let processing = false;
     const checkout = new window.Razorpay!({
       key: intent.keyId, order_id: intent.razorpayOrderId, amount: intent.amount, currency: intent.currency,
       name: "Sham's Chai", description: 'Masala Chai', theme: { color: '#B48A68' },
-      prefill: { name: user?.name, email: user?.email, contact: user?.phone },
+      prefill: { name: user?.name, email: user?.email, contact },
+      readonly: { contact: true },
+      hidden: { contact: true },
       // `processing` also covers the programmatic close below, which reaches
       // ondismiss the same way a cancelled payment would.
       modal: { ondismiss: () => { if (!processing) reject(new Error('Payment window closed. Your packs are saved in your cart.')); } },
