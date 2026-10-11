@@ -176,7 +176,7 @@ export function Checkout() {
           // confirmation should be on screen from here.
           setShowAddressConfirm(false);
           setConfirming(true);
-        });
+        }, resolveCurrentAddress().phone);
       }
       sessionStorage.removeItem(storageKey);
       cart.complete(order.id);
@@ -209,6 +209,11 @@ export function Checkout() {
     }
     if (!agreed) {
       setError('Please accept the refund and replacement policy before continuing.');
+      return;
+    }
+
+    if (!resolveCurrentAddress().phone.trim()) {
+      setError('Please fill in your phone number before continuing to payment.');
       return;
     }
 
@@ -395,7 +400,8 @@ export function Checkout() {
                 autoComplete="tel"
                 required
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onInvalid={(e) => e.currentTarget.setCustomValidity('Please fill in your phone number before continuing to payment.')}
+                onChange={(e) => { e.currentTarget.setCustomValidity(''); setPhone(e.target.value); }}
                 placeholder="10-digit mobile number"
               />
             </label>

@@ -50,7 +50,7 @@ export function OrderConfirmationPage() {
       setOrder(latest);
       if (latest.paymentStatus === 'PAID') return;
       const intent = await api.retryPayment(order.id);
-      await openPayment(order.id, intent, user);
+      await openPayment(order.id, intent, user, undefined, order.shippingSnapshot.phone);
       setOrder(await api.getOrderById(order.id));
     } catch (err) { setError(err instanceof Error ? err.message : 'Payment could not be completed.'); }
     finally { setPaying(false); }
