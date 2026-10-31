@@ -14,7 +14,8 @@ import {
   X, 
   ChevronRight,
   Database,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 
 const STATUS_FILTERS = ['CONFIRMED', 'ALL'];
@@ -26,6 +27,42 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const [exportFrom, setExportFrom] = useState('');
+  const [exportTo, setExportTo] = useState('');
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
+
+  const exportOrders = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setExportError('');
+    if (!exportFrom || !exportTo || exportFrom > exportTo) {
+      setExportError('Choose a valid date range. From must be on or before To.');
+      return;
+    }
+    setExporting(true);
+    try {
+      const params = new URLSearchParams({ from: exportFrom, to: exportTo });
+      const res = await fetch(`/api/orders/export?${params}`);
+      if (res.status === 401) { window.location.href = '/login'; return; }
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Could not export orders. Please try again.');
+      }
+      const url = URL.createObjectURL(await res.blob());
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `confirmed-orders_${exportFrom}_to_${exportTo}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+      setExportError(error instanceof Error ? error.message : 'Could not export orders. Please try again.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const ordersRequest = useRef<AbortController | null>(null);
 
@@ -120,6 +157,31 @@ export default function OrdersPage() {
             <h2 className="text-xl font-bold text-[#17382f]">{activeFilter === 'CONFIRMED' ? 'Confirmed orders' : 'All orders'}</h2>
             <span className="text-sm text-[#65675f]">{loading ? 'Loading…' : `${orders.length} orders`}</span>
           </div>
+
+          <form onSubmit={exportOrders} className="rounded-2xl border border-[#e5dcd1] bg-white p-4 space-y-3">
+            <div>
+              <h3 className="font-bold text-[#17382f]">Export confirmed orders</h3>
+              <p className="text-sm text-[#65675f]">All orders currently marked Confirmed, placed between these dates (inclusive, IST). Includes customer contacts, delivery addresses and items. Search and tabs do not limit the export.</p>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+              <label className="flex flex-col gap-1 text-sm font-semibold text-[#17382f]">From
+                <input type="date" required value={exportFrom} max={exportTo || undefined} disabled={exporting}
+                  onChange={e => { setExportFrom(e.target.value); setExportError(''); }}
+                  className="min-h-[44px] rounded-xl border border-[#d8cfc2] bg-white px-3 py-2 text-base" />
+              </label>
+              <label className="flex flex-col gap-1 text-sm font-semibold text-[#17382f]">To
+                <input type="date" required value={exportTo} min={exportFrom || undefined} disabled={exporting}
+                  onChange={e => { setExportTo(e.target.value); setExportError(''); }}
+                  className="min-h-[44px] rounded-xl border border-[#d8cfc2] bg-white px-3 py-2 text-base" />
+              </label>
+              <button type="submit" disabled={exporting || !exportFrom || !exportTo || exportFrom > exportTo}
+                className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#17382f] px-5 py-3 text-sm font-bold text-white disabled:opacity-50">
+                <Download className="w-4 h-4" />{exporting ? 'Exporting…' : 'Export Excel'}
+              </button>
+            </div>
+            <p role="status" className="text-sm text-[#65675f]">{exporting ? 'Preparing your Excel download…' : ''}</p>
+            {exportError && <p role="alert" className="text-sm text-rose-700">{exportError}</p>}
+          </form>
 
           {/* Controls: Search & Status Filters */}
           <div className="flex flex-col gap-4">
